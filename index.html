@@ -18,6 +18,7 @@
       --accent-green: #10B981;
       --accent-rose: #F43F5E;
       --accent-blue: #6366F1;
+      --accent-orange: #F59E0B;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
       --radius: 12px;
@@ -35,9 +36,10 @@
     @media (max-width: 600px) { body { padding: 12px; } }
 
     /* ===== ШАПКА ===== */
-    .header { margin-bottom: 24px; }
+    .header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;}
     .header h1 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
     .header .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .header .date { font-size: 12px; color: var(--text-muted); }
 
     /* ===== ТУЛБАР ===== */
     .toolbar {
@@ -66,10 +68,14 @@
     }
     .toolbar button.primary:hover { background: var(--primary-hover); }
 
-    /* ===== KPI ===== */
+    /* ===== СЕКЦИИ ===== */
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .section-title span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+
+    /* ===== KPI (Сводка) ===== */
     .kpi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 32px;
     }
     .kpi-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -83,17 +89,38 @@
     }
     .kpi-card.green::before { background: var(--accent-green); }
     .kpi-card.blue::before { background: var(--accent-blue); }
-    .kpi-card.rose::before { background: var(--accent-rose); }
+    .kpi-card.orange::before { background: var(--accent-orange); }
     
     .kpi-card .label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 8px; }
     .kpi-card .value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
-    .kpi-card.green .value { color: var(--accent-green); }
-    .kpi-card.blue .value { color: var(--accent-blue); }
-    .kpi-card.rose .value { color: var(--accent-rose); }
+    .kpi-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+    /* ===== БЛОК "НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ" ===== */
+    .directions-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .direction-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: flex-start;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .direction-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .direction-icon {
+      width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .direction-card.green .direction-icon { background: #ECFDF5; color: var(--accent-green); }
+    .direction-card.orange .direction-icon { background: #FFFBEB; color: var(--accent-orange); }
+    .direction-card.rose .direction-icon { background: #FFF1F2; color: var(--accent-rose); }
+
+    .direction-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+    .direction-content .dir-value { font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; line-height: 1; }
+    .direction-content p { font-size: 12px; color: var(--text-muted); }
 
     /* ===== ГРАФИКИ ===== */
     .charts-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
     }
     @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
     .chart-card {
@@ -103,7 +130,7 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== ТАБЛИЦА ПРОЕКТОВ (ТАЙМЛАЙН) ===== */
+    /* ===== ТАБЛИЦА ПРОЕКТОВ ===== */
     .projects-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
       box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
@@ -129,18 +156,14 @@
     .dot-wip { background: var(--accent-blue); }
     .dot-pause { background: var(--accent-rose); }
 
-    /* Основная таблица */
     .projects-table { width: 100%; border-collapse: collapse; }
     .projects-table th {
       text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600;
       text-transform: uppercase; color: var(--text-muted); background: #F8FAFC;
       border-bottom: 1px solid var(--border); letter-spacing: 0.5px;
     }
-    .projects-table td {
-      padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle;
-    }
+    .projects-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     
-    /* Строка проекта */
     .project-row { transition: background 0.2s; cursor: pointer; }
     .project-row:hover { background: #F8FAFC; }
     .project-row.open { background: #F8FAFC; border-bottom: none; }
@@ -149,15 +172,11 @@
     .project-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
     .project-row.open .arrow { transform: rotate(90deg); }
     
-    .badge {
-      display: inline-block; padding: 4px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
-    }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
     .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
     .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
     .badge-pause { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
 
-    /* Раскрывающаяся часть */
     .details-row { display: none; background: #FFFFFF; }
     .project-row.open + .details-row { display: table-row; }
     .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
@@ -167,29 +186,21 @@
       padding: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
       animation: slideDown 0.3s ease-out;
     }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 768px) { .details-container { grid-template-columns: 1fr; } }
 
     .info-list { display: flex; flex-direction: column; gap: 10px; }
     .info-item { font-size: 13px; color: var(--text-muted); }
     .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
     
-    /* Этапы */
     .stages-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .stage-box {
-      flex: 1; min-width: 120px; border: 1px solid var(--border); border-radius: 8px;
-      padding: 12px; background: #fff; transition: all 0.2s;
-    }
+    .stage-box { flex: 1; min-width: 120px; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #fff; }
     .stage-box.done { border-color: #A7F3D0; background: #ECFDF5; }
     .stage-box.wip { border-color: #BFDBFE; background: #EFF6FF; }
     .stage-box.pause { border-color: #FECDD3; background: #FFF1F2; }
     .stage-box h4 { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
     .stage-box p { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    /* Кварталы */
     .quarters-block { margin-top: 16px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
     .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
     .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
@@ -201,11 +212,45 @@
 <body>
 
   <div class="header">
-    <h1>Охват работы Процессного офиса</h1>
-    <p class="subtitle">Дашборд проектов и оптимизации процессов</p>
+    <div>
+      <h1>Охват работы Процессного офиса</h1>
+      <p class="subtitle">Дашборд проектов и оптимизации процессов</p>
+    </div>
+    <div class="date" id="update-date"></div>
   </div>
 
-  <!-- ТУЛБАР -->
+  <!-- ГЛОБАЛЬНЫЕ KPI -->
+  <div class="section-title">Общая сводка <span>ключевые показатели</span></div>
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ -->
+  <div class="section-title">Направления деятельности</div>
+  <div class="directions-grid" id="directions-grid"></div>
+
+  <!-- ГРАФИКИ -->
+  <div class="section-title">Аналитика</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Статусы проектов</h3>
+      <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Направления проектов</h3>
+      <div class="chart-wrap"><canvas id="chart-direction"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Этапы (общая готовность)</h3>
+      <div class="chart-wrap"><canvas id="chart-stages"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Теги (кампусы)</h3>
+      <div class="chart-wrap"><canvas id="chart-tags"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ТАБЛИЦА ПРОЕКТОВ -->
+  <div class="section-title">Реестр проектов</div>
+  
   <div class="toolbar">
     <input type="text" id="search-input" placeholder="Поиск по названию..." style="width: 220px;" />
     <select id="status-filter">
@@ -223,33 +268,8 @@
     <button id="export-json">Экспорт JSON</button>
   </div>
 
-  <!-- KPI -->
-  <div class="kpi-grid" id="kpi-grid"></div>
-
-  <!-- ГРАФИКИ -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Статусы проектов</h3>
-      <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Направления</h3>
-      <div class="chart-wrap"><canvas id="chart-direction"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Этапы (общая готовность)</h3>
-      <div class="chart-wrap"><canvas id="chart-stages"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Теги (кампусы)</h3>
-      <div class="chart-wrap"><canvas id="chart-tags"></canvas></div>
-    </div>
-  </div>
-
-  <!-- ТАБЛИЦА ПРОЕКТОВ (ТАЙМЛАЙН) -->
   <div class="projects-card">
     <div class="projects-header">
-      <h3>Реестр проектов</h3>
       <div class="role-tabs" id="role-tabs">
         <button class="role-tab active" data-role="po">ПО</button>
         <button class="role-tab" data-role="owner">Владелец</button>
@@ -273,29 +293,20 @@
           <th>Статус</th>
         </tr>
       </thead>
-      <tbody id="projects-tbody">
-        <!-- Сюда рендерятся строки -->
-      </tbody>
+      <tbody id="projects-tbody"></tbody>
     </table>
   </div>
 
   <script>
-    // ============================================================
-    // СОСТОЯНИЕ
-    // ============================================================
     let rawData = [];
+    let globalKpi = {};
     let charts = {};
     let currentRole = 'po';
     let filters = { search: '', status: 'all', onlySupport: false };
 
-    // ============================================================
-    // УТИЛИТЫ
-    // ============================================================
     function esc(s) {
       if (s == null) return '';
-      return String(s).replace(/[&<>"']/g, c => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      }[c]));
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
     function getStatusClass(status) {
@@ -305,9 +316,6 @@
       return '';
     }
 
-    // ============================================================
-    // ФИЛЬТРАЦИЯ
-    // ============================================================
     function getFilteredData() {
       return rawData.filter(p => {
         if (filters.search) {
@@ -321,37 +329,74 @@
     }
 
     // ============================================================
-    // РЕНДЕР KPI
+    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ
     // ============================================================
-    function renderKPIs(data) {
+    function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
-      const total = data.length;
-      const done = data.filter(p => p.status === 'завершён').length;
-      const wip = data.filter(p => p.status === 'в работе').length;
-      const support = data.filter(p => p.direction === 'обеспечивающий').length;
-
       grid.innerHTML = `
+        <div class="kpi-card blue">
+          <div class="label">Процессы в реестре</div>
+          <div class="value">${kpi.processes_total || '—'}</div>
+          <div class="sub">охват процессов</div>
+        </div>
         <div class="kpi-card">
-          <div class="label">Всего проектов</div>
-          <div class="value">${total}</div>
+          <div class="label">Подразделения</div>
+          <div class="value">${kpi.departments_count || '—'}</div>
+          <div class="sub">вовлечено в работу</div>
         </div>
         <div class="kpi-card green">
-          <div class="label">Завершено</div>
-          <div class="value">${done}</div>
+          <div class="label">Кампусы</div>
+          <div class="value">${kpi.campuses_count || '—'}</div>
+          <div class="sub">география проектов</div>
         </div>
-        <div class="kpi-card blue">
-          <div class="label">В работе</div>
-          <div class="value">${wip}</div>
+        <div class="kpi-card orange">
+          <div class="label">Участники</div>
+          <div class="value">${kpi.people_count || '—'}</div>
+          <div class="sub">человек задействовано</div>
         </div>
-        <div class="kpi-card rose">
-          <div class="label">Обеспечивающих</div>
-          <div class="value">${support}</div>
+      `;
+    }
+
+    function renderDirections(kpi) {
+      const grid = document.getElementById('directions-grid');
+      grid.innerHTML = `
+        <div class="direction-card">
+          <div class="direction-icon">🎯</div>
+          <div class="direction-content">
+            <h4>Стратсессии</h4>
+            <div class="dir-value">${kpi.strategy_sessions || 0} / ${kpi.strategy_people || 0}</div>
+            <p>проведено сессий / участников</p>
+          </div>
+        </div>
+        <div class="direction-card green">
+          <div class="direction-icon">💻</div>
+          <div class="direction-content">
+            <h4>Цифровые сервисы</h4>
+            <div class="dir-value">${kpi.digital_services || 0}</div>
+            <p>разработано и внедрено</p>
+          </div>
+        </div>
+        <div class="direction-card orange">
+          <div class="direction-icon">📄</div>
+          <div class="direction-content">
+            <h4>Работа с ЛНА</h4>
+            <div class="dir-value">${kpi.lnas_verified || 0}</div>
+            <p>верифицировано на человекоцентричность</p>
+          </div>
+        </div>
+        <div class="direction-card rose">
+          <div class="direction-icon">🎓</div>
+          <div class="direction-content">
+            <h4>Обучение (ДПО)</h4>
+            <div class="dir-value">${kpi.trained_employees || 0}</div>
+            <p>сотрудников прошли обучение</p>
+          </div>
         </div>
       `;
     }
 
     // ============================================================
-    // РЕНДЕР ГРАФИКОВ (С новыми цветами)
+    // РЕНДЕР ГРАФИКОВ
     // ============================================================
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
@@ -361,7 +406,6 @@
         plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } } } 
       };
 
-      // 1. Статусы
       const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
       data.forEach(p => { if (statusCounts[p.status] !== undefined) statusCounts[p.status]++; });
       charts.status = new Chart(document.getElementById('chart-status'), {
@@ -373,7 +417,6 @@
         options: { ...commonOpts, cutout: '70%' }
       });
 
-      // 2. Направления
       const dirCounts = {};
       data.forEach(p => { dirCounts[p.direction] = (dirCounts[p.direction] || 0) + 1; });
       charts.direction = new Chart(document.getElementById('chart-direction'), {
@@ -385,7 +428,6 @@
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // 3. Этапы
       const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
       const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
       const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
@@ -398,7 +440,6 @@
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // 4. Теги
       const tagCounts = {};
       data.forEach(p => {
         (p.tags || []).forEach(t => {
@@ -419,7 +460,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР ТАБЛИЦЫ ПРОЕКТОВ С РАСКРЫТИЕМ
+    // РЕНДЕР ТАБЛИЦЫ
     // ============================================================
     function renderTimeline(data) {
       const tbody = document.getElementById('projects-tbody');
@@ -429,10 +470,7 @@
       }
 
       tbody.innerHTML = data.map(p => {
-        const statusCls = getStatusClass(p.status);
         let badgeCls = p.status === 'завершён' ? 'badge-done' : p.status === 'в работе' ? 'badge-wip' : 'badge-pause';
-
-        // Этапы
         const stagesHtml = p.stages ? Object.entries(p.stages).map(([key, st]) => {
           if (key === 'implementation') return '';
           const titles = { analysis: 'Анализ', current_state: 'Текущее', target_state: 'Целевое', decision: 'Решение' };
@@ -440,7 +478,6 @@
           return `<div class="stage-box ${cls}"><h4>${titles[key] || key}</h4><p>${esc(st.status)}</p></div>`;
         }).join('') : '';
 
-        // Кварталы
         let implHtml = '';
         if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
           const q = p.stages.implementation.quarters;
@@ -453,15 +490,9 @@
           }
         }
 
-        // Основная строка (свернутая)
         const mainRow = `
           <tr class="project-row" data-id="${p.id}">
-            <td>
-              <div class="project-title">
-                <span class="arrow">▶</span>
-                ${esc(p.name)}
-              </div>
-            </td>
+            <td><div class="project-title"><span class="arrow">▶</span>${esc(p.name)}</div></td>
             <td>${esc(p.direction)}</td>
             <td>${esc(p.owner)}</td>
             <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
@@ -469,7 +500,6 @@
           </tr>
         `;
 
-        // Скрытая строка с деталями
         const detailsRow = `
           <tr class="details-row">
             <td colspan="5" class="details-cell">
@@ -481,84 +511,50 @@
                   <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
                 </div>
                 <div>
-                  <div class="stages-container">
-                    ${stagesHtml}
-                  </div>
+                  <div class="stages-container">${stagesHtml}</div>
                   ${implHtml}
                 </div>
               </div>
             </td>
           </tr>
         `;
-
         return mainRow + detailsRow;
       }).join('');
 
-      // Обработчик клика по строке
       tbody.querySelectorAll('.project-row').forEach(row => {
-        row.addEventListener('click', () => {
-          row.classList.toggle('open');
-        });
+        row.addEventListener('click', () => row.classList.toggle('open'));
       });
     }
 
-    // ============================================================
-    // ГЛАВНЫЙ ЦИКЛ
-    // ============================================================
     function updateView() {
       const filtered = getFilteredData();
-      renderKPIs(filtered);
       renderCharts(filtered);
       renderTimeline(filtered);
     }
 
     // ============================================================
-    // ЭКСПОРТ
+    // ЭКСПОРТ И СОБЫТИЯ
     // ============================================================
     document.getElementById('export-csv').addEventListener('click', () => {
       const data = getFilteredData();
-      if (!data.length) return alert('Нет данных для экспорта');
-      
+      if (!data.length) return alert('Нет данных');
       const headers = ['ID', 'Название', 'Направление', 'Владелец', 'Статус', 'Начало', 'Окончание'];
       const rows = data.map(p => [p.id, p.name, p.direction, p.owner, p.status, p.start, p.end].map(v => `"${String(v||'').replace(/"/g, '""')}"`).join(';'));
       const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
-      
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'projects_export.csv';
-      a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.csv'; a.click();
     });
 
     document.getElementById('export-json').addEventListener('click', () => {
       const data = getFilteredData();
-      if (!data.length) return alert('Нет данных для экспорта');
-      
+      if (!data.length) return alert('Нет данных');
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'projects_export.json';
-      a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.json'; a.click();
     });
 
-    // ============================================================
-    // СОБЫТИЯ
-    // ============================================================
-    document.getElementById('search-input').addEventListener('input', e => {
-      filters.search = e.target.value;
-      updateView();
-    });
-
-    document.getElementById('status-filter').addEventListener('change', e => {
-      filters.status = e.target.value;
-      updateView();
-    });
-
-    document.getElementById('only-support').addEventListener('change', e => {
-      filters.onlySupport = e.target.checked;
-      updateView();
-    });
-
+    document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; updateView(); });
+    document.getElementById('status-filter').addEventListener('change', e => { filters.status = e.target.value; updateView(); });
+    document.getElementById('only-support').addEventListener('change', e => { filters.onlySupport = e.target.checked; updateView(); });
     document.getElementById('reset-btn').addEventListener('click', () => {
       document.getElementById('search-input').value = '';
       document.getElementById('status-filter').value = 'all';
@@ -572,27 +568,34 @@
         document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         currentRole = tab.dataset.role;
-        updateView();
       });
     });
 
     // ============================================================
     // ЗАГРУЗКА
     // ============================================================
-    fetch('./data_test.json') // Обратите внимание: изменил на ваше имя файла
-      .then(res => {
-        if (!res.ok) throw new Error('Ошибка загрузки data_test.json');
-        return res.json();
-      })
+    fetch('./data_test.json')
+      .then(res => { if (!res.ok) throw new Error('Ошибка загрузки'); return res.json(); })
       .then(json => {
+        globalKpi = json.kpi || {};
         rawData = json.projects || [];
+        
+        // Выводим дату обновления
+        if (json.updated) {
+          document.getElementById('update-date').innerText = 'Данные от: ' + json.updated;
+        }
+
+        // Рисуем глобальные блоки (они не зависят от фильтров)
+        renderGlobalKpis(globalKpi);
+        renderDirections(globalKpi);
+        
+        // Рисуем фильтруемые блоки
         updateView();
       })
       .catch(err => {
         console.error(err);
         document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;">
-          <h2>Ошибка загрузки данных</h2>
-          <p>Убедитесь, что файл <code>data_test.json</code> лежит рядом с <code>index.html</code>.</p>
+          <h2>Ошибка загрузки данных</h2><p>Проверьте файл data_test.json</p>
         </div>`;
       });
   </script>
