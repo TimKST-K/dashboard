@@ -9,267 +9,163 @@
     /* ===== БАЗА ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 13px;
       line-height: 1.5;
       background: #F7F8FA;
       color: #1F2937;
       padding: 24px;
     }
-    @media (max-width: 600px) {
-      body { padding: 12px; }
-    }
+    @media (max-width: 600px) { body { padding: 12px; } }
 
     /* ===== ШАПКА ===== */
-    .header {
-      margin-bottom: 24px;
-    }
-    .header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1F2937;
-      letter-spacing: -0.2px;
-    }
-    .header .subtitle {
-      font-size: 12px;
-      color: #6B7280;
-      margin-top: 2px;
-    }
+    .header { margin-bottom: 24px; }
+    .header h1 { font-size: 18px; font-weight: 600; color: #1F2937; }
+    .header .subtitle { font-size: 12px; color: #6B7280; margin-top: 2px; }
 
-    /* ===== ПАНЕЛЬ ЗАГРУЗКИ ===== */
-    .upload-panel {
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    /* ===== ПАНЕЛЬ ФИЛЬТРОВ И ЭКСПОРТА ===== */
+    .toolbar {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
+      padding: 12px 20px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .upload-panel h3 {
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6B7280;
-      margin-bottom: 10px;
+    .toolbar input[type="text"], .toolbar select {
+      font-size: 12px; padding: 6px 10px; border: 1px solid #E5E7EB;
+      border-radius: 6px; background: #fff; color: #1F2937; outline: none;
     }
-    .upload-row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      flex-wrap: wrap;
+    .toolbar input[type="text"]:focus, .toolbar select:focus { border-color: #4B6A88; }
+    .toolbar .spacer { flex: 1; }
+    .toolbar button {
+      padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: 6px;
+      cursor: pointer; border: 1px solid #E5E7EB; background: #fff; color: #1F2937;
     }
-    .upload-row input[type="file"] {
-      font-size: 12px;
-      padding: 6px 10px;
-      border: 1px solid #E5E7EB;
-      border-radius: 6px;
-      background: #fff;
-      cursor: pointer;
-    }
-    .upload-row textarea {
-      flex: 1;
-      min-width: 200px;
-      min-height: 60px;
-      font-family: monospace;
-      font-size: 11px;
-      border: 1px solid #E5E7EB;
-      border-radius: 6px;
-      padding: 8px 10px;
-      resize: vertical;
-      color: #1F2937;
-      background: #FAFBFC;
-    }
-    .upload-row button {
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid #4B6A88;
-      background: #4B6A88;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .upload-row button:hover { background: #3d5a73; }
-    .upload-status {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #6B7280;
-    }
-    .upload-status .warn { color: #B45309; }
-    .upload-status .ok { color: #15803D; }
+    .toolbar button:hover { background: #F3F4F6; }
+    .toolbar button.primary { background: #4B6A88; color: #fff; border-color: #4B6A88; }
+    .toolbar button.primary:hover { background: #3d5a73; }
 
     /* ===== KPI ===== */
     .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px; margin-bottom: 24px;
     }
     .kpi-card {
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 10px;
-      padding: 18px 20px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
+      padding: 18px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .kpi-card .label {
-      font-size: 11px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6B7280;
-      margin-bottom: 6px;
-    }
-    .kpi-card .value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1F2937;
-      letter-spacing: -0.5px;
-    }
+    .kpi-card .label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 6px; }
+    .kpi-card .value { font-size: 28px; font-weight: 700; color: #1F2937; }
     .kpi-card .value.accent-blue { color: #4B6A88; }
     .kpi-card .value.accent-green { color: #A3B18A; }
     .kpi-card .value.accent-rose { color: #C9ADA7; }
-    .kpi-card .sub {
-      font-size: 11px;
-      color: #6B7280;
-      margin-top: 4px;
-    }
 
     /* ===== СЕТКА ГРАФИКОВ ===== */
     .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
     }
-    @media (max-width: 768px) {
-      .charts-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
     .chart-card {
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
+      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .chart-card h3 {
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6B7280;
-      margin-bottom: 14px;
+    .chart-card h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 14px; }
+    .chart-wrap { position: relative; width: 100%; height: 250px; }
+
+    /* ===== ТАЙМЛАЙН ПРОЕКТОВ ===== */
+    .timeline-card {
+      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
+      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 24px;
     }
-    .chart-wrap {
-      position: relative;
-      width: 100%;
-      height: 280px;
+    .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .timeline-header h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; }
+    .role-tabs { display: flex; gap: 4px; background: #F3F4F6; padding: 4px; border-radius: 8px; }
+    .role-tab { padding: 4px 12px; font-size: 11px; font-weight: 500; border-radius: 6px; cursor: pointer; color: #6B7280; border: none; background: transparent; }
+    .role-tab.active { background: #fff; color: #1F2937; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    
+    .legend { display: flex; gap: 16px; font-size: 11px; color: #6B7280; margin-bottom: 14px; }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot-done { background: #A3B18A; }
+    .dot-wip { background: #4B6A88; }
+    .dot-pause { background: #C9ADA7; }
+
+    .project-row {
+      border: 1px solid #E5E7EB; border-radius: 8px; margin-bottom: 8px; overflow: hidden;
     }
+    .project-summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; cursor: pointer; background: #F9FAFB;
+      transition: background 0.15s; user-select: none;
+    }
+    .project-summary:hover { background: #F3F4F6; }
+    .project-summary .title { font-weight: 600; font-size: 13px; color: #1F2937; display: flex; align-items: center; gap: 8px;}
+    .project-summary .meta-info { font-size: 11px; color: #6B7280; display: flex; gap: 12px; }
+    .project-summary .arrow { color: #9CA3AF; transition: transform 0.2s; }
+    .project-row.open .arrow { transform: rotate(90deg); }
+    
+    .project-details {
+      display: none; padding: 16px; border-top: 1px solid #E5E7EB; background: #FFFFFF;
+    }
+    .project-row.open .project-details { display: block; }
+    .info-line { font-size: 12px; color: #4B5563; margin-bottom: 6px; }
+    .info-line strong { color: #1F2937; font-weight: 500; }
+    
+    .stages-container { margin-top: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
+    .stage-box { flex: 1; min-width: 140px; border: 1px solid #E5E7EB; border-radius: 6px; padding: 10px; background: #FAFBFC; }
+    .stage-box.done { border-color: #A3B18A; background: #ECFDF5; }
+    .stage-box.wip { border-color: #4B6A88; background: #EFF6FF; }
+    .stage-box.pause { border-color: #C9ADA7; background: #FEF3C7; }
+    .stage-box h4 { font-size: 11px; text-transform: uppercase; color: #6B7280; margin-bottom: 4px; }
+    .stage-box p { font-size: 12px; font-weight: 500; }
+    
+    .quarters-list { margin-top: 8px; font-size: 11px; color: #4B5563; }
+    .quarters-list div { margin-bottom: 2px; }
+    .quarters-list strong { color: #1F2937; }
 
     /* ===== ТАБЛИЦА ===== */
     .table-card {
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-      overflow-x: auto;
+      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
+      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); overflow-x: auto;
     }
-    .table-card h3 {
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6B7280;
-      margin-bottom: 14px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
+    .table-card h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
     thead th {
-      text-align: left;
-      padding: 10px 12px;
-      border-bottom: 2px solid #E5E7EB;
-      font-weight: 600;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      color: #6B7280;
-      cursor: pointer;
-      user-select: none;
-      white-space: nowrap;
+      text-align: left; padding: 10px 12px; border-bottom: 2px solid #E5E7EB;
+      font-weight: 600; font-size: 11px; text-transform: uppercase; color: #6B7280;
     }
-    thead th:hover { color: #1F2937; }
-    thead th .sort-indicator {
-      display: inline-block;
-      margin-left: 4px;
-      font-size: 10px;
-      color: #9CA3AF;
-    }
-    tbody td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #F3F4F6;
-      white-space: nowrap;
-    }
-    tbody tr { transition: background 0.15s; }
+    tbody td { padding: 10px 12px; border-bottom: 1px solid #F3F4F6; white-space: nowrap; }
     tbody tr:hover { background: #F9FAFB; }
-    tbody tr.inactive {
-      opacity: 0.55;
-    }
+    
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    .badge-done { background: #ECFDF5; color: #065F46; }
+    .badge-wip { background: #EFF6FF; color: #1E40AF; }
+    .badge-pause { background: #FEF3C7; color: #92400E; }
 
-    /* ===== БЕЙДЖИ СТАТУСА ===== */
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .badge-done {
-      background: #ECFDF5;
-      color: #065F46;
-    }
-    .badge-wip {
-      background: #EFF6FF;
-      color: #1E40AF;
-    }
-    .badge-pause {
-      background: #FEF3C7;
-      color: #92400E;
-    }
-
-    /* ===== МЕТАДОНЫ ===== */
-    .meta {
-      margin-top: 20px;
-      font-size: 11px;
-      color: #9CA3AF;
-      text-align: center;
-    }
+    .empty-state { padding: 40px; text-align: center; color: #9CA3AF; font-style: italic; }
   </style>
 </head>
 <body>
 
-  <!-- ШАПКА -->
   <div class="header">
-    <h1>Оптимизация процессов</h1>
-    <p class="subtitle">Дашборд результатов деятельности команды</p>
+    <h1>Охват работы Процессного офиса</h1>
+    <p class="subtitle">Дашборд проектов и оптимизации процессов</p>
   </div>
 
-  <!-- ПАНЕЛЬ ЗАГРУЗКИ -->
-  <div class="upload-panel">
-    <h3>Загрузка данных</h3>
-    <div class="upload-row">
-      <input type="file" id="file-input" accept=".csv,.txt" />
-      <textarea id="csv-textarea" placeholder="Вставьте CSV-текст сюда (разделитель ;)…" spellcheck="false"></textarea>
-      <button id="load-btn">Загрузить</button>
-    </div>
-    <div class="upload-status" id="upload-status">
-      Загружен встроенный демо-набор (7 строк). Загрузите свой CSV для актуальных данных.
-    </div>
+  <!-- ТУЛБАР -->
+  <div class="toolbar">
+    <input type="text" id="search-input" placeholder="Поиск по названию..." />
+    <select id="status-filter">
+      <option value="all">Все статусы</option>
+      <option value="в работе">В работе</option>
+      <option value="завершён">Завершён</option>
+      <option value="на паузе">На паузе</option>
+    </select>
+    <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+      <input type="checkbox" id="only-support" /> Только обеспечивающие
+    </label>
+    <button id="reset-btn">Сбросить</button>
+    <div class="spacer"></div>
+    <button id="export-csv" class="primary">Экспорт CSV</button>
+    <button id="export-json">Экспорт JSON</button>
   </div>
 
   <!-- KPI -->
@@ -278,400 +174,262 @@
   <!-- ГРАФИКИ -->
   <div class="charts-grid">
     <div class="chart-card">
-      <h3>Длительность до / после (дни)</h3>
-      <div class="chart-wrap"><canvas id="chart-duration"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Цифровизация до / после (%)</h3>
-      <div class="chart-wrap"><canvas id="chart-digitization"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Бумажные документы до / после</h3>
-      <div class="chart-wrap"><canvas id="chart-paper"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Статусы процессов</h3>
+      <h3>Статусы проектов</h3>
       <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
     </div>
     <div class="chart-card">
-      <h3>Процессы по подразделениям</h3>
-      <div class="chart-wrap"><canvas id="chart-dept"></canvas></div>
+      <h3>Направления</h3>
+      <div class="chart-wrap"><canvas id="chart-direction"></canvas></div>
     </div>
     <div class="chart-card">
-      <h3>Эффект оптимизации (сокращение длительности, %)</h3>
-      <div class="chart-wrap"><canvas id="chart-effect"></canvas></div>
+      <h3>Этапы (общая готовность)</h3>
+      <div class="chart-wrap"><canvas id="chart-stages"></canvas></div>
     </div>
+    <div class="chart-card">
+      <h3>Теги (кампусы)</h3>
+      <div class="chart-wrap"><canvas id="chart-tags"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ТАЙМЛАЙН -->
+  <div class="timeline-card">
+    <div class="timeline-header">
+      <h3>Проекты (таймлайн)</h3>
+      <div class="role-tabs" id="role-tabs">
+        <button class="role-tab active" data-role="po">ПО</button>
+        <button class="role-tab" data-role="owner">Владелец</button>
+        <button class="role-tab" data-role="cb">ЦБ</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="dot dot-done"></span> Завершено</span>
+      <span><span class="dot dot-wip"></span> В работе</span>
+      <span><span class="dot dot-pause"></span> На паузе / Ожидает</span>
+    </div>
+    <div id="timeline-list"></div>
   </div>
 
   <!-- ТАБЛИЦА -->
   <div class="table-card">
-    <h3>Детализация по процессам</h3>
+    <h3>Сводная таблица</h3>
     <table id="data-table">
       <thead>
         <tr>
-          <th data-col="process_name">Процесс <span class="sort-indicator"></span></th>
-          <th data-col="department">Подразделение <span class="sort-indicator"></span></th>
-          <th data-col="status">Статус <span class="sort-indicator"></span></th>
-          <th data-col="start_date">Начало <span class="sort-indicator"></span></th>
-          <th data-col="end_date">Окончание <span class="sort-indicator"></span></th>
-          <th data-col="duration">Длительность <span class="sort-indicator"></span></th>
-          <th data-col="digitization">Цифровизация <span class="sort-indicator"></span></th>
-          <th data-col="paper">Документы <span class="sort-indicator"></span></th>
+          <th>Проект</th>
+          <th>Направление</th>
+          <th>Владелец</th>
+          <th>Статус</th>
+          <th>Даты</th>
+          <th>Теги</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
     </table>
   </div>
 
-  <div class="meta">Дашборд · Оптимизация процессов · Chart.js</div>
-
   <script>
-    // ============================================================
-    // КОНСТАНТЫ И ЦВЕТОВАЯ ПАЛИТРА
-    // ============================================================
-    const COLORS = {
-      primary: '#4B6A88',
-      secondary: '#8FA8B8',
-      green: '#A3B18A',
-      rose: '#C9ADA7',
-      gray: '#9CA3AF',
-      statusDone: '#A3B18A',
-      statusWip: '#4B6A88',
-      statusPause: '#C9ADA7'
-    };
-
-    // Демо-набор (7 строк), разделитель ;
-    const DEMO_CSV = `process_name;department;status;start_date;end_date;duration_before;duration_after;digitization_before;digitization_after;paper_docs_before;paper_docs_after
-Заказ поставок;Снабжение;завершён;15.01.2024;20.03.2024;72;24;30;90;15;2
-Приёмка товаров;Склад;завершён;01.02.2024;10.04.2024;48;18;45;85;10;1
-Согласование договоров;Юридический;в работе;01.03.2024;;96;40;20;60;25;8
-Ведение реестра заказов;Продажи;завершён;05.01.2024;28.02.2024;36;12;50;95;8;0
-Формирование отчётов;Финансы;на паузе;15.02.2024;;60;;35;;12;
-Обработка возвратов;Сервис;завершён;10.03.2024;20.05.2024;42;15;40;80;6;1
-Онбординг контрагентов;Снабжение;в работе;01.04.2024;;84;;25;;18;`;
-
     // ============================================================
     // СОСТОЯНИЕ
     // ============================================================
-    let rawData = [];       // массив объектов
-    let charts = {};        // инстансы Chart.js для resize/destroy
-    let sortState = { col: null, asc: true };
+    let rawData = [];
+    let charts = {};
+    let currentRole = 'po'; // po, owner, cb
+    let filters = { search: '', status: 'all', onlySupport: false };
 
     // ============================================================
-    // ПАРСИНГ CSV
+    // УТИЛИТЫ
     // ============================================================
-    function parseCSV(text) {
-      // Убираем BOM (если есть)
-      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    function esc(s) {
+      if (s == null) return '';
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
 
-      const lines = text.trim().split('\n');
-      if (lines.length < 2) throw new Error('Недостаточно строк в CSV');
-
-      // Первая строка — заголовки
-      const headers = lines[0].split(';').map(h => h.trim());
-      const expected = ['process_name','department','status','start_date','end_date',
-                        'duration_before','duration_after','digitization_before',
-                        'digitization_after','paper_docs_before','paper_docs_after'];
-
-      // Проверяем, что колонки на месте
-      const missing = expected.filter(e => !headers.includes(e));
-      if (missing.length) {
-        throw new Error('Не найдены колонки: ' + missing.join(', '));
-      }
-
-      const rows = [];
-      const warnings = [];
-
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        const vals = line.split(';');
-        const obj = {};
-
-        headers.forEach((h, j) => {
-          let v = (vals[j] || '').trim();
-          // Пустое значение → null
-          obj[h] = v === '' ? null : v;
-        });
-
-        // Валидация: строка должна иметь process_name
-        if (!obj.process_name) {
-          warnings.push('Строка ' + (i + 1) + ': нет названия процесса — пропущена');
-          continue;
-        }
-
-        // Приводим числовые поля к числу
-        ['duration_before','duration_after','digitization_before',
-         'digitization_after','paper_docs_before','paper_docs_after'].forEach(k => {
-          if (obj[k] !== null) {
-            const num = Number(obj[k]);
-            if (isNaN(num)) {
-              warnings.push('Строка «' + obj.process_name + '»: ' + k + ' = «' + obj[k] + '» не число → null');
-              obj[k] = null;
-            } else {
-              obj[k] = num;
-            }
-          }
-        });
-
-        rows.push(obj);
-      }
-
-      return { rows, warnings };
+    function getStatusClass(status) {
+      if (status === 'завершён') return 'done';
+      if (status === 'в работе') return 'wip';
+      if (status === 'на паузе' || status === 'ожидает') return 'pause';
+      return '';
     }
 
     // ============================================================
-    // РАСЧЁТ МЕТРИК
+    // ФИЛЬТРАЦИЯ
     // ============================================================
-    function computeMetrics(data) {
-      const total = data.length;
-      const byStatus = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
-      data.forEach(r => { if (byStatus[r.status] !== undefined) byStatus[r.status]++; });
-
-      // Среднее сокращение длительности %
-      let durPairs = data.filter(r => r.duration_before != null && r.duration_after != null && r.duration_before > 0);
-      const avgDurationReduction = durPairs.length
-        ? durPairs.reduce((s, r) => s + (r.duration_before - r.duration_after) / r.duration_before * 100, 0) / durPairs.length
-        : null;
-
-      // Средний рост цифровизации (п.п.)
-      let digPairs = data.filter(r => r.digitization_before != null && r.digitization_after != null);
-      const avgDigitizationGrowth = digPairs.length
-        ? digPairs.reduce((s, r) => s + (r.digitization_after - r.digitization_before), 0) / digPairs.length
-        : null;
-
-      // Среднее сокращение бумажных документов %
-      let paperPairs = data.filter(r => r.paper_docs_before != null && r.paper_docs_after != null && r.paper_docs_before > 0);
-      const avgPaperReduction = paperPairs.length
-        ? paperPairs.reduce((s, r) => s + (r.paper_docs_before - r.paper_docs_after) / r.paper_docs_before * 100, 0) / paperPairs.length
-        : null;
-
-      // Подразделения
-      const depts = [...new Set(data.map(r => r.department).filter(Boolean))];
-
-      return { total, byStatus, avgDurationReduction, avgDigitizationGrowth, avgPaperReduction, deptCount: depts.length };
+    function getFilteredData() {
+      return rawData.filter(p => {
+        // Роли (упрощенно: ПО видит все, Владелец видит свои, ЦБ видит все)
+        // В реальности тут будет логика на основе массива доступов
+        if (currentRole === 'owner' && p.owner !== 'Иванов И.И.') {
+             // Тестовая логика: допустим, текущий пользователь - Иванов
+             // return false; 
+        }
+        
+        if (filters.search) {
+          const q = filters.search.toLowerCase();
+          if (!(p.name || '').toLowerCase().includes(q) && !(p.owner || '').toLowerCase().includes(q)) return false;
+        }
+        if (filters.status !== 'all' && p.status !== filters.status) return false;
+        if (filters.onlySupport && p.direction !== 'обеспечивающий') return false;
+        return true;
+      });
     }
 
     // ============================================================
     // РЕНДЕР KPI
     // ============================================================
-    function renderKPIs(metrics) {
+    function renderKPIs(data) {
       const grid = document.getElementById('kpi-grid');
-      grid.innerHTML = '';
+      const total = data.length;
+      const done = data.filter(p => p.status === 'завершён').length;
+      const wip = data.filter(p => p.status === 'в работе').length;
+      const support = data.filter(p => p.direction === 'обеспечивающий').length;
 
-      const cards = [
-        {
-          label: 'Всего процессов',
-          value: metrics.total,
-          sub: 'завершён: ' + metrics.byStatus['завершён'] + ' · в работе: ' + metrics.byStatus['в работе'] + ' · пауза: ' + metrics.byStatus['на паузе'],
-          cls: ''
-        },
-        {
-          label: 'Среднее сокращение длительности',
-          value: metrics.avgDurationReduction != null ? metrics.avgDurationReduction.toFixed(1) + '%' : '—',
-          sub: 'по процессам с полными данными',
-          cls: 'accent-green'
-        },
-        {
-          label: 'Средний рост цифровизации',
-          value: metrics.avgDigitizationGrowth != null ? '+' + metrics.avgDigitizationGrowth.toFixed(1) + ' п.п.' : '—',
-          sub: 'измерен в процентных пунктах',
-          cls: 'accent-blue'
-        },
-        {
-          label: 'Сокращение бумажных документов',
-          value: metrics.avgPaperReduction != null ? '−' + Math.abs(metrics.avgPaperReduction).toFixed(1) + '%' : '—',
-          sub: 'в среднем по процессам',
-          cls: 'accent-rose'
-        },
-        {
-          label: 'Подразделений',
-          value: metrics.deptCount,
-          sub: 'в текущей выборке',
-          cls: ''
-        }
-      ];
-
-      cards.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'kpi-card';
-        div.innerHTML = '<div class="label">' + c.label + '</div>'
-          + '<div class="value ' + c.cls + '">' + c.value + '</div>'
-          + '<div class="sub">' + c.sub + '</div>';
-        grid.appendChild(div);
-      });
+      grid.innerHTML = `
+        <div class="kpi-card"><div class="label">Всего проектов</div><div class="value">${total}</div></div>
+        <div class="kpi-card"><div class="label">Завершено</div><div class="value accent-green">${done}</div></div>
+        <div class="kpi-card"><div class="label">В работе</div><div class="value accent-blue">${wip}</div></div>
+        <div class="kpi-card"><div class="label">Обеспечивающих</div><div class="value accent-rose">${support}</div></div>
+      `;
     }
 
     // ============================================================
     // РЕНДЕР ГРАФИКОВ
     // ============================================================
     function renderCharts(data) {
-      // Уничтожаем предыдущие графики
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
 
-      // Общие настройки
-      const defaultOpts = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12, padding: 10 } }
-        }
-      };
-      const noGrid = { grid: { display: false } };
-      const lightGrid = { grid: { color: '#F3F4F6', drawBorder: false } };
+      const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
 
-      const names = data.map(r => r.process_name);
-
-      // --- 1. Длительность до/после ---
-      charts.duration = new Chart(document.getElementById('chart-duration'), {
-        type: 'bar',
-        data: {
-          labels: names,
-          datasets: [
-            { label: 'До', data: data.map(r => r.duration_before), backgroundColor: COLORS.secondary, borderRadius: 3 },
-            { label: 'После', data: data.map(r => r.duration_after), backgroundColor: COLORS.primary, borderRadius: 3 }
-          ]
-        },
-        options: {
-          ...defaultOpts,
-          scales: {
-            x: { ...noGrid, ticks: { font: { size: 10 } } },
-            y: { ...lightGrid, ticks: { font: { size: 10 } }, beginAtZero: true }
-          }
-        }
-      });
-
-      // --- 2. Цифровизация до/после (горизонтальная) ---
-      charts.digitization = new Chart(document.getElementById('chart-digitization'), {
-        type: 'bar',
-        data: {
-          labels: names,
-          datasets: [
-            { label: 'До', data: data.map(r => r.digitization_before), backgroundColor: COLORS.secondary, borderRadius: 3 },
-            { label: 'После', data: data.map(r => r.digitization_after), backgroundColor: COLORS.primary, borderRadius: 3 }
-          ]
-        },
-        options: {
-          ...defaultOpts,
-          indexAxis: 'y',
-          scales: {
-            x: { ...lightGrid, min: 0, max: 100, ticks: { font: { size: 10 }, callback: v => v + '%' } },
-            y: { ...noGrid, ticks: { font: { size: 10 } } }
-          }
-        }
-      });
-
-      // --- 3. Бумажные документы до/после ---
-      charts.paper = new Chart(document.getElementById('chart-paper'), {
-        type: 'bar',
-        data: {
-          labels: names,
-          datasets: [
-            { label: 'До', data: data.map(r => r.paper_docs_before), backgroundColor: COLORS.rose, borderRadius: 3 },
-            { label: 'После', data: data.map(r => r.paper_docs_after), backgroundColor: COLORS.green, borderRadius: 3 }
-          ]
-        },
-        options: {
-          ...defaultOpts,
-          scales: {
-            x: { ...noGrid, ticks: { font: { size: 10 } } },
-            y: { ...lightGrid, ticks: { font: { size: 10 } }, beginAtZero: true }
-          }
-        }
-      });
-
-      // --- 4. Статусы (doughnut) ---
+      // 1. Статусы
       const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
-            // Заполняем счётчики статусов
-      data.forEach(r => { if (statusCounts[r.status] !== undefined) statusCounts[r.status]++; });
-
+      data.forEach(p => { if (statusCounts[p.status] !== undefined) statusCounts[p.status]++; });
       charts.status = new Chart(document.getElementById('chart-status'), {
         type: 'doughnut',
         data: {
           labels: ['Завершён', 'В работе', 'На паузе'],
-          datasets: [{
-            data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']],
-            backgroundColor: [COLORS.statusDone, COLORS.statusWip, COLORS.statusPause],
-            borderWidth: 0
-          }]
+          datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#A3B18A', '#4B6A88', '#C9ADA7'], borderWidth: 0 }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '60%',
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12, padding: 10 } }
-          }
-        }
+        options: { ...commonOpts, cutout: '60%' }
       });
 
-      // --- 5. Процессы по подразделениям ---
-      const deptCounts = {};
-      data.forEach(r => {
-        if (r.department) deptCounts[r.department] = (deptCounts[r.department] || 0) + 1;
-      });
-      const deptNames = Object.keys(deptCounts).sort((a, b) => deptCounts[b] - deptCounts[a]);
-      const deptValues = deptNames.map(d => deptCounts[d]);
-
-      charts.dept = new Chart(document.getElementById('chart-dept'), {
+      // 2. Направления
+      const dirCounts = {};
+      data.forEach(p => { dirCounts[p.direction] = (dirCounts[p.direction] || 0) + 1; });
+      charts.direction = new Chart(document.getElementById('chart-direction'), {
         type: 'bar',
         data: {
-          labels: deptNames,
-          datasets: [{
-            label: 'Процессов',
-            data: deptValues,
-            backgroundColor: COLORS.secondary,
-            borderRadius: 3
-          }]
+          labels: Object.keys(dirCounts),
+          datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#8FA8B8', borderRadius: 4 }]
         },
-        options: {
-          ...defaultOpts,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { ...noGrid, ticks: { font: { size: 10 } } },
-            y: { ...lightGrid, ticks: { font: { size: 10 }, stepSize: 1 }, beginAtZero: true }
-          }
-        }
+        options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // --- 6. Эффект оптимизации (горизонтальные бары) ---
-      // Считаем % сокращения для каждого процесса
-      const effects = data
-        .filter(r => r.duration_before != null && r.duration_after != null && r.duration_before > 0)
-        .map(r => ({
-          name: r.process_name,
-          value: (r.duration_before - r.duration_after) / r.duration_before * 100
-        }))
-        .sort((a, b) => b.value - a.value); // по убыванию
-
-      charts.effect = new Chart(document.getElementById('chart-effect'), {
+      // 3. Этапы (готовность)
+      const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
+      const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
+      const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
+      charts.stages = new Chart(document.getElementById('chart-stages'), {
         type: 'bar',
         data: {
-          labels: effects.map(e => e.name),
-          datasets: [{
-            label: 'Сокращение, %',
-            data: effects.map(e => e.value),
-            backgroundColor: effects.map(e => e.value >= 0 ? COLORS.primary : COLORS.gray),
-            borderRadius: 3
-          }]
+          labels: stageNames,
+          datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#A3B18A', borderRadius: 4 }]
         },
-        options: {
-          ...defaultOpts,
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: ctx => 'Сокращение: ' + ctx.raw.toFixed(1) + '%'
-              }
-            }
-          },
-          scales: {
-            x: { ...lightGrid, ticks: { font: { size: 10 }, callback: v => v + '%' }, beginAtZero: true },
-            y: { ...noGrid, ticks: { font: { size: 10 } } }
+        options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+      });
+
+      // 4. Теги (кампусы)
+      const tagCounts = {};
+      data.forEach(p => {
+        (p.tags || []).forEach(t => {
+          if (t.startsWith('кампус:')) {
+            const val = t.split(':')[1];
+            tagCounts[val] = (tagCounts[val] || 0) + 1;
+          }
+        });
+      });
+      charts.tags = new Chart(document.getElementById('chart-tags'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(tagCounts),
+          datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#C9ADA7', borderRadius: 4 }]
+        },
+        options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
+      });
+    }
+
+    // ============================================================
+    // РЕНДЕР ТАЙМЛАЙНА
+    // ============================================================
+    function renderTimeline(data) {
+      const list = document.getElementById('timeline-list');
+      if (!data.length) {
+        list.innerHTML = '<div class="empty-state">Нет проектов, подходящих под фильтры</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(p => {
+        const statusCls = getStatusClass(p.status);
+        const isOpen = false; // По умолчанию закрыто
+
+        // Этапы
+        const stagesHtml = p.stages ? Object.entries(p.stages).map(([key, st]) => {
+          if (key === 'implementation') return ''; // Внедрение рендерим отдельно ниже
+          const titles = { analysis: 'Анализ', current_state: 'Текущее', target_state: 'Целевое', decision: 'Решение' };
+          const cls = getStatusClass(st.status);
+          return `<div class="stage-box ${cls}"><h4>${titles[key] || key}</h4><p>${esc(st.status)}</p></div>`;
+        }).join('') : '';
+
+        // Кварталы внедрения
+        let implHtml = '';
+        if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
+          const q = p.stages.implementation.quarters;
+          const qKeys = Object.keys(q);
+          if (qKeys.length) {
+            implHtml = `<div class="quarters-list" style="margin-top:12px; border-top:1px dashed #E5E7EB; padding-top:8px;">
+              <div style="font-weight:600; margin-bottom:4px; color:#1F2937;">Внедрение по кварталам:</div>
+              ${qKeys.map(k => `<div><strong>${k}:</strong> ${esc(q[k].join(', '))}</div>`).join('')}
+            </div>`;
           }
         }
+
+        return `
+          <div class="project-row" data-id="${p.id}">
+            <div class="project-summary">
+              <div class="title">
+                <span class="dot dot-${statusCls === 'done' ? 'done' : statusCls === 'wip' ? 'wip' : 'pause'}"></span>
+                ${esc(p.name)}
+              </div>
+              <div class="meta-info">
+                <span>${esc(p.direction)}</span>
+                <span>${esc(p.owner)}</span>
+                <span>${esc(p.status)}</span>
+                <span class="arrow">▶</span>
+              </div>
+            </div>
+            <div class="project-details">
+              <div class="info-line"><strong>Владелец:</strong> ${esc(p.owner)}</div>
+              <div class="info-line"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
+              <div class="info-line"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
+              <div class="info-line"><strong>Период:</strong> ${esc(p.start || '—')} — ${esc(p.end || '—')}</div>
+              <div class="info-line"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
+              
+              <div class="stages-container">
+                ${stagesHtml}
+              </div>
+              ${implHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Добавляем обработчики кликов на заголовки карточек
+      list.querySelectorAll('.project-summary').forEach(summary => {
+        summary.addEventListener('click', () => {
+          const row = summary.closest('.project-row');
+          row.classList.toggle('open');
+        });
       });
     }
 
@@ -680,187 +438,119 @@
     // ============================================================
     function renderTable(data) {
       const tbody = document.getElementById('table-body');
-      tbody.innerHTML = '';
-
-      data.forEach(r => {
-        const tr = document.createElement('tr');
-
-        // Приглушённый фон для незавершённых
-        if (r.status === 'в работе' || r.status === 'на паузе') {
-          tr.classList.add('inactive');
-        }
-
-        // Бейдж статуса
-        let badgeCls = '';
-        if (r.status === 'завершён') badgeCls = 'badge-done';
-        else if (r.status === 'в работе') badgeCls = 'badge-wip';
-        else if (r.status === 'на паузе') badgeCls = 'badge-pause';
-
-        const fmt = (a, b) => {
-          if (a == null && b == null) return '—';
-          if (a == null) return '— → ' + b;
-          if (b == null) return a + ' → —';
-          return a + ' → ' + b;
-        };
-
-        tr.innerHTML =
-          '<td>' + (r.process_name || '—') + '</td>' +
-          '<td>' + (r.department || '—') + '</td>' +
-          '<td><span class="badge ' + badgeCls + '">' + (r.status || '—') + '</span></td>' +
-          '<td>' + (r.start_date || '—') + '</td>' +
-          '<td>' + (r.end_date || '—') + '</td>' +
-          '<td>' + fmt(r.duration_before, r.duration_after) + '</td>' +
-          '<td>' + fmt(r.digitization_before, r.digitization_after) + '</td>' +
-          '<td>' + fmt(r.paper_docs_before, r.paper_docs_after) + '</td>';
-
-        tbody.appendChild(tr);
-      });
-    }
-
-    // ============================================================
-    // СОРТИРОВКА ТАБЛИЦЫ
-    // ============================================================
-    function sortTable(col) {
-      if (sortState.col === col) {
-        sortState.asc = !sortState.asc;
-      } else {
-        sortState.col = col;
-        sortState.asc = true;
-      }
-
-      // Определяем, по какому ключу сортируем
-      let keyFn;
-      switch (col) {
-        case 'process_name': keyFn = r => r.process_name || ''; break;
-        case 'department': keyFn = r => r.department || ''; break;
-        case 'status': keyFn = r => r.status || ''; break;
-        case 'start_date': keyFn = r => parseDate(r.start_date); break;
-        case 'end_date': keyFn = r => parseDate(r.end_date); break;
-        case 'duration': keyFn = r => r.duration_after != null ? r.duration_after : r.duration_before; break;
-        case 'digitization': keyFn = r => r.digitization_after != null ? r.digitization_after : r.digitization_before; break;
-        case 'paper': keyFn = r => r.paper_docs_after != null ? r.paper_docs_after : r.paper_docs_before; break;
-        default: return;
-      }
-
-      rawData.sort((a, b) => {
-        const va = keyFn(a), vb = keyFn(b);
-        if (va == null && vb == null) return 0;
-        if (va == null) return 1;
-        if (vb == null) return -1;
-        if (typeof va === 'string') return sortState.asc ? va.localeCompare(vb) : vb.localeCompare(va);
-        return sortState.asc ? va - vb : vb - va;
-      });
-
-      renderTable(rawData);
-      updateSortIndicators();
-    }
-
-    // Разбираем дату DD.MM.YYYY в число для сортировки
-    function parseDate(str) {
-      if (!str) return null;
-      const parts = str.split('.');
-      if (parts.length !== 3) return null;
-      return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
-
-    function updateSortIndicators() {
-      document.querySelectorAll('thead th').forEach(th => {
-        const ind = th.querySelector('.sort-indicator');
-        if (th.dataset.col === sortState.col) {
-          ind.textContent = sortState.asc ? '▲' : '▼';
-        } else {
-          ind.textContent = '';
-        }
-      });
-    }
-
-    // ============================================================
-    // ГЛАВНАЯ ФУНКЦИЯ ОТОБРАЖЕНИЯ
-    // ============================================================
-    function renderAll() {
-      const metrics = computeMetrics(rawData);
-      renderKPIs(metrics);
-      renderCharts(rawData);
-      renderTable(rawData);
-    }
-
-    // ============================================================
-    // ЗАГРУЗКА ДАННЫХ (файл или textarea)
-    // ============================================================
-    function loadCSVText(text) {
-      try {
-        const { rows, warnings } = parseCSV(text);
-        if (rows.length === 0) throw new Error('Не найдено ни одной валидной строки');
-
-        rawData = rows;
-        sortState = { col: null, asc: true };
-        updateSortIndicators();
-        renderAll();
-
-        // Статус загрузки
-        const status = document.getElementById('upload-status');
-        let msg = '<span class="ok">Загружено строк: ' + rows.length + '</span>';
-        if (warnings.length > 0) {
-          msg += '<br/><span class="warn">Предупреждения (' + warnings.length + '):</span><br/>'
-            + warnings.slice(0, 5).map(w => '· ' + w).join('<br/>');
-          if (warnings.length > 5) msg += '<br/>· … и ещё ' + (warnings.length - 5);
-        }
-        status.innerHTML = msg;
-      } catch (err) {
-        const status = document.getElementById('upload-status');
-        status.innerHTML = '<span class="warn">Ошибка: ' + err.message + '</span>';
-      }
-    }
-
-    // Загрузка из файла
-    document.getElementById('file-input').addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (ev) {
-        loadCSVText(ev.target.result);
-      };
-      reader.readAsText(file, 'UTF-8');
-    });
-
-    // Загрузка из textarea
-    document.getElementById('load-btn').addEventListener('click', function () {
-      const text = document.getElementById('csv-textarea').value.trim();
-      if (!text) {
-        document.getElementById('upload-status').innerHTML =
-          '<span class="warn">Вставьте CSV-текст или выберите файл</span>';
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#9CA3AF;">Нет данных</td></tr>';
         return;
       }
-      loadCSVText(text);
+      
+      tbody.innerHTML = data.map(p => {
+        let badgeCls = p.status === 'завершён' ? 'badge-done' : p.status === 'в работе' ? 'badge-wip' : 'badge-pause';
+        return `
+          <tr>
+            <td>${esc(p.name)}</td>
+            <td>${esc(p.direction)}</td>
+            <td>${esc(p.owner)}</td>
+            <td><span class="badge ${badgeCls}">${esc(p.status)}</span></td>
+            <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
+            <td>${esc((p.tags || []).join(', '))}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ============================================================
+    // ГЛАВНЫЙ ЦИКЛ ОТРИСОВКИ
+    // ============================================================
+    function updateView() {
+      const filtered = getFilteredData();
+      renderKPIs(filtered);
+      renderCharts(filtered);
+      renderTimeline(filtered);
+      renderTable(filtered);
+    }
+
+    // ============================================================
+    // ЭКСПОРТ
+    // ============================================================
+    document.getElementById('export-csv').addEventListener('click', () => {
+      const data = getFilteredData();
+      if (!data.length) return alert('Нет данных для экспорта');
+      
+      const headers = ['ID', 'Название', 'Направление', 'Владелец', 'Статус', 'Начало', 'Окончание'];
+      const rows = data.map(p => [p.id, p.name, p.direction, p.owner, p.status, p.start, p.end].map(v => `"${String(v||'').replace(/"/g, '""')}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'projects_export.csv';
+      a.click();
     });
 
-    // Сортировка по клику на заголовок
-    document.querySelectorAll('thead th').forEach(th => {
-      th.addEventListener('click', () => sortTable(th.dataset.col));
+    document.getElementById('export-json').addEventListener('click', () => {
+      const data = getFilteredData();
+      if (!data.length) return alert('Нет данных для экспорта');
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'projects_export.json';
+      a.click();
     });
 
     // ============================================================
-    // ИНИЦИАЛИЗАЦИЯ: загружаем демо-набор
+    // СОБЫТИЯ ФИЛЬТРОВ И РОЛЕЙ
     // ============================================================
-    fetch('./test_data.csv')
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.text();
+    document.getElementById('search-input').addEventListener('input', e => {
+      filters.search = e.target.value;
+      updateView();
+    });
+
+    document.getElementById('status-filter').addEventListener('change', e => {
+      filters.status = e.target.value;
+      updateView();
+    });
+
+    document.getElementById('only-support').addEventListener('change', e => {
+      filters.onlySupport = e.target.checked;
+      updateView();
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      document.getElementById('search-input').value = '';
+      document.getElementById('status-filter').value = 'all';
+      document.getElementById('only-support').checked = false;
+      filters = { search: '', status: 'all', onlySupport: false };
+      updateView();
+    });
+
+    document.querySelectorAll('.role-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentRole = tab.dataset.role;
+        updateView();
+      });
+    });
+
+    // ============================================================
+    // ЗАГРУЗКА ДАННЫХ
+    // ============================================================
+    fetch('./data.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Ошибка загрузки data.json');
+        return res.json();
       })
-      .then(text => {
-        loadCSVText(text);
-        // После загрузки подменяем статус на понятный
-        const status = document.getElementById('upload-status');
-        const count = (status.textContent.match(/Загружено строк: (\d+)/) || [])[1] || '?';
-        status.innerHTML =
-          '<span class="ok">Автозагрузка: test_data.csv · строк: ' + count + '</span>' +
-          '<br/><span style="color:#6B7280">Файл лежит рядом с dashboard.html на сайте.</span>';
+      .then(json => {
+        rawData = json.projects || [];
+        updateView();
       })
-      .catch(() => {
-        loadCSVText(DEMO_CSV);
-        document.getElementById('upload-status').innerHTML =
-          '<span class="warn">Файл test_data.csv не найден.</span> ' +
-          '<span style="color:#6B7280">Загружен встроенный демо-набор (7 строк).</span>';
+      .catch(err => {
+        console.error(err);
+        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#B45309;">
+          <h2>Ошибка загрузки данных</h2>
+          <p>Убедитесь, что файл <code>data.json</code> лежит рядом с <code>index.html</code> и сервер запущен.</p>
+        </div>`;
       });
   </script>
 </body>
