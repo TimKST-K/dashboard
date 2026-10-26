@@ -6,141 +6,196 @@
   <title>Дашборд — Оптимизация процессов</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ===== БАЗА ===== */
+    /* ===== БАЗА И ПЕРЕМЕННЫЕ ===== */
+    :root {
+      --bg: #F4F6F9;
+      --surface: #FFFFFF;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --accent-green: #10B981;
+      --accent-rose: #F43F5E;
+      --accent-blue: #6366F1;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --radius: 12px;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 13px;
       line-height: 1.5;
-      background: #F7F8FA;
-      color: #1F2937;
+      background: var(--bg);
+      color: var(--text-main);
       padding: 24px;
     }
     @media (max-width: 600px) { body { padding: 12px; } }
 
     /* ===== ШАПКА ===== */
     .header { margin-bottom: 24px; }
-    .header h1 { font-size: 18px; font-weight: 600; color: #1F2937; }
-    .header .subtitle { font-size: 12px; color: #6B7280; margin-top: 2px; }
+    .header h1 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
+    .header .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-    /* ===== ПАНЕЛЬ ФИЛЬТРОВ И ЭКСПОРТА ===== */
+    /* ===== ТУЛБАР ===== */
     .toolbar {
       display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
-      padding: 12px 20px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 24px; box-shadow: var(--shadow-sm);
     }
     .toolbar input[type="text"], .toolbar select {
-      font-size: 12px; padding: 6px 10px; border: 1px solid #E5E7EB;
-      border-radius: 6px; background: #fff; color: #1F2937; outline: none;
+      font-size: 13px; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 8px; background: #F8FAFC; color: var(--text-main); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .toolbar input[type="text"]:focus, .toolbar select:focus { border-color: #4B6A88; }
+    .toolbar input[type="text"]:focus, .toolbar select:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); background: #fff;
+    }
     .toolbar .spacer { flex: 1; }
     .toolbar button {
-      padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: 6px;
-      cursor: pointer; border: 1px solid #E5E7EB; background: #fff; color: #1F2937;
+      padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-main); transition: all 0.2s;
     }
-    .toolbar button:hover { background: #F3F4F6; }
-    .toolbar button.primary { background: #4B6A88; color: #fff; border-color: #4B6A88; }
-    .toolbar button.primary:hover { background: #3d5a73; }
+    .toolbar button:hover { background: #F1F5F9; border-color: #CBD5E1; }
+    .toolbar button.primary {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+    .toolbar button.primary:hover { background: var(--primary-hover); }
 
     /* ===== KPI ===== */
     .kpi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-bottom: 24px;
     }
     .kpi-card {
-      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
-      padding: 18px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .kpi-card .label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 6px; }
-    .kpi-card .value { font-size: 28px; font-weight: 700; color: #1F2937; }
-    .kpi-card .value.accent-blue { color: #4B6A88; }
-    .kpi-card .value.accent-green { color: #A3B18A; }
-    .kpi-card .value.accent-rose { color: #C9ADA7; }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--primary); opacity: 0.8;
+    }
+    .kpi-card.green::before { background: var(--accent-green); }
+    .kpi-card.blue::before { background: var(--accent-blue); }
+    .kpi-card.rose::before { background: var(--accent-rose); }
+    
+    .kpi-card .label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 8px; }
+    .kpi-card .value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
+    .kpi-card.green .value { color: var(--accent-green); }
+    .kpi-card.blue .value { color: var(--accent-blue); }
+    .kpi-card.rose .value { color: var(--accent-rose); }
 
-    /* ===== СЕТКА ГРАФИКОВ ===== */
+    /* ===== ГРАФИКИ ===== */
     .charts-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
     }
     @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
     .chart-card {
-      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
-      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm);
     }
-    .chart-card h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 14px; }
-    .chart-wrap { position: relative; width: 100%; height: 250px; }
+    .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
+    .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== ТАЙМЛАЙН ПРОЕКТОВ ===== */
-    .timeline-card {
-      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
-      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 24px;
+    /* ===== ТАБЛИЦА ПРОЕКТОВ (ТАЙМЛАЙН) ===== */
+    .projects-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
     }
-    .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
-    .timeline-header h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; }
-    .role-tabs { display: flex; gap: 4px; background: #F3F4F6; padding: 4px; border-radius: 8px; }
-    .role-tab { padding: 4px 12px; font-size: 11px; font-weight: 500; border-radius: 6px; cursor: pointer; color: #6B7280; border: none; background: transparent; }
-    .role-tab.active { background: #fff; color: #1F2937; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .projects-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
+      background: #F8FAFC;
+    }
+    .projects-header h3 { font-size: 15px; font-weight: 600; color: var(--text-main); }
     
-    .legend { display: flex; gap: 16px; font-size: 11px; color: #6B7280; margin-bottom: 14px; }
-    .legend span { display: flex; align-items: center; gap: 4px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .dot-done { background: #A3B18A; }
-    .dot-wip { background: #4B6A88; }
-    .dot-pause { background: #C9ADA7; }
+    .role-tabs { display: flex; gap: 4px; background: #E2E8F0; padding: 4px; border-radius: 10px; }
+    .role-tab {
+      padding: 6px 16px; font-size: 12px; font-weight: 600; border-radius: 8px;
+      cursor: pointer; color: var(--text-muted); border: none; background: transparent; transition: all 0.2s;
+    }
+    .role-tab.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
 
-    .project-row {
-      border: 1px solid #E5E7EB; border-radius: 8px; margin-bottom: 8px; overflow: hidden;
+    .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border); }
+    .legend span { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot-done { background: var(--accent-green); }
+    .dot-wip { background: var(--accent-blue); }
+    .dot-pause { background: var(--accent-rose); }
+
+    /* Основная таблица */
+    .projects-table { width: 100%; border-collapse: collapse; }
+    .projects-table th {
+      text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; color: var(--text-muted); background: #F8FAFC;
+      border-bottom: 1px solid var(--border); letter-spacing: 0.5px;
     }
-    .project-summary {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; cursor: pointer; background: #F9FAFB;
-      transition: background 0.15s; user-select: none;
+    .projects-table td {
+      padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle;
     }
-    .project-summary:hover { background: #F3F4F6; }
-    .project-summary .title { font-weight: 600; font-size: 13px; color: #1F2937; display: flex; align-items: center; gap: 8px;}
-    .project-summary .meta-info { font-size: 11px; color: #6B7280; display: flex; gap: 12px; }
-    .project-summary .arrow { color: #9CA3AF; transition: transform 0.2s; }
+    
+    /* Строка проекта */
+    .project-row { transition: background 0.2s; cursor: pointer; }
+    .project-row:hover { background: #F8FAFC; }
+    .project-row.open { background: #F8FAFC; border-bottom: none; }
+    
+    .project-title { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .project-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
     .project-row.open .arrow { transform: rotate(90deg); }
     
-    .project-details {
-      display: none; padding: 16px; border-top: 1px solid #E5E7EB; background: #FFFFFF;
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
     }
-    .project-row.open .project-details { display: block; }
-    .info-line { font-size: 12px; color: #4B5563; margin-bottom: 6px; }
-    .info-line strong { color: #1F2937; font-weight: 500; }
-    
-    .stages-container { margin-top: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
-    .stage-box { flex: 1; min-width: 140px; border: 1px solid #E5E7EB; border-radius: 6px; padding: 10px; background: #FAFBFC; }
-    .stage-box.done { border-color: #A3B18A; background: #ECFDF5; }
-    .stage-box.wip { border-color: #4B6A88; background: #EFF6FF; }
-    .stage-box.pause { border-color: #C9ADA7; background: #FEF3C7; }
-    .stage-box h4 { font-size: 11px; text-transform: uppercase; color: #6B7280; margin-bottom: 4px; }
-    .stage-box p { font-size: 12px; font-weight: 500; }
-    
-    .quarters-list { margin-top: 8px; font-size: 11px; color: #4B5563; }
-    .quarters-list div { margin-bottom: 2px; }
-    .quarters-list strong { color: #1F2937; }
+    .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
+    .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .badge-pause { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
 
-    /* ===== ТАБЛИЦА ===== */
-    .table-card {
-      background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px;
-      padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); overflow-x: auto;
-    }
-    .table-card h3 { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #6B7280; margin-bottom: 14px; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    thead th {
-      text-align: left; padding: 10px 12px; border-bottom: 2px solid #E5E7EB;
-      font-weight: 600; font-size: 11px; text-transform: uppercase; color: #6B7280;
-    }
-    tbody td { padding: 10px 12px; border-bottom: 1px solid #F3F4F6; white-space: nowrap; }
-    tbody tr:hover { background: #F9FAFB; }
+    /* Раскрывающаяся часть */
+    .details-row { display: none; background: #FFFFFF; }
+    .project-row.open + .details-row { display: table-row; }
+    .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
     
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
-    .badge-done { background: #ECFDF5; color: #065F46; }
-    .badge-wip { background: #EFF6FF; color: #1E40AF; }
-    .badge-pause { background: #FEF3C7; color: #92400E; }
+    .details-container {
+      background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+      animation: slideDown 0.3s ease-out;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) { .details-container { grid-template-columns: 1fr; } }
 
-    .empty-state { padding: 40px; text-align: center; color: #9CA3AF; font-style: italic; }
+    .info-list { display: flex; flex-direction: column; gap: 10px; }
+    .info-item { font-size: 13px; color: var(--text-muted); }
+    .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
+    
+    /* Этапы */
+    .stages-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .stage-box {
+      flex: 1; min-width: 120px; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px; background: #fff; transition: all 0.2s;
+    }
+    .stage-box.done { border-color: #A7F3D0; background: #ECFDF5; }
+    .stage-box.wip { border-color: #BFDBFE; background: #EFF6FF; }
+    .stage-box.pause { border-color: #FECDD3; background: #FFF1F2; }
+    .stage-box h4 { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .stage-box p { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
+    /* Кварталы */
+    .quarters-block { margin-top: 16px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
+    .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
+    .q-item strong { color: var(--text-main); font-weight: 600; min-width: 30px; }
+
+    .empty-state { padding: 40px; text-align: center; color: #94A3B8; font-style: italic; }
   </style>
 </head>
 <body>
@@ -152,14 +207,14 @@
 
   <!-- ТУЛБАР -->
   <div class="toolbar">
-    <input type="text" id="search-input" placeholder="Поиск по названию..." />
+    <input type="text" id="search-input" placeholder="Поиск по названию..." style="width: 220px;" />
     <select id="status-filter">
       <option value="all">Все статусы</option>
       <option value="в работе">В работе</option>
       <option value="завершён">Завершён</option>
       <option value="на паузе">На паузе</option>
     </select>
-    <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+    <label style="font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted);">
       <input type="checkbox" id="only-support" /> Только обеспечивающие
     </label>
     <button id="reset-btn">Сбросить</button>
@@ -191,39 +246,36 @@
     </div>
   </div>
 
-  <!-- ТАЙМЛАЙН -->
-  <div class="timeline-card">
-    <div class="timeline-header">
-      <h3>Проекты (таймлайн)</h3>
+  <!-- ТАБЛИЦА ПРОЕКТОВ (ТАЙМЛАЙН) -->
+  <div class="projects-card">
+    <div class="projects-header">
+      <h3>Реестр проектов</h3>
       <div class="role-tabs" id="role-tabs">
         <button class="role-tab active" data-role="po">ПО</button>
         <button class="role-tab" data-role="owner">Владелец</button>
         <button class="role-tab" data-role="cb">ЦБ</button>
       </div>
     </div>
+    
     <div class="legend">
       <span><span class="dot dot-done"></span> Завершено</span>
       <span><span class="dot dot-wip"></span> В работе</span>
       <span><span class="dot dot-pause"></span> На паузе / Ожидает</span>
     </div>
-    <div id="timeline-list"></div>
-  </div>
 
-  <!-- ТАБЛИЦА -->
-  <div class="table-card">
-    <h3>Сводная таблица</h3>
-    <table id="data-table">
+    <table class="projects-table">
       <thead>
         <tr>
-          <th>Проект</th>
+          <th style="width: 30%;">Название проекта</th>
           <th>Направление</th>
           <th>Владелец</th>
+          <th>Период</th>
           <th>Статус</th>
-          <th>Даты</th>
-          <th>Теги</th>
         </tr>
       </thead>
-      <tbody id="table-body"></tbody>
+      <tbody id="projects-tbody">
+        <!-- Сюда рендерятся строки -->
+      </tbody>
     </table>
   </div>
 
@@ -233,7 +285,7 @@
     // ============================================================
     let rawData = [];
     let charts = {};
-    let currentRole = 'po'; // po, owner, cb
+    let currentRole = 'po';
     let filters = { search: '', status: 'all', onlySupport: false };
 
     // ============================================================
@@ -258,13 +310,6 @@
     // ============================================================
     function getFilteredData() {
       return rawData.filter(p => {
-        // Роли (упрощенно: ПО видит все, Владелец видит свои, ЦБ видит все)
-        // В реальности тут будет логика на основе массива доступов
-        if (currentRole === 'owner' && p.owner !== 'Иванов И.И.') {
-             // Тестовая логика: допустим, текущий пользователь - Иванов
-             // return false; 
-        }
-        
         if (filters.search) {
           const q = filters.search.toLowerCase();
           if (!(p.name || '').toLowerCase().includes(q) && !(p.owner || '').toLowerCase().includes(q)) return false;
@@ -286,21 +331,35 @@
       const support = data.filter(p => p.direction === 'обеспечивающий').length;
 
       grid.innerHTML = `
-        <div class="kpi-card"><div class="label">Всего проектов</div><div class="value">${total}</div></div>
-        <div class="kpi-card"><div class="label">Завершено</div><div class="value accent-green">${done}</div></div>
-        <div class="kpi-card"><div class="label">В работе</div><div class="value accent-blue">${wip}</div></div>
-        <div class="kpi-card"><div class="label">Обеспечивающих</div><div class="value accent-rose">${support}</div></div>
+        <div class="kpi-card">
+          <div class="label">Всего проектов</div>
+          <div class="value">${total}</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="label">Завершено</div>
+          <div class="value">${done}</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="label">В работе</div>
+          <div class="value">${wip}</div>
+        </div>
+        <div class="kpi-card rose">
+          <div class="label">Обеспечивающих</div>
+          <div class="value">${support}</div>
+        </div>
       `;
     }
 
     // ============================================================
-    // РЕНДЕР ГРАФИКОВ
+    // РЕНДЕР ГРАФИКОВ (С новыми цветами)
     // ============================================================
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
-
-      const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
+      const commonOpts = { 
+        responsive: true, maintainAspectRatio: false, 
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } } } 
+      };
 
       // 1. Статусы
       const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
@@ -309,9 +368,9 @@
         type: 'doughnut',
         data: {
           labels: ['Завершён', 'В работе', 'На паузе'],
-          datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#A3B18A', '#4B6A88', '#C9ADA7'], borderWidth: 0 }]
+          datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E'], borderWidth: 0 }]
         },
-        options: { ...commonOpts, cutout: '60%' }
+        options: { ...commonOpts, cutout: '70%' }
       });
 
       // 2. Направления
@@ -321,12 +380,12 @@
         type: 'bar',
         data: {
           labels: Object.keys(dirCounts),
-          datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#8FA8B8', borderRadius: 4 }]
+          datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }]
         },
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // 3. Этапы (готовность)
+      // 3. Этапы
       const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
       const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
       const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
@@ -334,12 +393,12 @@
         type: 'bar',
         data: {
           labels: stageNames,
-          datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#A3B18A', borderRadius: 4 }]
+          datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }]
         },
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // 4. Теги (кампусы)
+      // 4. Теги
       const tagCounts = {};
       data.forEach(p => {
         (p.tags || []).forEach(t => {
@@ -353,120 +412,104 @@
         type: 'bar',
         data: {
           labels: Object.keys(tagCounts),
-          datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#C9ADA7', borderRadius: 4 }]
+          datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }]
         },
         options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
       });
     }
 
     // ============================================================
-    // РЕНДЕР ТАЙМЛАЙНА
+    // РЕНДЕР ТАБЛИЦЫ ПРОЕКТОВ С РАСКРЫТИЕМ
     // ============================================================
     function renderTimeline(data) {
-      const list = document.getElementById('timeline-list');
+      const tbody = document.getElementById('projects-tbody');
       if (!data.length) {
-        list.innerHTML = '<div class="empty-state">Нет проектов, подходящих под фильтры</div>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Нет проектов, подходящих под фильтры</td></tr>';
         return;
       }
 
-      list.innerHTML = data.map(p => {
+      tbody.innerHTML = data.map(p => {
         const statusCls = getStatusClass(p.status);
-        const isOpen = false; // По умолчанию закрыто
+        let badgeCls = p.status === 'завершён' ? 'badge-done' : p.status === 'в работе' ? 'badge-wip' : 'badge-pause';
 
         // Этапы
         const stagesHtml = p.stages ? Object.entries(p.stages).map(([key, st]) => {
-          if (key === 'implementation') return ''; // Внедрение рендерим отдельно ниже
+          if (key === 'implementation') return '';
           const titles = { analysis: 'Анализ', current_state: 'Текущее', target_state: 'Целевое', decision: 'Решение' };
           const cls = getStatusClass(st.status);
           return `<div class="stage-box ${cls}"><h4>${titles[key] || key}</h4><p>${esc(st.status)}</p></div>`;
         }).join('') : '';
 
-        // Кварталы внедрения
+        // Кварталы
         let implHtml = '';
         if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
           const q = p.stages.implementation.quarters;
           const qKeys = Object.keys(q);
           if (qKeys.length) {
-            implHtml = `<div class="quarters-list" style="margin-top:12px; border-top:1px dashed #E5E7EB; padding-top:8px;">
-              <div style="font-weight:600; margin-bottom:4px; color:#1F2937;">Внедрение по кварталам:</div>
-              ${qKeys.map(k => `<div><strong>${k}:</strong> ${esc(q[k].join(', '))}</div>`).join('')}
+            implHtml = `<div class="quarters-block">
+              <h4>Внедрение по кварталам</h4>
+              ${qKeys.map(k => `<div class="q-item"><strong>${k}:</strong> <span>${esc(q[k].join(', '))}</span></div>`).join('')}
             </div>`;
           }
         }
 
-        return `
-          <div class="project-row" data-id="${p.id}">
-            <div class="project-summary">
-              <div class="title">
-                <span class="dot dot-${statusCls === 'done' ? 'done' : statusCls === 'wip' ? 'wip' : 'pause'}"></span>
+        // Основная строка (свернутая)
+        const mainRow = `
+          <tr class="project-row" data-id="${p.id}">
+            <td>
+              <div class="project-title">
+                <span class="arrow">▶</span>
                 ${esc(p.name)}
               </div>
-              <div class="meta-info">
-                <span>${esc(p.direction)}</span>
-                <span>${esc(p.owner)}</span>
-                <span>${esc(p.status)}</span>
-                <span class="arrow">▶</span>
-              </div>
-            </div>
-            <div class="project-details">
-              <div class="info-line"><strong>Владелец:</strong> ${esc(p.owner)}</div>
-              <div class="info-line"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
-              <div class="info-line"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
-              <div class="info-line"><strong>Период:</strong> ${esc(p.start || '—')} — ${esc(p.end || '—')}</div>
-              <div class="info-line"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
-              
-              <div class="stages-container">
-                ${stagesHtml}
-              </div>
-              ${implHtml}
-            </div>
-          </div>
+            </td>
+            <td>${esc(p.direction)}</td>
+            <td>${esc(p.owner)}</td>
+            <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
+            <td><span class="badge ${badgeCls}">${esc(p.status)}</span></td>
+          </tr>
         `;
+
+        // Скрытая строка с деталями
+        const detailsRow = `
+          <tr class="details-row">
+            <td colspan="5" class="details-cell">
+              <div class="details-container">
+                <div class="info-list">
+                  <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
+                  <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
+                  <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
+                  <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
+                </div>
+                <div>
+                  <div class="stages-container">
+                    ${stagesHtml}
+                  </div>
+                  ${implHtml}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+
+        return mainRow + detailsRow;
       }).join('');
 
-      // Добавляем обработчики кликов на заголовки карточек
-      list.querySelectorAll('.project-summary').forEach(summary => {
-        summary.addEventListener('click', () => {
-          const row = summary.closest('.project-row');
+      // Обработчик клика по строке
+      tbody.querySelectorAll('.project-row').forEach(row => {
+        row.addEventListener('click', () => {
           row.classList.toggle('open');
         });
       });
     }
 
     // ============================================================
-    // РЕНДЕР ТАБЛИЦЫ
-    // ============================================================
-    function renderTable(data) {
-      const tbody = document.getElementById('table-body');
-      if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#9CA3AF;">Нет данных</td></tr>';
-        return;
-      }
-      
-      tbody.innerHTML = data.map(p => {
-        let badgeCls = p.status === 'завершён' ? 'badge-done' : p.status === 'в работе' ? 'badge-wip' : 'badge-pause';
-        return `
-          <tr>
-            <td>${esc(p.name)}</td>
-            <td>${esc(p.direction)}</td>
-            <td>${esc(p.owner)}</td>
-            <td><span class="badge ${badgeCls}">${esc(p.status)}</span></td>
-            <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
-            <td>${esc((p.tags || []).join(', '))}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // ============================================================
-    // ГЛАВНЫЙ ЦИКЛ ОТРИСОВКИ
+    // ГЛАВНЫЙ ЦИКЛ
     // ============================================================
     function updateView() {
       const filtered = getFilteredData();
       renderKPIs(filtered);
       renderCharts(filtered);
       renderTimeline(filtered);
-      renderTable(filtered);
     }
 
     // ============================================================
@@ -499,7 +542,7 @@
     });
 
     // ============================================================
-    // СОБЫТИЯ ФИЛЬТРОВ И РОЛЕЙ
+    // СОБЫТИЯ
     // ============================================================
     document.getElementById('search-input').addEventListener('input', e => {
       filters.search = e.target.value;
@@ -534,9 +577,9 @@
     });
 
     // ============================================================
-    // ЗАГРУЗКА ДАННЫХ
+    // ЗАГРУЗКА
     // ============================================================
-    fetch('./data_test.json')
+    fetch('./data_test.json') // Обратите внимание: изменил на ваше имя файла
       .then(res => {
         if (!res.ok) throw new Error('Ошибка загрузки data_test.json');
         return res.json();
@@ -547,9 +590,9 @@
       })
       .catch(err => {
         console.error(err);
-        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#B45309;">
+        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;">
           <h2>Ошибка загрузки данных</h2>
-          <p>Убедитесь, что файл <code>data_test.json</code> лежит рядом с <code>index.html</code> и сервер запущен.</p>
+          <p>Убедитесь, что файл <code>data_test.json</code> лежит рядом с <code>index.html</code>.</p>
         </div>`;
       });
   </script>
