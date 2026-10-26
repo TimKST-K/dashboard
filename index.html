@@ -95,8 +95,8 @@
     .details-container { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 20px; animation: slideDown 0.3s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ===== ВНУТРЕННИЕ КАРТОЧКИ НАПРАВЛЕНИЙ ===== */
-    .dir-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    /* ===== ВНУТРЕННИЕ КАРТОЧКИ ===== */
+    .dir-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .dir-card {
       background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
       display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
@@ -105,9 +105,15 @@
     .dir-card.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
     .dir-card.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
     .dir-card.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
-    .dir-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .dir-content .val { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
-    .dir-content p { font-size: 12px; color: var(--text-muted); }
+    .dir-content h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text-muted); }
+    .dir-content .val { font-size: 22px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .dir-content p { font-size: 11px; color: var(--text-muted); }
+
+    /* Спец. сетка для артефактов (более компактная) */
+    .artifacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
+    .artifact-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .artifact-card .val { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .artifact-card h4 { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.3; }
 
     /* ===== ТУЛБАР ===== */
     .toolbar {
@@ -196,7 +202,7 @@
   <div class="section-title">Общая сводка <span>ключевые показатели</span></div>
   <div class="kpi-grid" id="kpi-grid"></div>
 
-  <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ (ТЕПЕРЬ АККОРДЕОН) -->
+  <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ -->
   <div class="section-title">Направления деятельности</div>
   <div class="accordion-card">
     <table class="accordion-table">
@@ -206,9 +212,7 @@
           <th>Краткое описание</th>
         </tr>
       </thead>
-      <tbody id="directions-tbody">
-        <!-- Рендерится в JS -->
-      </tbody>
+      <tbody id="directions-tbody"></tbody>
     </table>
   </div>
 
@@ -335,7 +339,67 @@
       const tbody = document.getElementById('directions-tbody');
       
       tbody.innerHTML = `
-        <!-- Блок 1: Стратсессии -->
+        <!-- Блок 1: Проекты по оптимизации (НОВЫЙ) -->
+        <tr class="acc-row" data-target="dir-opt">
+          <td><div class="acc-title"><span class="arrow">▶</span> Проекты по оптимизации процессов</div></td>
+          <td style="color:var(--text-muted)">Включая обеспечивающие процессы</td>
+        </tr>
+        <tr class="details-row" id="dir-opt">
+          <td colspan="2" class="details-cell">
+            <div class="details-container">
+              <!-- Верхние 2 карточки -->
+              <div class="dir-cards-grid">
+                <div class="dir-card blue">
+                  <div class="dir-icon">📊</div>
+                  <div class="dir-content">
+                    <h4>Всего проектов</h4>
+                    <div class="val">${kpi.projects_total || 0}</div>
+                    <p>в работе и завершено</p>
+                  </div>
+                </div>
+                <div class="dir-card">
+                  <div class="dir-icon">⚙️</div>
+                  <div class="dir-content">
+                    <h4>Обеспечивающие</h4>
+                    <div class="val">${kpi.projects_support || 0}</div>
+                    <p>из общего числа</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Сетка артефактов -->
+              <div style="margin-top: 16px; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: var(--text-main);">Разработанные артефакты и результаты:</div>
+              <div class="artifacts-grid">
+                <div class="artifact-card">
+                  <div class="val">${kpi.interviews_count || 0}</div>
+                  <h4>Глубинных интервью</h4>
+                </div>
+                <div class="artifact-card">
+                  <div class="val">${kpi.bpmn_count || 0}</div>
+                  <h4>Схем BPMN</h4>
+                </div>
+                <div class="artifact-card">
+                  <div class="val">${kpi.cjm_count || 0}</div>
+                  <h4>Карт CJM</h4>
+                </div>
+                <div class="artifact-card">
+                  <div class="val">${kpi.tz_digital_count || 0}</div>
+                  <h4>ТЗ для цифровых решений</h4>
+                </div>
+                <div class="artifact-card">
+                  <div class="val">${kpi.problems_count || 0}</div>
+                  <h4>Выявлено проблем</h4>
+                </div>
+                <div class="artifact-card">
+                  <div class="val">${kpi.proposals_count || 0}</div>
+                  <h4>Предложений по решению</h4>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Блок 2: Стратсессии -->
         <tr class="acc-row" data-target="dir-1">
           <td><div class="acc-title"><span class="arrow">▶</span> Стратсессии</div></td>
           <td style="color:var(--text-muted)">Проведение стратегических сессий</td>
@@ -365,7 +429,7 @@
           </td>
         </tr>
 
-        <!-- Блок 2: Цифровые сервисы -->
+        <!-- Блок 3: Цифровые сервисы -->
         <tr class="acc-row" data-target="dir-2">
           <td><div class="acc-title"><span class="arrow">▶</span> Цифровые сервисы</div></td>
           <td style="color:var(--text-muted)">Разработка и внедрение IT-решений</td>
@@ -387,7 +451,7 @@
           </td>
         </tr>
 
-        <!-- Блок 3: ЛНА и Обучение -->
+        <!-- Блок 4: ЛНА и Обучение -->
         <tr class="acc-row" data-target="dir-3">
           <td><div class="acc-title"><span class="arrow">▶</span> ЛНА и Обучение</div></td>
           <td style="color:var(--text-muted)">Работа с документами и развитие персонала</td>
@@ -418,7 +482,6 @@
         </tr>
       `;
 
-      // Добавляем обработчики кликов
       tbody.querySelectorAll('.acc-row').forEach(row => {
         row.addEventListener('click', () => {
           row.classList.toggle('open');
@@ -478,7 +541,7 @@
     function renderTimeline(data) {
       const tbody = document.getElementById('projects-tbody');
       if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Нет проектов, подходящих под фильтры</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94A3B8;">Нет проектов</td></tr>';
         return;
       }
 
@@ -576,9 +639,6 @@
       updateView();
     });
 
-    // ============================================================
-    // ЗАГРУЗКА ДАННЫХ
-    // ============================================================
     fetch('./data_test.json')
       .then(res => { if (!res.ok) throw new Error('Ошибка загрузки'); return res.json(); })
       .then(json => {
@@ -587,7 +647,7 @@
         if (json.updated) document.getElementById('update-date').innerText = 'Данные от: ' + json.updated;
         
         renderGlobalKpis(globalKpi);
-        renderDirections(globalKpi); // Рисуем аккордеон
+        renderDirections(globalKpi);
         updateView();
       })
       .catch(err => {
