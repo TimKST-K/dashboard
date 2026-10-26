@@ -6,6 +6,15 @@
     "departments_count": 12,
     "campuses_count": 4,
     "people_count": 1250,
+
+    "projects_total": 15,
+    "projects_support": 4,
+    "interviews_count": 45,
+    "bpmn_count": 12,
+    "cjm_count": 8,
+    "tz_digital_count": 6,
+    "problems_count": 120,
+    "proposals_count": 34,
     
     "strategy_sessions": 14,
     "strategy_people": 320,
