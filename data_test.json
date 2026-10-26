@@ -5,7 +5,12 @@
     "processes_total": 370,
     "departments_count": 12,
     "campuses_count": 4,
-    "people_count": 45
+    "people_count": 1250,
+    "strategy_sessions": 14,
+    "strategy_people": 320,
+    "digital_services": 8,
+    "lnas_verified": 45,
+    "trained_employees": 180
   },
   "projects": [
     {
