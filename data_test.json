@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "updated": "2026-10-26",
+  "kpi": {
+    "processes_total": 370,
+    "departments_count": 12,
+    "campuses_count": 4,
+    "people_count": 45
+  },
+  "projects": [
+    {
+      "id": "p1",
+      "name": "Оптимизация закупок",
+      "direction": "обеспечивающий",
+      "owner": "Иванов И.И.",
+      "participants": ["Петров П.П.", "Сидорова А.А."],
+      "users": ["сотрудники"],
+      "start": "2024-01-15",
+      "end": "2024-06-30",
+      "status": "завершён",
+      "tags": ["процесс:закупки", "кампус:Москва", "роль:сотрудник"],
+      "stages": {
+        "analysis": { "status": "завершён" },
+        "current_state": { "status": "завершён" },
+        "target_state": { "status": "завершён" },
+        "decision": { "status": "завершён" },
+        "implementation": { "status": "завершён", "quarters": { "Q1": ["проведён аудит"], "Q2": ["пилот"] } }
+      }
+    },
+    {
+      "id": "p2",
+      "name": "Приёмная кампания 2025",
+      "direction": "основной",
+      "owner": "Смирнов А.В.",
+      "participants": ["Кузнецов Д.С."],
+      "users": ["студенты", "абитуриенты"],
+      "start": "2024-03-01",
+      "end": "2025-08-31",
+      "status": "в работе",
+      "tags": ["процесс:приём", "кампус:Питер", "роль:студент"],
+      "stages": {
+        "analysis": { "status": "завершён" },
+        "current_state": { "status": "завершён" },
+        "target_state": { "status": "в работе" },
+        "decision": { "status": "ожидает" },
+        "implementation": { "status": "не начат", "quarters": {} }
+      }
+    },
+    {
+      "id": "p3",
+      "name": "Онбординг сотрудников",
+      "direction": "обеспечивающий",
+      "owner": "Волкова Е.Н.",
+      "participants": ["Морозов И.И.", "Лебедева О.А."],
+      "users": ["сотрудники"],
+      "start": "2024-05-10",
+      "end": "2024-12-15",
+      "status": "на паузе",
+      "tags": ["процесс:HR", "кампус:Новосибирск", "роль:сотрудник"],
+      "stages": {
+        "analysis": { "status": "завершён" },
+        "current_state": { "status": "в работе" },
+        "target_state": { "status": "ожидает" },
+        "decision": { "status": "ожидает" },
+        "implementation": { "status": "не начат", "quarters": {} }
+      }
+    },
+    {
+      "id": "p4",
+      "name": "Цифровизация документооборота",
+      "direction": "основной",
+      "owner": "Соколов П.Р.",
+      "participants": ["Никитин В.В."],
+      "users": ["сотрудники", "студенты"],
+      "start": "2024-02-01",
+      "end": "2024-11-30",
+      "status": "в работе",
+      "tags": ["процесс:документооборот", "кампус:Москва", "роль:сотрудник"],
+      "stages": {
+        "analysis": { "status": "завершён" },
+        "current_state": { "status": "завершён" },
+        "target_state": { "status": "завершён" },
+        "decision": { "status": "в работе" },
+        "implementation": { "status": "не начат", "quarters": {} }
+      }
+    },
+    {
+      "id": "p5",
+      "name": "Внедрение CRM в продажах",
+      "direction": "основной",
+      "owner": "Фёдорова М.С.",
+      "participants": ["Егоров С.С."],
+      "users": ["сотрудники"],
+      "start": "2024-01-10",
+      "end": "2024-09-30",
+      "status": "завершён",
+      "tags": ["процесс:продажи", "кампус:Питер", "роль:сотрудник"],
+      "stages": {
+        "analysis": { "status": "завершён" },
+        "current_state": { "status": "завершён" },
+        "target_state": { "status": "завершён" },
+        "decision": { "status": "завершён" },
+        "implementation": { "status": "завершён", "quarters": { "Q1": ["старт"], "Q2": ["миграция данных"], "Q3": ["обучение"] } }
+      }
+    }
+  ]
+}
