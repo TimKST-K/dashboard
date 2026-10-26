@@ -41,41 +41,14 @@
     .header .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
     .header .date { font-size: 12px; color: var(--text-muted); }
 
-    /* ===== ТУЛБАР ===== */
-    .toolbar {
-      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 12px 16px; margin-bottom: 24px; box-shadow: var(--shadow-sm);
-    }
-    .toolbar input[type="text"], .toolbar select {
-      font-size: 13px; padding: 8px 12px; border: 1px solid var(--border);
-      border-radius: 8px; background: #F8FAFC; color: var(--text-main); outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .toolbar input[type="text"]:focus, .toolbar select:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); background: #fff;
-    }
-    .toolbar .spacer { flex: 1; }
-    .toolbar button {
-      padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px;
-      cursor: pointer; border: 1px solid var(--border); background: var(--surface);
-      color: var(--text-main); transition: all 0.2s;
-    }
-    .toolbar button:hover { background: #F1F5F9; border-color: #CBD5E1; }
-    .toolbar button.primary {
-      background: var(--primary); color: #fff; border-color: var(--primary);
-      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-    }
-    .toolbar button.primary:hover { background: var(--primary-hover); }
-
     /* ===== СЕКЦИИ ===== */
-    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; margin-top: 32px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .section-title span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 
-    /* ===== KPI (Сводка) ===== */
+    /* ===== ГЛОБАЛЬНЫЕ KPI ===== */
     .kpi-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 32px;
+      gap: 16px; margin-bottom: 24px;
     }
     .kpi-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -95,46 +68,79 @@
     .kpi-card .value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
     .kpi-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
 
-    /* ===== БЛОК "НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ" ===== */
-    .directions-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px; margin-bottom: 32px;
-    }
-    .direction-card {
+    /* ===== ОБЩИЙ СТИЛЬ ДЛЯ ТАБЛИЦ-АККОРДЕОНОВ ===== */
+    .accordion-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 20px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: flex-start;
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
     }
-    .direction-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .direction-icon {
-      width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; color: var(--primary);
-      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    .accordion-table { width: 100%; border-collapse: collapse; }
+    .accordion-table th {
+      text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; color: var(--text-muted); background: #F8FAFC;
+      border-bottom: 1px solid var(--border); letter-spacing: 0.5px;
     }
-    .direction-card.green .direction-icon { background: #ECFDF5; color: var(--accent-green); }
-    .direction-card.orange .direction-icon { background: #FFFBEB; color: var(--accent-orange); }
-    .direction-card.rose .direction-icon { background: #FFF1F2; color: var(--accent-rose); }
+    .accordion-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    
+    .acc-row { transition: background 0.2s; cursor: pointer; }
+    .acc-row:hover { background: #F8FAFC; }
+    .acc-row.open { background: #F8FAFC; border-bottom: none; }
+    
+    .acc-title { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .acc-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
+    .acc-row.open .arrow { transform: rotate(90deg); }
 
-    .direction-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
-    .direction-content .dir-value { font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; line-height: 1; }
-    .direction-content p { font-size: 12px; color: var(--text-muted); }
+    .details-row { display: none; background: #FFFFFF; }
+    .acc-row.open + .details-row { display: table-row; }
+    .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
+    .details-container { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 20px; animation: slideDown 0.3s ease-out; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== ВНУТРЕННИЕ КАРТОЧКИ НАПРАВЛЕНИЙ ===== */
+    .dir-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .dir-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+      display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .dir-icon { width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .dir-card.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
+    .dir-card.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
+    .dir-card.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
+    .dir-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .dir-content .val { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .dir-content p { font-size: 12px; color: var(--text-muted); }
+
+    /* ===== ТУЛБАР ===== */
+    .toolbar {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+    }
+    .toolbar input[type="text"], .toolbar select {
+      font-size: 13px; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 8px; background: #F8FAFC; color: var(--text-main); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .toolbar input[type="text"]:focus, .toolbar select:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); background: #fff;
+    }
+    .toolbar .spacer { flex: 1; }
+    .toolbar button {
+      padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-main); transition: all 0.2s;
+    }
+    .toolbar button:hover { background: #F1F5F9; border-color: #CBD5E1; }
+    .toolbar button.primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2); }
+    .toolbar button.primary:hover { background: var(--primary-hover); }
 
     /* ===== ГРАФИКИ ===== */
-    .charts-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
-    }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
-    .chart-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 20px; box-shadow: var(--shadow-sm);
-    }
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
     /* ===== ТАБЛИЦА ПРОЕКТОВ ===== */
-    .projects-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
-    }
     .projects-header {
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
@@ -143,10 +149,7 @@
     .projects-header h3 { font-size: 15px; font-weight: 600; color: var(--text-main); }
     
     .role-tabs { display: flex; gap: 4px; background: #E2E8F0; padding: 4px; border-radius: 10px; }
-    .role-tab {
-      padding: 6px 16px; font-size: 12px; font-weight: 600; border-radius: 8px;
-      cursor: pointer; color: var(--text-muted); border: none; background: transparent; transition: all 0.2s;
-    }
+    .role-tab { padding: 6px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--text-muted); border: none; background: transparent; transition: all 0.2s; }
     .role-tab.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
 
     .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border); }
@@ -156,38 +159,10 @@
     .dot-wip { background: var(--accent-blue); }
     .dot-pause { background: var(--accent-rose); }
 
-    .projects-table { width: 100%; border-collapse: collapse; }
-    .projects-table th {
-      text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600;
-      text-transform: uppercase; color: var(--text-muted); background: #F8FAFC;
-      border-bottom: 1px solid var(--border); letter-spacing: 0.5px;
-    }
-    .projects-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    
-    .project-row { transition: background 0.2s; cursor: pointer; }
-    .project-row:hover { background: #F8FAFC; }
-    .project-row.open { background: #F8FAFC; border-bottom: none; }
-    
-    .project-title { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-    .project-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
-    .project-row.open .arrow { transform: rotate(90deg); }
-    
     .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
     .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
     .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
     .badge-pause { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
-
-    .details-row { display: none; background: #FFFFFF; }
-    .project-row.open + .details-row { display: table-row; }
-    .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
-    
-    .details-container {
-      background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px;
-      padding: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
-      animation: slideDown 0.3s ease-out;
-    }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 768px) { .details-container { grid-template-columns: 1fr; } }
 
     .info-list { display: flex; flex-direction: column; gap: 10px; }
     .info-item { font-size: 13px; color: var(--text-muted); }
@@ -205,8 +180,6 @@
     .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
     .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
     .q-item strong { color: var(--text-main); font-weight: 600; min-width: 30px; }
-
-    .empty-state { padding: 40px; text-align: center; color: #94A3B8; font-style: italic; }
   </style>
 </head>
 <body>
@@ -223,34 +196,33 @@
   <div class="section-title">Общая сводка <span>ключевые показатели</span></div>
   <div class="kpi-grid" id="kpi-grid"></div>
 
-  <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ -->
+  <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ (ТЕПЕРЬ АККОРДЕОН) -->
   <div class="section-title">Направления деятельности</div>
-  <div class="directions-grid" id="directions-grid"></div>
+  <div class="accordion-card">
+    <table class="accordion-table">
+      <thead>
+        <tr>
+          <th style="width: 40%;">Блок работы</th>
+          <th>Краткое описание</th>
+        </tr>
+      </thead>
+      <tbody id="directions-tbody">
+        <!-- Рендерится в JS -->
+      </tbody>
+    </table>
+  </div>
 
   <!-- ГРАФИКИ -->
   <div class="section-title">Аналитика</div>
   <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Статусы проектов</h3>
-      <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Направления проектов</h3>
-      <div class="chart-wrap"><canvas id="chart-direction"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Этапы (общая готовность)</h3>
-      <div class="chart-wrap"><canvas id="chart-stages"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Теги (кампусы)</h3>
-      <div class="chart-wrap"><canvas id="chart-tags"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Статусы проектов</h3><div class="chart-wrap"><canvas id="chart-status"></canvas></div></div>
+    <div class="chart-card"><h3>Направления проектов</h3><div class="chart-wrap"><canvas id="chart-direction"></canvas></div></div>
+    <div class="chart-card"><h3>Этапы (общая готовность)</h3><div class="chart-wrap"><canvas id="chart-stages"></canvas></div></div>
+    <div class="chart-card"><h3>Теги (кампусы)</h3><div class="chart-wrap"><canvas id="chart-tags"></canvas></div></div>
   </div>
 
   <!-- ТАБЛИЦА ПРОЕКТОВ -->
   <div class="section-title">Реестр проектов</div>
-  
   <div class="toolbar">
     <input type="text" id="search-input" placeholder="Поиск по названию..." style="width: 220px;" />
     <select id="status-filter">
@@ -268,7 +240,7 @@
     <button id="export-json">Экспорт JSON</button>
   </div>
 
-  <div class="projects-card">
+  <div class="accordion-card">
     <div class="projects-header">
       <div class="role-tabs" id="role-tabs">
         <button class="role-tab active" data-role="po">ПО</button>
@@ -283,7 +255,7 @@
       <span><span class="dot dot-pause"></span> На паузе / Ожидает</span>
     </div>
 
-    <table class="projects-table">
+    <table class="accordion-table">
       <thead>
         <tr>
           <th style="width: 30%;">Название проекта</th>
@@ -301,7 +273,6 @@
     let rawData = [];
     let globalKpi = {};
     let charts = {};
-    let currentRole = 'po';
     let filters = { search: '', status: 'all', onlySupport: false };
 
     function esc(s) {
@@ -329,7 +300,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ
+    // РЕНДЕР ГЛОБАЛЬНЫХ KPI
     // ============================================================
     function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
@@ -357,42 +328,102 @@
       `;
     }
 
+    // ============================================================
+    // РЕНДЕР НАПРАВЛЕНИЙ (АККОРДЕОН)
+    // ============================================================
     function renderDirections(kpi) {
-      const grid = document.getElementById('directions-grid');
-      grid.innerHTML = `
-        <div class="direction-card">
-          <div class="direction-icon">🎯</div>
-          <div class="direction-content">
-            <h4>Стратсессии</h4>
-            <div class="dir-value">${kpi.strategy_sessions || 0} / ${kpi.strategy_people || 0}</div>
-            <p>проведено сессий / участников</p>
-          </div>
-        </div>
-        <div class="direction-card green">
-          <div class="direction-icon">💻</div>
-          <div class="direction-content">
-            <h4>Цифровые сервисы</h4>
-            <div class="dir-value">${kpi.digital_services || 0}</div>
-            <p>разработано и внедрено</p>
-          </div>
-        </div>
-        <div class="direction-card orange">
-          <div class="direction-icon">📄</div>
-          <div class="direction-content">
-            <h4>Работа с ЛНА</h4>
-            <div class="dir-value">${kpi.lnas_verified || 0}</div>
-            <p>верифицировано на человекоцентричность</p>
-          </div>
-        </div>
-        <div class="direction-card rose">
-          <div class="direction-icon">🎓</div>
-          <div class="direction-content">
-            <h4>Обучение (ДПО)</h4>
-            <div class="dir-value">${kpi.trained_employees || 0}</div>
-            <p>сотрудников прошли обучение</p>
-          </div>
-        </div>
+      const tbody = document.getElementById('directions-tbody');
+      
+      tbody.innerHTML = `
+        <!-- Блок 1: Стратсессии -->
+        <tr class="acc-row" data-target="dir-1">
+          <td><div class="acc-title"><span class="arrow">▶</span> Стратсессии</div></td>
+          <td style="color:var(--text-muted)">Проведение стратегических сессий</td>
+        </tr>
+        <tr class="details-row" id="dir-1">
+          <td colspan="2" class="details-cell">
+            <div class="details-container">
+              <div class="dir-cards-grid">
+                <div class="dir-card">
+                  <div class="dir-icon">🎯</div>
+                  <div class="dir-content">
+                    <h4>Проведено сессий</h4>
+                    <div class="val">${kpi.strategy_sessions || 0}</div>
+                    <p>стратегических встреч</p>
+                  </div>
+                </div>
+                <div class="dir-card">
+                  <div class="dir-icon">👥</div>
+                  <div class="dir-content">
+                    <h4>Участники</h4>
+                    <div class="val">${kpi.strategy_people || 0}</div>
+                    <p>человек приняло участие</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Блок 2: Цифровые сервисы -->
+        <tr class="acc-row" data-target="dir-2">
+          <td><div class="acc-title"><span class="arrow">▶</span> Цифровые сервисы</div></td>
+          <td style="color:var(--text-muted)">Разработка и внедрение IT-решений</td>
+        </tr>
+        <tr class="details-row" id="dir-2">
+          <td colspan="2" class="details-cell">
+            <div class="details-container">
+              <div class="dir-cards-grid">
+                <div class="dir-card green">
+                  <div class="dir-icon">💻</div>
+                  <div class="dir-content">
+                    <h4>Разработано сервисов</h4>
+                    <div class="val">${kpi.digital_services || 0}</div>
+                    <p>с нуля</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Блок 3: ЛНА и Обучение -->
+        <tr class="acc-row" data-target="dir-3">
+          <td><div class="acc-title"><span class="arrow">▶</span> ЛНА и Обучение</div></td>
+          <td style="color:var(--text-muted)">Работа с документами и развитие персонала</td>
+        </tr>
+        <tr class="details-row" id="dir-3">
+          <td colspan="2" class="details-cell">
+            <div class="details-container">
+              <div class="dir-cards-grid">
+                <div class="dir-card orange">
+                  <div class="dir-icon">📄</div>
+                  <div class="dir-content">
+                    <h4>Верифицировано ЛНА</h4>
+                    <div class="val">${kpi.lnas_verified || 0}</div>
+                    <p>на человекоцентричность</p>
+                  </div>
+                </div>
+                <div class="dir-card rose">
+                  <div class="dir-icon">🎓</div>
+                  <div class="dir-content">
+                    <h4>Обучено сотрудников</h4>
+                    <div class="val">${kpi.trained_employees || 0}</div>
+                    <p>по программам ДПО</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
       `;
+
+      // Добавляем обработчики кликов
+      tbody.querySelectorAll('.acc-row').forEach(row => {
+        row.addEventListener('click', () => {
+          row.classList.toggle('open');
+        });
+      });
     }
 
     // ============================================================
@@ -401,19 +432,13 @@
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
-      const commonOpts = { 
-        responsive: true, maintainAspectRatio: false, 
-        plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } } } 
-      };
+      const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } } } };
 
       const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
       data.forEach(p => { if (statusCounts[p.status] !== undefined) statusCounts[p.status]++; });
       charts.status = new Chart(document.getElementById('chart-status'), {
         type: 'doughnut',
-        data: {
-          labels: ['Завершён', 'В работе', 'На паузе'],
-          datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E'], borderWidth: 0 }]
-        },
+        data: { labels: ['Завершён', 'В работе', 'На паузе'], datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E'], borderWidth: 0 }] },
         options: { ...commonOpts, cutout: '70%' }
       });
 
@@ -421,10 +446,7 @@
       data.forEach(p => { dirCounts[p.direction] = (dirCounts[p.direction] || 0) + 1; });
       charts.direction = new Chart(document.getElementById('chart-direction'), {
         type: 'bar',
-        data: {
-          labels: Object.keys(dirCounts),
-          datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }]
-        },
+        data: { labels: Object.keys(dirCounts), datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }] },
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
@@ -433,34 +455,25 @@
       const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
       charts.stages = new Chart(document.getElementById('chart-stages'), {
         type: 'bar',
-        data: {
-          labels: stageNames,
-          datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }]
-        },
+        data: { labels: stageNames, datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] },
         options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
       const tagCounts = {};
       data.forEach(p => {
         (p.tags || []).forEach(t => {
-          if (t.startsWith('кампус:')) {
-            const val = t.split(':')[1];
-            tagCounts[val] = (tagCounts[val] || 0) + 1;
-          }
+          if (t.startsWith('кампус:')) { const val = t.split(':')[1]; tagCounts[val] = (tagCounts[val] || 0) + 1; }
         });
       });
       charts.tags = new Chart(document.getElementById('chart-tags'), {
         type: 'bar',
-        data: {
-          labels: Object.keys(tagCounts),
-          datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }]
-        },
+        data: { labels: Object.keys(tagCounts), datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }] },
         options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
       });
     }
 
     // ============================================================
-    // РЕНДЕР ТАБЛИЦЫ
+    // РЕНДЕР ТАБЛИЦЫ ПРОЕКТОВ
     // ============================================================
     function renderTimeline(data) {
       const tbody = document.getElementById('projects-tbody');
@@ -491,8 +504,8 @@
         }
 
         const mainRow = `
-          <tr class="project-row" data-id="${p.id}">
-            <td><div class="project-title"><span class="arrow">▶</span>${esc(p.name)}</div></td>
+          <tr class="acc-row" data-id="${p.id}">
+            <td><div class="acc-title"><span class="arrow">▶</span>${esc(p.name)}</div></td>
             <td>${esc(p.direction)}</td>
             <td>${esc(p.owner)}</td>
             <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
@@ -521,7 +534,7 @@
         return mainRow + detailsRow;
       }).join('');
 
-      tbody.querySelectorAll('.project-row').forEach(row => {
+      tbody.querySelectorAll('.acc-row').forEach(row => {
         row.addEventListener('click', () => row.classList.toggle('open'));
       });
     }
@@ -533,7 +546,7 @@
     }
 
     // ============================================================
-    // ЭКСПОРТ И СОБЫТИЯ
+    // СОБЫТИЯ И ЭКСПОРТ
     // ============================================================
     document.getElementById('export-csv').addEventListener('click', () => {
       const data = getFilteredData();
@@ -563,40 +576,23 @@
       updateView();
     });
 
-    document.querySelectorAll('.role-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentRole = tab.dataset.role;
-      });
-    });
-
     // ============================================================
-    // ЗАГРУЗКА
+    // ЗАГРУЗКА ДАННЫХ
     // ============================================================
     fetch('./data_test.json')
       .then(res => { if (!res.ok) throw new Error('Ошибка загрузки'); return res.json(); })
       .then(json => {
         globalKpi = json.kpi || {};
         rawData = json.projects || [];
+        if (json.updated) document.getElementById('update-date').innerText = 'Данные от: ' + json.updated;
         
-        // Выводим дату обновления
-        if (json.updated) {
-          document.getElementById('update-date').innerText = 'Данные от: ' + json.updated;
-        }
-
-        // Рисуем глобальные блоки (они не зависят от фильтров)
         renderGlobalKpis(globalKpi);
-        renderDirections(globalKpi);
-        
-        // Рисуем фильтруемые блоки
+        renderDirections(globalKpi); // Рисуем аккордеон
         updateView();
       })
       .catch(err => {
         console.error(err);
-        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;">
-          <h2>Ошибка загрузки данных</h2><p>Проверьте файл data_test.json</p>
-        </div>`;
+        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;"><h2>Ошибка загрузки</h2><p>Проверьте data_test.json</p></div>`;
       });
   </script>
 </body>
