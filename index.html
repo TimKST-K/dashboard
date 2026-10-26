@@ -536,9 +536,9 @@
     // ============================================================
     // ЗАГРУЗКА ДАННЫХ
     // ============================================================
-    fetch('./data.json')
+    fetch('./data_test.json')
       .then(res => {
-        if (!res.ok) throw new Error('Ошибка загрузки data.json');
+        if (!res.ok) throw new Error('Ошибка загрузки data_test.json');
         return res.json();
       })
       .then(json => {
@@ -549,7 +549,7 @@
         console.error(err);
         document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#B45309;">
           <h2>Ошибка загрузки данных</h2>
-          <p>Убедитесь, что файл <code>data.json</code> лежит рядом с <code>index.html</code> и сервер запущен.</p>
+          <p>Убедитесь, что файл <code>data_test.json</code> лежит рядом с <code>index.html</code> и сервер запущен.</p>
         </div>`;
       });
   </script>
