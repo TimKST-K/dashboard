@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Дашборд — Оптимизация процессов</title>
+  <title>Центр трансформации процессов университета</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* ===== БАЗА И ПЕРЕМЕННЫЕ ===== */
@@ -37,7 +37,7 @@
 
     /* ===== ШАПКА ===== */
     .header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;}
-    .header h1 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
+    .header h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
     .header .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
     .header .date { font-size: 12px; color: var(--text-muted); }
 
@@ -109,10 +109,36 @@
     .dir-content .val { font-size: 22px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
     .dir-content p { font-size: 11px; color: var(--text-muted); }
 
-    /* Спец. сетка для артефактов (более компактная) */
-    .artifacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
-    .artifact-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-    .artifact-card .val { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    /* ===== НОВАЯ ВЕРСТКА ДЛЯ ПРОЕКТОВ ОПТИМИЗАЦИИ ===== */
+    .optimization-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr; /* Слева 1 часть, справа 2 части */
+      gap: 24px;
+    }
+    @media (max-width: 768px) {
+      .optimization-layout { grid-template-columns: 1fr; } /* На мобилках в одну колонку */
+    }
+
+    /* Левая колонка (Большие карточки) */
+    .opt-totals { display: flex; flex-direction: column; gap: 16px; }
+    .opt-total-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px 20px;
+      display: flex; align-items: center; gap: 16px; flex: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .opt-total-card .dir-icon { width: 48px; height: 48px; font-size: 24px; }
+    .opt-total-card .dir-content h4 { font-size: 14px; }
+    .opt-total-card .dir-content .val { font-size: 32px; margin-bottom: 4px; }
+
+    /* Правая колонка (Артефакты) */
+    .opt-artifacts { display: flex; flex-direction: column; }
+    .artifacts-title { font-weight: 600; font-size: 13px; color: var(--text-main); margin-bottom: 12px; }
+    .artifacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; flex: 1; }
+    .artifact-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px 12px;
+      display: flex; flex-direction: column; justify-content: center; text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .artifact-card .val { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
     .artifact-card h4 { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.3; }
 
     /* ===== ТУЛБАР ===== */
@@ -192,7 +218,7 @@
 
   <div class="header">
     <div>
-      <h1>Охват работы Процессного офиса</h1>
+      <h1>Центр трансформации процессов университета</h1>
       <p class="subtitle">Дашборд проектов и оптимизации процессов</p>
     </div>
     <div class="date" id="update-date"></div>
@@ -339,62 +365,71 @@
       const tbody = document.getElementById('directions-tbody');
       
       tbody.innerHTML = `
-        <!-- Блок 1: Проекты по оптимизации (НОВЫЙ) -->
+        <!-- Блок 1: Проекты по оптимизации -->
         <tr class="acc-row" data-target="dir-opt">
           <td><div class="acc-title"><span class="arrow">▶</span> Проекты по оптимизации процессов</div></td>
-          <td style="color:var(--text-muted)">Включая обеспечивающие процессы</td>
+          <td style="color:var(--text-muted)">Комплексная работа по улучшению процессов (включая обеспечивающие)</td>
         </tr>
         <tr class="details-row" id="dir-opt">
           <td colspan="2" class="details-cell">
             <div class="details-container">
-              <!-- Верхние 2 карточки -->
-              <div class="dir-cards-grid">
-                <div class="dir-card blue">
-                  <div class="dir-icon">📊</div>
-                  <div class="dir-content">
-                    <h4>Всего проектов</h4>
-                    <div class="val">${kpi.projects_total || 0}</div>
-                    <p>в работе и завершено</p>
-                  </div>
-                </div>
-                <div class="dir-card">
-                  <div class="dir-icon">⚙️</div>
-                  <div class="dir-content">
-                    <h4>Обеспечивающие</h4>
-                    <div class="val">${kpi.projects_support || 0}</div>
-                    <p>из общего числа</p>
-                  </div>
-                </div>
-              </div>
               
-              <!-- Сетка артефактов -->
-              <div style="margin-top: 16px; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: var(--text-main);">Разработанные артефакты и результаты:</div>
-              <div class="artifacts-grid">
-                <div class="artifact-card">
-                  <div class="val">${kpi.interviews_count || 0}</div>
-                  <h4>Глубинных интервью</h4>
+              <!-- НОВАЯ ВЕРСТКА: Слева итоги, справа артефакты -->
+              <div class="optimization-layout">
+                
+                <!-- Левая колонка: Крупные цифры -->
+                <div class="opt-totals">
+                  <div class="opt-total-card blue">
+                    <div class="dir-icon">📊</div>
+                    <div class="dir-content">
+                      <h4>Всего проектов</h4>
+                      <div class="val">${kpi.projects_total || 0}</div>
+                      <p>в работе и завершено</p>
+                    </div>
+                  </div>
+                  <div class="opt-total-card">
+                    <div class="dir-icon">⚙️</div>
+                    <div class="dir-content">
+                      <h4>Обеспечивающие</h4>
+                      <div class="val">${kpi.projects_support || 0}</div>
+                      <p>из общего числа проектов</p>
+                    </div>
+                  </div>
                 </div>
-                <div class="artifact-card">
-                  <div class="val">${kpi.bpmn_count || 0}</div>
-                  <h4>Схем BPMN</h4>
+
+                <!-- Правая колонка: Сетка артефактов -->
+                <div class="opt-artifacts">
+                  <div class="artifacts-title">Разработанные артефакты и результаты:</div>
+                  <div class="artifacts-grid">
+                    <div class="artifact-card">
+                      <div class="val">${kpi.interviews_count || 0}</div>
+                      <h4>Глубинных интервью</h4>
+                    </div>
+                    <div class="artifact-card">
+                      <div class="val">${kpi.bpmn_count || 0}</div>
+                      <h4>Схем BPMN</h4>
+                    </div>
+                    <div class="artifact-card">
+                      <div class="val">${kpi.cjm_count || 0}</div>
+                      <h4>Карт CJM</h4>
+                    </div>
+                    <div class="artifact-card">
+                      <div class="val">${kpi.tz_digital_count || 0}</div>
+                      <h4>ТЗ для цифровых решений</h4>
+                    </div>
+                    <div class="artifact-card">
+                      <div class="val">${kpi.problems_count || 0}</div>
+                      <h4>Выявлено проблем</h4>
+                    </div>
+                    <div class="artifact-card">
+                      <div class="val">${kpi.proposals_count || 0}</div>
+                      <h4>Предложений по решению</h4>
+                    </div>
+                  </div>
                 </div>
-                <div class="artifact-card">
-                  <div class="val">${kpi.cjm_count || 0}</div>
-                  <h4>Карт CJM</h4>
-                </div>
-                <div class="artifact-card">
-                  <div class="val">${kpi.tz_digital_count || 0}</div>
-                  <h4>ТЗ для цифровых решений</h4>
-                </div>
-                <div class="artifact-card">
-                  <div class="val">${kpi.problems_count || 0}</div>
-                  <h4>Выявлено проблем</h4>
-                </div>
-                <div class="artifact-card">
-                  <div class="val">${kpi.proposals_count || 0}</div>
-                  <h4>Предложений по решению</h4>
-                </div>
+                
               </div>
+
             </div>
           </td>
         </tr>
@@ -402,7 +437,7 @@
         <!-- Блок 2: Стратсессии -->
         <tr class="acc-row" data-target="dir-1">
           <td><div class="acc-title"><span class="arrow">▶</span> Стратсессии</div></td>
-          <td style="color:var(--text-muted)">Проведение стратегических сессий</td>
+          <td style="color:var(--text-muted)">Организация и проведение стратегических сессий с вовлечением сотрудников</td>
         </tr>
         <tr class="details-row" id="dir-1">
           <td colspan="2" class="details-cell">
@@ -432,7 +467,7 @@
         <!-- Блок 3: Цифровые сервисы -->
         <tr class="acc-row" data-target="dir-2">
           <td><div class="acc-title"><span class="arrow">▶</span> Цифровые сервисы</div></td>
-          <td style="color:var(--text-muted)">Разработка и внедрение IT-решений</td>
+          <td style="color:var(--text-muted)">Разработка и внедрение IT-решений и сервисов с нуля</td>
         </tr>
         <tr class="details-row" id="dir-2">
           <td colspan="2" class="details-cell">
@@ -454,7 +489,7 @@
         <!-- Блок 4: ЛНА и Обучение -->
         <tr class="acc-row" data-target="dir-3">
           <td><div class="acc-title"><span class="arrow">▶</span> ЛНА и Обучение</div></td>
-          <td style="color:var(--text-muted)">Работа с документами и развитие персонала</td>
+          <td style="color:var(--text-muted)">Работа с нормативными документами и развитие персонала</td>
         </tr>
         <tr class="details-row" id="dir-3">
           <td colspan="2" class="details-cell">
