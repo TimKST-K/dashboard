@@ -46,61 +46,36 @@
     .section-title span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 
     /* ===== ГЛОБАЛЬНЫЕ KPI ===== */
-    .kpi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 24px;
-    }
-    .kpi-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--primary); opacity: 0.8;
-    }
+    .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); opacity: 0.8; }
     .kpi-card.green::before { background: var(--accent-green); }
     .kpi-card.blue::before { background: var(--accent-blue); }
     .kpi-card.orange::before { background: var(--accent-orange); }
-    
     .kpi-card .label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 8px; }
     .kpi-card .value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
     .kpi-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
 
-    /* ===== ОБЩИЙ СТИЛЬ ДЛЯ ТАБЛИЦ-АККОРДЕОНОВ ===== */
-    .accordion-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
-    }
+    /* ===== АККОРДЕОН (Направления) ===== */
+    .accordion-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden; }
     .accordion-table { width: 100%; border-collapse: collapse; }
-    .accordion-table th {
-      text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600;
-      text-transform: uppercase; color: var(--text-muted); background: #F8FAFC;
-      border-bottom: 1px solid var(--border); letter-spacing: 0.5px;
-    }
+    .accordion-table th { text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); background: #F8FAFC; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
     .accordion-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    
     .acc-row { transition: background 0.2s; cursor: pointer; }
     .acc-row:hover { background: #F8FAFC; }
     .acc-row.open { background: #F8FAFC; border-bottom: none; }
-    
     .acc-title { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .acc-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
     .acc-row.open .arrow { transform: rotate(90deg); }
-
     .details-row { display: none; background: #FFFFFF; }
     .acc-row.open + .details-row { display: table-row; }
     .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
     .details-container { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 20px; animation: slideDown 0.3s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ===== ВНУТРЕННИЕ КАРТОЧКИ ===== */
     .dir-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .dir-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
-      display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-    }
+    .dir-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
     .dir-icon { width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
     .dir-card.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
     .dir-card.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
@@ -109,61 +84,19 @@
     .dir-content .val { font-size: 22px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
     .dir-content p { font-size: 11px; color: var(--text-muted); }
 
-    /* ===== НОВАЯ ВЕРСТКА ДЛЯ ПРОЕКТОВ ОПТИМИЗАЦИИ ===== */
-    .optimization-layout {
-      display: grid;
-      grid-template-columns: 1fr 2fr; /* Слева 1 часть, справа 2 части */
-      gap: 24px;
-    }
-    @media (max-width: 768px) {
-      .optimization-layout { grid-template-columns: 1fr; } /* На мобилках в одну колонку */
-    }
-
-    /* Левая колонка (Большие карточки) */
+    .optimization-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; }
+    @media (max-width: 768px) { .optimization-layout { grid-template-columns: 1fr; } }
     .opt-totals { display: flex; flex-direction: column; gap: 16px; }
-    .opt-total-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px 20px;
-      display: flex; align-items: center; gap: 16px; flex: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-    }
+    .opt-total-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px 20px; display: flex; align-items: center; gap: 16px; flex: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
     .opt-total-card .dir-icon { width: 48px; height: 48px; font-size: 24px; }
     .opt-total-card .dir-content h4 { font-size: 14px; }
     .opt-total-card .dir-content .val { font-size: 32px; margin-bottom: 4px; }
-
-    /* Правая колонка (Артефакты) */
     .opt-artifacts { display: flex; flex-direction: column; }
     .artifacts-title { font-weight: 600; font-size: 13px; color: var(--text-main); margin-bottom: 12px; }
     .artifacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; flex: 1; }
-    .artifact-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px 12px;
-      display: flex; flex-direction: column; justify-content: center; text-align: center;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-    }
+    .artifact-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px 12px; display: flex; flex-direction: column; justify-content: center; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
     .artifact-card .val { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
     .artifact-card h4 { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.3; }
-
-    /* ===== ТУЛБАР ===== */
-    .toolbar {
-      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 12px 16px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
-    }
-    .toolbar input[type="text"], .toolbar select {
-      font-size: 13px; padding: 8px 12px; border: 1px solid var(--border);
-      border-radius: 8px; background: #F8FAFC; color: var(--text-main); outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .toolbar input[type="text"]:focus, .toolbar select:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); background: #fff;
-    }
-    .toolbar .spacer { flex: 1; }
-    .toolbar button {
-      padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px;
-      cursor: pointer; border: 1px solid var(--border); background: var(--surface);
-      color: var(--text-main); transition: all 0.2s;
-    }
-    .toolbar button:hover { background: #F1F5F9; border-color: #CBD5E1; }
-    .toolbar button.primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2); }
-    .toolbar button.primary:hover { background: var(--primary-hover); }
 
     /* ===== ГРАФИКИ ===== */
     .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -172,26 +105,57 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== ТАБЛИЦА ПРОЕКТОВ ===== */
-    .projects-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
-      background: #F8FAFC;
-    }
-    .projects-header h3 { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    /* ===== ТАЙМЛАЙН (НОВЫЙ БЛОК) ===== */
+    .timeline-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto; }
     
-    .role-tabs { display: flex; gap: 4px; background: #E2E8F0; padding: 4px; border-radius: 10px; }
-    .role-tab { padding: 6px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--text-muted); border: none; background: transparent; transition: all 0.2s; }
-    .role-tab.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+    /* Шапка таймлайна */
+    .tl-header { display: flex; border-bottom: 1px solid var(--border); background: #F8FAFC; min-width: 1000px; }
+    .tl-header-col { flex: 1; padding: 16px 10px; text-align: center; border-right: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text-main); }
+    .tl-header-col:last-child { border-right: none; }
+    .tl-header-col.title { flex: 0 0 250px; text-align: left; padding-left: 20px; font-size: 14px; }
+    .tl-header-sub { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-top: 4px; line-height: 1.2; }
+    
+    /* Легенда таймлайна */
+    .tl-legend { display: flex; gap: 20px; padding: 12px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; min-width: 1000px; }
+    .tl-legend span { display: flex; align-items: center; gap: 6px; }
+    .star-icon { font-size: 16px; }
 
-    .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border); }
-    .legend span { display: flex; align-items: center; gap: 6px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .dot-done { background: var(--accent-green); }
-    .dot-wip { background: var(--accent-blue); }
-    .dot-pause { background: var(--accent-rose); }
+    /* Основная таблица */
+    .tl-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+    .tl-table td { padding: 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    
+    .tl-row { transition: background 0.2s; cursor: pointer; }
+    .tl-row:hover { background: #F8FAFC; }
+    .tl-row.open { background: #F8FAFC; border-bottom: none; }
+    
+    .tl-project-name { width: 250px; padding: 20px !important; font-weight: 600; font-size: 14px; color: var(--text-main); border-right: 1px solid var(--border); }
+    
+    /* Ячейки с линиями */
+    .tl-stage-cell { height: 70px; position: relative; border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .tl-stage-cell:last-child { border-right: none; }
+    
+    /* Горизонтальная линия */
+    .tl-track { position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: #E2E8F0; transform: translateY(-50%); z-index: 1; }
+    
+    /* Точки на линии (пройденные этапы) */
+    .tl-dot { width: 12px; height: 12px; border-radius: 50%; background: #94A3B8; position: relative; z-index: 2; }
+    .tl-dot.done { background: #1E3A8A; } /* Темно-синий как на картинке */
+    
+    /* Звездочки */
+    .tl-star { position: relative; z-index: 3; font-size: 32px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+    .tl-star.owner { color: #EF4444; } /* Красная */
+    .tl-star.joint { color: #F59E0B; } /* Желтая */
+    .tl-star.po { color: #10B981; } /* Зеленая */
+    
+    /* Подписи под кварталами */
+    .tl-q-label { font-size: 10px; color: var(--text-muted); position: absolute; bottom: 10px; left: 10px; white-space: nowrap; }
 
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+    /* Раскрывашка */
+    .tl-details-row { display: none; background: #FFFFFF; }
+    .tl-row.open + .tl-details-row { display: table-row; }
+    .tl-details-cell { padding: 0 20px 20px 20px !important; border-bottom: 1px solid var(--border); }
+    
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
     .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
     .badge-pause { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
@@ -200,14 +164,6 @@
     .info-item { font-size: 13px; color: var(--text-muted); }
     .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
     
-    .stages-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .stage-box { flex: 1; min-width: 120px; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #fff; }
-    .stage-box.done { border-color: #A7F3D0; background: #ECFDF5; }
-    .stage-box.wip { border-color: #BFDBFE; background: #EFF6FF; }
-    .stage-box.pause { border-color: #FECDD3; background: #FFF1F2; }
-    .stage-box h4 { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
-    .stage-box p { font-size: 13px; font-weight: 600; color: var(--text-main); }
-
     .quarters-block { margin-top: 16px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
     .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
     .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
@@ -251,121 +207,69 @@
     <div class="chart-card"><h3>Теги (кампусы)</h3><div class="chart-wrap"><canvas id="chart-tags"></canvas></div></div>
   </div>
 
-  <!-- ТАБЛИЦА ПРОЕКТОВ -->
-  <div class="section-title">Реестр проектов</div>
-  <div class="toolbar">
-    <input type="text" id="search-input" placeholder="Поиск по названию..." style="width: 220px;" />
-    <select id="status-filter">
-      <option value="all">Все статусы</option>
-      <option value="в работе">В работе</option>
-      <option value="завершён">Завершён</option>
-      <option value="на паузе">На паузе</option>
-    </select>
-    <label style="font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted);">
-      <input type="checkbox" id="only-support" /> Только обеспечивающие
-    </label>
-    <button id="reset-btn">Сбросить</button>
-    <div class="spacer"></div>
-    <button id="export-csv" class="primary">Экспорт CSV</button>
-    <button id="export-json">Экспорт JSON</button>
+  <!-- ТАЙМЛАЙН ПРОЕКТОВ -->
+  <div class="section-title">Таймлайн проектов</div>
+  
+  <div class="timeline-card">
+    <!-- Легенда -->
+    <div class="tl-legend">
+      <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
+      <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
+      <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
+    </div>
+
+    <!-- Шапка -->
+    <div class="tl-header">
+      <div class="tl-header-col title">Название проекта</div>
+      <div class="tl-header-col">Анализ<div class="tl-header-sub">ЛНА, интервью, CJM</div></div>
+      <div class="tl-header-col">Текущее состояние<div class="tl-header-sub">Проблематика, первопричины</div></div>
+      <div class="tl-header-col">Целевое состояние<div class="tl-header-sub">Предложения, план</div></div>
+      <div class="tl-header-col">Принятие решения<div class="tl-header-sub">Владельцем</div></div>
+      <div class="tl-header-col" style="flex: 2;">Внедрение изменений<div class="tl-header-sub">По кварталам</div></div>
+    </div>
+
+    <!-- Тело таймлайна -->
+    <table class="tl-table">
+      <tbody id="timeline-tbody"></tbody>
+    </table>
   </div>
 
-  <div class="accordion-card">
-    <div class="projects-header">
-      <div class="role-tabs" id="role-tabs">
-        <button class="role-tab active" data-role="po">ПО</button>
-        <button class="role-tab" data-role="owner">Владелец</button>
-        <button class="role-tab" data-role="cb">ЦБ</button>
-      </div>
-    </div>
-    
-    <div class="legend">
-      <span><span class="dot dot-done"></span> Завершено</span>
-      <span><span class="dot dot-wip"></span> В работе</span>
-      <span><span class="dot dot-pause"></span> На паузе / Ожидает</span>
-    </div>
-
-    <table class="accordion-table">
-      <thead>
-        <tr>
-          <th style="width: 30%;">Название проекта</th>
-          <th>Направление</th>
-          <th>Владелец</th>
-          <th>Период</th>
-          <th>Статус</th>
-        </tr>
-      </thead>
-      <tbody id="projects-tbody"></tbody>
-    </table>
+  <!-- Экспорт -->
+  <div style="display:flex; justify-content:flex-end; gap:12px; margin-bottom: 24px;">
+    <button id="export-csv" style="padding:8px 16px; font-size:13px; border-radius:8px; cursor:pointer; border:1px solid var(--primary); background:var(--primary); color:#fff;">Экспорт CSV</button>
+    <button id="export-json" style="padding:8px 16px; font-size:13px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--text-main);">Экспорт JSON</button>
   </div>
 
   <script>
     let rawData = [];
     let globalKpi = {};
     let charts = {};
-    let filters = { search: '', status: 'all', onlySupport: false };
 
     function esc(s) {
       if (s == null) return '';
       return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
-    function getStatusClass(status) {
-      if (status === 'завершён') return 'done';
-      if (status === 'в работе') return 'wip';
-      if (status === 'на паузе' || status === 'ожидает') return 'pause';
-      return '';
-    }
-
     function getFilteredData() {
-      return rawData.filter(p => {
-        if (filters.search) {
-          const q = filters.search.toLowerCase();
-          if (!(p.name || '').toLowerCase().includes(q) && !(p.owner || '').toLowerCase().includes(q)) return false;
-        }
-        if (filters.status !== 'all' && p.status !== filters.status) return false;
-        if (filters.onlySupport && p.direction !== 'обеспечивающий') return false;
-        return true;
-      });
+      return rawData; // Фильтры временно отключены для чистоты таймлайна
     }
 
     // ============================================================
-    // РЕНДЕР ГЛОБАЛЬНЫХ KPI
+    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ
     // ============================================================
     function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
       grid.innerHTML = `
-        <div class="kpi-card blue">
-          <div class="label">Процессы в реестре</div>
-          <div class="value">${kpi.processes_total || '—'}</div>
-          <div class="sub">охват процессов</div>
-        </div>
-        <div class="kpi-card">
-          <div class="label">Подразделения</div>
-          <div class="value">${kpi.departments_count || '—'}</div>
-          <div class="sub">вовлечено в работу</div>
-        </div>
-        <div class="kpi-card green">
-          <div class="label">Кампусы</div>
-          <div class="value">${kpi.campuses_count || '—'}</div>
-          <div class="sub">география проектов</div>
-        </div>
-        <div class="kpi-card orange">
-          <div class="label">Участники</div>
-          <div class="value">${kpi.people_count || '—'}</div>
-          <div class="sub">человек задействовано</div>
-        </div>
+        <div class="kpi-card blue"><div class="label">Процессы в реестре</div><div class="value">${kpi.processes_total || '—'}</div><div class="sub">охват процессов</div></div>
+        <div class="kpi-card"><div class="label">Подразделения</div><div class="value">${kpi.departments_count || '—'}</div><div class="sub">вовлечено в работу</div></div>
+        <div class="kpi-card green"><div class="label">Кампусы</div><div class="value">${kpi.campuses_count || '—'}</div><div class="sub">география проектов</div></div>
+        <div class="kpi-card orange"><div class="label">Участники</div><div class="value">${kpi.people_count || '—'}</div><div class="sub">человек задействовано</div></div>
       `;
     }
 
-    // ============================================================
-    // РЕНДЕР НАПРАВЛЕНИЙ (АККОРДЕОН)
-    // ============================================================
     function renderDirections(kpi) {
       const tbody = document.getElementById('directions-tbody');
-      
       tbody.innerHTML = `
-        <!-- Блок 1: Проекты по оптимизации -->
         <tr class="acc-row" data-target="dir-opt">
           <td><div class="acc-title"><span class="arrow">▶</span> Проекты по оптимизации процессов</div></td>
           <td style="color:var(--text-muted)">Комплексная работа по улучшению процессов (включая обеспечивающие)</td>
@@ -373,68 +277,26 @@
         <tr class="details-row" id="dir-opt">
           <td colspan="2" class="details-cell">
             <div class="details-container">
-              
-              <!-- НОВАЯ ВЕРСТКА: Слева итоги, справа артефакты -->
               <div class="optimization-layout">
-                
-                <!-- Левая колонка: Крупные цифры -->
                 <div class="opt-totals">
-                  <div class="opt-total-card blue">
-                    <div class="dir-icon">📊</div>
-                    <div class="dir-content">
-                      <h4>Всего проектов</h4>
-                      <div class="val">${kpi.projects_total || 0}</div>
-                      <p>в работе и завершено</p>
-                    </div>
-                  </div>
-                  <div class="opt-total-card">
-                    <div class="dir-icon">⚙️</div>
-                    <div class="dir-content">
-                      <h4>Обеспечивающие</h4>
-                      <div class="val">${kpi.projects_support || 0}</div>
-                      <p>из общего числа проектов</p>
-                    </div>
-                  </div>
+                  <div class="opt-total-card blue"><div class="dir-icon">📊</div><div class="dir-content"><h4>Всего проектов</h4><div class="val">${kpi.projects_total || 0}</div><p>в работе и завершено</p></div></div>
+                  <div class="opt-total-card"><div class="dir-icon">⚙️</div><div class="dir-content"><h4>Обеспечивающие</h4><div class="val">${kpi.projects_support || 0}</div><p>из общего числа проектов</p></div></div>
                 </div>
-
-                <!-- Правая колонка: Сетка артефактов -->
                 <div class="opt-artifacts">
                   <div class="artifacts-title">Разработанные артефакты и результаты:</div>
                   <div class="artifacts-grid">
-                    <div class="artifact-card">
-                      <div class="val">${kpi.interviews_count || 0}</div>
-                      <h4>Глубинных интервью</h4>
-                    </div>
-                    <div class="artifact-card">
-                      <div class="val">${kpi.bpmn_count || 0}</div>
-                      <h4>Схем BPMN</h4>
-                    </div>
-                    <div class="artifact-card">
-                      <div class="val">${kpi.cjm_count || 0}</div>
-                      <h4>Карт CJM</h4>
-                    </div>
-                    <div class="artifact-card">
-                      <div class="val">${kpi.tz_digital_count || 0}</div>
-                      <h4>ТЗ для цифровых решений</h4>
-                    </div>
-                    <div class="artifact-card">
-                      <div class="val">${kpi.problems_count || 0}</div>
-                      <h4>Выявлено проблем</h4>
-                    </div>
-                    <div class="artifact-card">
-                      <div class="val">${kpi.proposals_count || 0}</div>
-                      <h4>Предложений по решению</h4>
-                    </div>
+                    <div class="artifact-card"><div class="val">${kpi.interviews_count || 0}</div><h4>Глубинных интервью</h4></div>
+                    <div class="artifact-card"><div class="val">${kpi.bpmn_count || 0}</div><h4>Схем BPMN</h4></div>
+                    <div class="artifact-card"><div class="val">${kpi.cjm_count || 0}</div><h4>Карт CJM</h4></div>
+                    <div class="artifact-card"><div class="val">${kpi.tz_digital_count || 0}</div><h4>ТЗ для цифровых решений</h4></div>
+                    <div class="artifact-card"><div class="val">${kpi.problems_count || 0}</div><h4>Выявлено проблем</h4></div>
+                    <div class="artifact-card"><div class="val">${kpi.proposals_count || 0}</div><h4>Предложений по решению</h4></div>
                   </div>
                 </div>
-                
               </div>
-
             </div>
           </td>
         </tr>
-
-        <!-- Блок 2: Стратсессии -->
         <tr class="acc-row" data-target="dir-1">
           <td><div class="acc-title"><span class="arrow">▶</span> Стратсессии</div></td>
           <td style="color:var(--text-muted)">Организация и проведение стратегических сессий с вовлечением сотрудников</td>
@@ -443,28 +305,12 @@
           <td colspan="2" class="details-cell">
             <div class="details-container">
               <div class="dir-cards-grid">
-                <div class="dir-card">
-                  <div class="dir-icon">🎯</div>
-                  <div class="dir-content">
-                    <h4>Проведено сессий</h4>
-                    <div class="val">${kpi.strategy_sessions || 0}</div>
-                    <p>стратегических встреч</p>
-                  </div>
-                </div>
-                <div class="dir-card">
-                  <div class="dir-icon">👥</div>
-                  <div class="dir-content">
-                    <h4>Участники</h4>
-                    <div class="val">${kpi.strategy_people || 0}</div>
-                    <p>человек приняло участие</p>
-                  </div>
-                </div>
+                <div class="dir-card"><div class="dir-icon">🎯</div><div class="dir-content"><h4>Проведено сессий</h4><div class="val">${kpi.strategy_sessions || 0}</div><p>стратегических встреч</p></div></div>
+                <div class="dir-card"><div class="dir-icon">👥</div><div class="dir-content"><h4>Участники</h4><div class="val">${kpi.strategy_people || 0}</div><p>человек приняло участие</p></div></div>
               </div>
             </div>
           </td>
         </tr>
-
-        <!-- Блок 3: Цифровые сервисы -->
         <tr class="acc-row" data-target="dir-2">
           <td><div class="acc-title"><span class="arrow">▶</span> Цифровые сервисы</div></td>
           <td style="color:var(--text-muted)">Разработка и внедрение IT-решений и сервисов с нуля</td>
@@ -473,20 +319,11 @@
           <td colspan="2" class="details-cell">
             <div class="details-container">
               <div class="dir-cards-grid">
-                <div class="dir-card green">
-                  <div class="dir-icon">💻</div>
-                  <div class="dir-content">
-                    <h4>Разработано сервисов</h4>
-                    <div class="val">${kpi.digital_services || 0}</div>
-                    <p>с нуля</p>
-                  </div>
-                </div>
+                <div class="dir-card green"><div class="dir-icon">💻</div><div class="dir-content"><h4>Разработано сервисов</h4><div class="val">${kpi.digital_services || 0}</div><p>с нуля</p></div></div>
               </div>
             </div>
           </td>
         </tr>
-
-        <!-- Блок 4: ЛНА и Обучение -->
         <tr class="acc-row" data-target="dir-3">
           <td><div class="acc-title"><span class="arrow">▶</span> ЛНА и Обучение</div></td>
           <td style="color:var(--text-muted)">Работа с нормативными документами и развитие персонала</td>
@@ -495,32 +332,15 @@
           <td colspan="2" class="details-cell">
             <div class="details-container">
               <div class="dir-cards-grid">
-                <div class="dir-card orange">
-                  <div class="dir-icon">📄</div>
-                  <div class="dir-content">
-                    <h4>Верифицировано ЛНА</h4>
-                    <div class="val">${kpi.lnas_verified || 0}</div>
-                    <p>на человекоцентричность</p>
-                  </div>
-                </div>
-                <div class="dir-card rose">
-                  <div class="dir-icon">🎓</div>
-                  <div class="dir-content">
-                    <h4>Обучено сотрудников</h4>
-                    <div class="val">${kpi.trained_employees || 0}</div>
-                    <p>по программам ДПО</p>
-                  </div>
-                </div>
+                <div class="dir-card orange"><div class="dir-icon">📄</div><div class="dir-content"><h4>Верифицировано ЛНА</h4><div class="val">${kpi.lnas_verified || 0}</div><p>на человекоцентричность</p></div></div>
+                <div class="dir-card rose"><div class="dir-icon">🎓</div><div class="dir-content"><h4>Обучено сотрудников</h4><div class="val">${kpi.trained_employees || 0}</div><p>по программам ДПО</p></div></div>
               </div>
             </div>
           </td>
         </tr>
       `;
-
       tbody.querySelectorAll('.acc-row').forEach(row => {
-        row.addEventListener('click', () => {
-          row.classList.toggle('open');
-        });
+        row.addEventListener('click', () => row.classList.toggle('open'));
       });
     }
 
@@ -535,145 +355,144 @@
       const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0 };
       data.forEach(p => { if (statusCounts[p.status] !== undefined) statusCounts[p.status]++; });
       charts.status = new Chart(document.getElementById('chart-status'), {
-        type: 'doughnut',
-        data: { labels: ['Завершён', 'В работе', 'На паузе'], datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E'], borderWidth: 0 }] },
-        options: { ...commonOpts, cutout: '70%' }
+        type: 'doughnut', data: { labels: ['Завершён', 'В работе', 'На паузе'], datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E'], borderWidth: 0 }] }, options: { ...commonOpts, cutout: '70%' }
       });
 
       const dirCounts = {};
       data.forEach(p => { dirCounts[p.direction] = (dirCounts[p.direction] || 0) + 1; });
       charts.direction = new Chart(document.getElementById('chart-direction'), {
-        type: 'bar',
-        data: { labels: Object.keys(dirCounts), datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }] },
-        options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        type: 'bar', data: { labels: Object.keys(dirCounts), datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
       const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
       const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
       const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
       charts.stages = new Chart(document.getElementById('chart-stages'), {
-        type: 'bar',
-        data: { labels: stageNames, datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] },
-        options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        type: 'bar', data: { labels: stageNames, datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
       const tagCounts = {};
       data.forEach(p => {
-        (p.tags || []).forEach(t => {
-          if (t.startsWith('кампус:')) { const val = t.split(':')[1]; tagCounts[val] = (tagCounts[val] || 0) + 1; }
-        });
+        (p.tags || []).forEach(t => { if (t.startsWith('кампус:')) { const val = t.split(':')[1]; tagCounts[val] = (tagCounts[val] || 0) + 1; } });
       });
       charts.tags = new Chart(document.getElementById('chart-tags'), {
-        type: 'bar',
-        data: { labels: Object.keys(tagCounts), datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }] },
-        options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
+        type: 'bar', data: { labels: Object.keys(tagCounts), datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }] }, options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
       });
     }
 
     // ============================================================
-    // РЕНДЕР ТАБЛИЦЫ ПРОЕКТОВ
+    // РЕНДЕР ТАЙМЛАЙНА
     // ============================================================
     function renderTimeline(data) {
-      const tbody = document.getElementById('projects-tbody');
+      const tbody = document.getElementById('timeline-tbody');
       if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94A3B8;">Нет проектов</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#94A3B8;">Нет проектов</td></tr>';
         return;
       }
 
+      const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
+      
       tbody.innerHTML = data.map(p => {
-        let badgeCls = p.status === 'завершён' ? 'badge-done' : p.status === 'в работе' ? 'badge-wip' : 'badge-pause';
-        const stagesHtml = p.stages ? Object.entries(p.stages).map(([key, st]) => {
-          if (key === 'implementation') return '';
-          const titles = { analysis: 'Анализ', current_state: 'Текущее', target_state: 'Целевое', decision: 'Решение' };
-          const cls = getStatusClass(st.status);
-          return `<div class="stage-box ${cls}"><h4>${titles[key] || key}</h4><p>${esc(st.status)}</p></div>`;
-        }).join('') : '';
+        // Определяем индекс текущего этапа (0-4)
+        let currentStageIndex = stageKeys.indexOf(p.current_stage);
+        if (currentStageIndex === -1) currentStageIndex = 0; // По умолчанию первый
 
-        let implHtml = '';
-        if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
-          const q = p.stages.implementation.quarters;
-          const qKeys = Object.keys(q);
-          if (qKeys.length) {
-            implHtml = `<div class="quarters-block">
-              <h4>Внедрение по кварталам</h4>
-              ${qKeys.map(k => `<div class="q-item"><strong>${k}:</strong> <span>${esc(q[k].join(', '))}</span></div>`).join('')}
-            </div>`;
+        // Генерируем ячейки с линиями и точками
+        let cellsHtml = '';
+        stageKeys.forEach((stage, index) => {
+          let isPast = index < currentStageIndex;
+          let isCurrent = index === currentStageIndex;
+          
+          // Для этапа "Внедрение" делаем 4 колонки (кварталы)
+          if (stage === 'implementation') {
+            for (let q = 1; q <= 4; q++) {
+              let qPast = isPast || (isCurrent && q < 2); // Допустим, 1 квартал пройден, если мы на внедрении
+              let qCurrent = isCurrent && q === 2; // Допустим, мы во 2 квартале
+              
+              let dotClass = qPast ? 'done' : '';
+              let starHtml = qCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
+              
+              // Если проект на этапе внедрения, берем данные по кварталам
+              let qLabel = '';
+              if (p.stages && p.stages.implementation && p.stages.implementation.quarters && p.stages.implementation.quarters['Q'+q]) {
+                 let qText = p.stages.implementation.quarters['Q'+q].join(', ');
+                 qLabel = `<div class="tl-q-label" title="${esc(qText)}">${qPast ? 'Сделано' : 'План'}: ${esc(qText.substring(0, 15))}...</div>`;
+              }
+
+              cellsHtml += `
+                <div class="tl-stage-cell" style="flex: 1; border-right: 1px solid var(--border);">
+                  <div class="tl-track"></div>
+                  ${!qCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
+                  ${starHtml}
+                  ${qLabel}
+                </div>
+              `;
+            }
+          } else {
+            // Обычные этапы
+            let starHtml = isCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
+            let dotClass = isPast ? 'done' : '';
+            
+            cellsHtml += `
+              <div class="tl-stage-cell">
+                <div class="tl-track"></div>
+                ${!isCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
+                ${starHtml}
+              </div>
+            `;
           }
-        }
+        });
 
+        // Основная строка
         const mainRow = `
-          <tr class="acc-row" data-id="${p.id}">
-            <td><div class="acc-title"><span class="arrow">▶</span>${esc(p.name)}</div></td>
-            <td>${esc(p.direction)}</td>
-            <td>${esc(p.owner)}</td>
-            <td>${esc(p.start || '—')} — ${esc(p.end || '—')}</td>
-            <td><span class="badge ${badgeCls}">${esc(p.status)}</span></td>
+          <tr class="tl-row">
+            <td class="tl-project-name">${esc(p.name)}</td>
+            <td colspan="5" style="padding: 0;">
+              <div style="display: flex; width: 100%;">
+                ${cellsHtml}
+              </div>
+            </td>
           </tr>
         `;
 
+        // Скрытая строка с деталями
         const detailsRow = `
-          <tr class="details-row">
-            <td colspan="5" class="details-cell">
+          <tr class="tl-details-row">
+            <td colspan="6" class="tl-details-cell">
               <div class="details-container">
-                <div class="info-list">
-                  <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
-                  <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
-                  <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
-                  <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
-                </div>
-                <div>
-                  <div class="stages-container">${stagesHtml}</div>
-                  ${implHtml}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                  <div class="info-list">
+                    <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
+                    <div class="info-item"><strong>Направление:</strong> ${esc(p.direction)}</div>
+                    <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
+                    <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
+                    <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
+                    <div class="info-item"><strong>Статус:</strong> ${esc(p.status)} (${esc(p.start)} — ${esc(p.end)})</div>
+                  </div>
+                  <div>
+                    <div style="font-weight:600; margin-bottom:12px; font-size:14px;">Внедрение по кварталам</div>
+                    ${p.stages && p.stages.implementation && p.stages.implementation.quarters ? 
+                      Object.keys(p.stages.implementation.quarters).map(k => `<div class="q-item"><strong>${k}:</strong> <span>${esc(p.stages.implementation.quarters[k].join(', '))}</span></div>`).join('') 
+                      : '<div style="color:var(--text-muted); font-size:13px;">Данные по кварталам пока отсутствуют</div>'}
+                  </div>
                 </div>
               </div>
             </td>
           </tr>
         `;
+
         return mainRow + detailsRow;
       }).join('');
 
-      tbody.querySelectorAll('.acc-row').forEach(row => {
+      // Обработчики кликов
+      tbody.querySelectorAll('.tl-row').forEach(row => {
         row.addEventListener('click', () => row.classList.toggle('open'));
       });
     }
 
-    function updateView() {
-      const filtered = getFilteredData();
-      renderCharts(filtered);
-      renderTimeline(filtered);
-    }
-
     // ============================================================
-    // СОБЫТИЯ И ЭКСПОРТ
+    // ЗАГРУЗКА
     // ============================================================
-    document.getElementById('export-csv').addEventListener('click', () => {
-      const data = getFilteredData();
-      if (!data.length) return alert('Нет данных');
-      const headers = ['ID', 'Название', 'Направление', 'Владелец', 'Статус', 'Начало', 'Окончание'];
-      const rows = data.map(p => [p.id, p.name, p.direction, p.owner, p.status, p.start, p.end].map(v => `"${String(v||'').replace(/"/g, '""')}"`).join(';'));
-      const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.csv'; a.click();
-    });
-
-    document.getElementById('export-json').addEventListener('click', () => {
-      const data = getFilteredData();
-      if (!data.length) return alert('Нет данных');
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.json'; a.click();
-    });
-
-    document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; updateView(); });
-    document.getElementById('status-filter').addEventListener('change', e => { filters.status = e.target.value; updateView(); });
-    document.getElementById('only-support').addEventListener('change', e => { filters.onlySupport = e.target.checked; updateView(); });
-    document.getElementById('reset-btn').addEventListener('click', () => {
-      document.getElementById('search-input').value = '';
-      document.getElementById('status-filter').value = 'all';
-      document.getElementById('only-support').checked = false;
-      filters = { search: '', status: 'all', onlySupport: false };
-      updateView();
-    });
-
     fetch('./data_test.json')
       .then(res => { if (!res.ok) throw new Error('Ошибка загрузки'); return res.json(); })
       .then(json => {
@@ -683,12 +502,27 @@
         
         renderGlobalKpis(globalKpi);
         renderDirections(globalKpi);
-        updateView();
+        renderCharts(rawData);
+        renderTimeline(rawData);
       })
       .catch(err => {
         console.error(err);
         document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;"><h2>Ошибка загрузки</h2><p>Проверьте data_test.json</p></div>`;
       });
+
+    // Экспорт
+    document.getElementById('export-csv').addEventListener('click', () => {
+      const headers = ['ID', 'Название', 'Направление', 'Владелец', 'Статус', 'Начало', 'Окончание'];
+      const rows = rawData.map(p => [p.id, p.name, p.direction, p.owner, p.status, p.start, p.end].map(v => `"${String(v||'').replace(/"/g, '""')}"`).join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.csv'; a.click();
+    });
+
+    document.getElementById('export-json').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(rawData, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'projects.json'; a.click();
+    });
   </script>
 </body>
 </html>
