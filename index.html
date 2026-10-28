@@ -205,8 +205,12 @@
     .lg-ring { background: #fff; border: 2px solid #3B82F6; }
     .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; font-weight: 700; }
     .chart-card.wide { grid-column: 1 / -1; }
-    .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text-muted); margin: -6px 0 12px; }
+    .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-muted); margin: -6px 0 12px; align-items: center; }
     .chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .chart-legend .dm { display: inline-block; width: 9px; height: 9px; transform: rotate(45deg); margin: 0 7px 0 3px; vertical-align: 0; border: 2px solid #1E3A8A; background: #fff; border-radius: 1px; }
+    .chart-legend .dm.cur { background: #F59E0B; border-color: #fff; box-shadow: 0 0 0 1px #F59E0B; }
+    .chart-legend .dm.plan { border: 2px dashed #94A3B8; }
+    .chart-legend .ok { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: #10B981; color: #fff; font-size: 10px; line-height: 14px; text-align: center; font-weight: 700; margin-right: 6px; }
     .tl-legend span { display: flex; align-items: center; gap: 6px; }
     .star-icon { font-size: 16px; }
   </style>
@@ -247,12 +251,16 @@
     <div class="chart-card"><h3>Этапы (общая готовность)</h3><div class="chart-wrap"><canvas id="chart-stages"></canvas></div></div>
     <div class="chart-card"><h3>Теги (кампусы)</h3><div class="chart-wrap"><canvas id="chart-tags"></canvas></div></div>
     <div class="chart-card wide">
-      <h3>Сроки проектов (диаграмма Ганта)</h3>
+      <h3>Сроки проектов и внедрение изменений (диаграмма Ганта)</h3>
       <div class="chart-legend">
         <span><i style="background:#3B82F6"></i>В работе</span>
         <span><i style="background:#10B981"></i>Завершён</span>
         <span><i style="background:#6366F1"></i>Внедрено</span>
         <span><i style="background:#F43F5E"></i>На паузе</span>
+        <span><span class="dm"></span>Квартал внедрения (завершён)</span>
+        <span><span class="dm cur"></span>Идёт сейчас</span>
+        <span><span class="dm plan"></span>Запланирован</span>
+        <span><span class="ok">✓</span>Изменение внедрено</span>
         <span style="color:#F43F5E">┆ линия «Сегодня»</span>
       </div>
       <div class="chart-wrap" id="gantt-wrap"><canvas id="chart-gantt"></canvas></div>
@@ -442,33 +450,93 @@
     function renderExtraCharts(data) {
       const DAY = 86400000;
       const statusColor = { 'в работе': '#3B82F6', 'завершён': '#10B981', 'внедрено': '#6366F1', 'на паузе': '#F43F5E' };
+      const qMark = { done: '●', current: '★', planned: '○' };
+
+      // Кварталы внедрения проекта с датами: t - середина квартала, end - конец квартала
+      function implQuarters(p) {
+        const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
+        const dep = isDeployedStatus(p);
+        const list = [];
+        Object.keys(q).sort().forEach(k => {
+          const v = q[k];
+          const items = Array.isArray(v) ? v : ((v && v.items) || []);
+          let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
+          if (dep) st = 'done';
+          const m = String(k).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
+          const item = { key: k, label: qLabel(k), items, st, t: null, end: null };
+          if (m) { const y = +m[1], n = +m[2]; item.t = Date.UTC(y, (n - 1) * 3 + 1, 15); item.end = Date.UTC(y, n * 3, 0); }
+          list.push(item);
+        });
+        return list;
+      }
+
       const withDates = data
         .map(p => ({ p, s: Date.parse(p.start), e: Date.parse(p.end) }))
         .filter(x => !isNaN(x.s) && !isNaN(x.e) && x.e >= x.s)
-        .sort((a, b) => a.s - b.s);
+        .sort((a, b) => a.s - b.s)
+        .map(x => {
+          const quarters = implQuarters(x.p);
+          let deployedAt = null;
+          if (isDeployedStatus(x.p)) {
+            const ends = quarters.filter(q => q.end).map(q => q.end);
+            deployedAt = ends.length ? Math.max(...ends) : x.e;
+          }
+          return { ...x, quarters, deployedAt };
+        });
+
       const gWrap = document.getElementById('gantt-wrap');
       if (!withDates.length) {
         gWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет проектов с датами начала и окончания</div>';
       } else {
-        gWrap.style.height = Math.max(220, 80 + withDates.length * 40) + 'px';
+        gWrap.style.height = Math.max(240, 90 + withDates.length * 44) + 'px';
         const now = Date.now();
-        const xMin = Math.min(...withDates.map(x => x.s), now) - 30 * DAY;
-        const xMax = Math.max(...withDates.map(x => x.e), now) + 30 * DAY;
-        const todayLine = {
-          id: 'todayLine',
+        const allT = withDates.flatMap(x => [x.s, x.e, ...x.quarters.filter(q => q.t).map(q => q.t), ...(x.deployedAt ? [x.deployedAt] : [])]);
+        const xMin = Math.min(...allT, now) - 30 * DAY;
+        const xMax = Math.max(...allT, now) + 30 * DAY;
+
+        const overlay = {
+          id: 'ganttOverlay',
           afterDatasetsDraw(chart) {
             const { ctx, chartArea, scales } = chart;
-            if (now < scales.x.min || now > scales.x.max) return;
-            const px = scales.x.getPixelForValue(now);
+            const X = scales.x, Y = scales.y;
             ctx.save();
-            ctx.strokeStyle = '#F43F5E'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-            ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom); ctx.stroke();
-            ctx.setLineDash([]); ctx.fillStyle = '#F43F5E'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText('Сегодня', px, chartArea.top - 6);
+            // линия «Сегодня»
+            if (now >= X.min && now <= X.max) {
+              const px = X.getPixelForValue(now);
+              ctx.strokeStyle = '#F43F5E'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+              ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom); ctx.stroke();
+              ctx.setLineDash([]); ctx.fillStyle = '#F43F5E'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+              ctx.fillText('Сегодня', px, chartArea.top - 6);
+            }
+            // отметки внедрения по кварталам и итоговая «Внедрено»
+            withDates.forEach((row, i) => {
+              const y = Y.getPixelForValue(i);
+              row.quarters.forEach(q => {
+                if (q.t == null || q.t < X.min || q.t > X.max) return;
+                const x = X.getPixelForValue(q.t), r = 7;
+                ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath();
+                ctx.lineWidth = 2;
+                if (q.st === 'done') { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#1E3A8A'; ctx.setLineDash([]); }
+                else if (q.st === 'current') { ctx.fillStyle = '#F59E0B'; ctx.strokeStyle = '#FFFFFF'; ctx.setLineDash([]); }
+                else { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#64748B'; ctx.setLineDash([3, 2]); }
+                ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+              });
+              if (row.deployedAt != null && row.deployedAt >= X.min && row.deployedAt <= X.max) {
+                const x = X.getPixelForValue(row.deployedAt), h = 9;
+                ctx.fillStyle = '#10B981'; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(x - h, y - h, h * 2, h * 2, 4); else ctx.rect(x - h, y - h, h * 2, h * 2);
+                ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('✓', x, y + 1);
+              }
+            });
             ctx.restore();
           }
         };
+
         const fmtDate = v => new Date(v).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit', timeZone: 'UTC' });
+        const fmtFull = v => new Date(v).toLocaleDateString('ru-RU', { timeZone: 'UTC' });
         charts.gantt = new Chart(document.getElementById('chart-gantt'), {
           type: 'bar',
           data: {
@@ -487,7 +555,10 @@
               tooltip: { callbacks: {
                 label: ctx => {
                   const x = withDates[ctx.dataIndex];
-                  return `${x.p.start} — ${x.p.end} (${x.p.status})`;
+                  const lines = [`${x.p.start} — ${x.p.end} (${x.p.status})`];
+                  x.quarters.forEach(q => lines.push(`${qMark[q.st]} ${q.label}: ${q.items.join(', ') || '—'}`));
+                  if (x.deployedAt != null) lines.push(`✓ Внедрено: ${fmtFull(x.deployedAt)}`);
+                  return lines;
                 }
               } }
             },
@@ -509,21 +580,14 @@
               y: { grid: { display: false }, ticks: { callback: function (v) { const t = this.getLabelForValue(v); return t.length > 30 ? t.slice(0, 29) + '…' : t; } } }
             }
           },
-          plugins: [todayLine]
+          plugins: [overlay]
         });
       }
 
+      // ---- Внедрение по кварталам ----
       const byQ = {};
       data.forEach(p => {
-        const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
-        const dep = isDeployedStatus(p);
-        Object.keys(q).forEach(k => {
-          const v = q[k];
-          const items = Array.isArray(v) ? v : ((v && v.items) || []);
-          let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
-          if (dep) st = 'done';
-          (byQ[k] = byQ[k] || []).push({ name: p.name, items, st });
-        });
+        implQuarters(p).forEach(q => { (byQ[q.key] = byQ[q.key] || []).push({ name: p.name, items: q.items, st: q.st }); });
       });
       const qKeys = Object.keys(byQ).sort();
       const qWrap = document.getElementById('quarters-wrap');
@@ -531,7 +595,6 @@
         qWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет данных по кварталам внедрения</div>';
       } else {
         const countBy = st => qKeys.map(k => byQ[k].filter(e => e.st === st).length);
-        const mark = { done: '●', current: '★', planned: '○' };
         charts.quarters = new Chart(document.getElementById('chart-quarters'), {
           type: 'bar',
           data: {
@@ -547,7 +610,7 @@
             plugins: {
               legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
               tooltip: { callbacks: {
-                afterBody: items => byQ[qKeys[items[0].dataIndex]].map(e => `${mark[e.st]} ${e.name}: ${e.items.join(', ') || '—'}`)
+                afterBody: items => byQ[qKeys[items[0].dataIndex]].map(e => `${qMark[e.st]} ${e.name}: ${e.items.join(', ') || '—'}`)
               } }
             },
             scales: {
