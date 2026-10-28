@@ -207,9 +207,9 @@
     .chart-card.wide { grid-column: 1 / -1; }
     .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-muted); margin: -6px 0 12px; align-items: center; }
     .chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
-    .chart-legend .dm { display: inline-block; width: 9px; height: 9px; transform: rotate(45deg); margin: 0 7px 0 3px; vertical-align: 0; border: 2px solid #1E3A8A; background: #fff; border-radius: 1px; }
-    .chart-legend .dm.cur { background: #F59E0B; border-color: #fff; box-shadow: 0 0 0 1px #F59E0B; }
-    .chart-legend .dm.plan { border: 2px dashed #94A3B8; }
+    .chart-legend .dm { display: inline-block; width: 7px; height: 7px; transform: rotate(45deg); margin: 0 7px 0 3px; vertical-align: 0; border: 1.5px solid #1E3A8A; background: #fff; }
+    .chart-legend .dm.cur { background: #F59E0B; border-color: #F59E0B; }
+    .chart-legend .dm.plan { border: 1.5px dashed #64748B; }
     .chart-legend .ok { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: #10B981; color: #fff; font-size: 10px; line-height: 14px; text-align: center; font-weight: 700; margin-right: 6px; }
     .tl-legend span { display: flex; align-items: center; gap: 6px; }
     .star-icon { font-size: 16px; }
@@ -451,8 +451,11 @@
       const DAY = 86400000;
       const statusColor = { 'в работе': '#3B82F6', 'завершён': '#10B981', 'внедрено': '#6366F1', 'на паузе': '#F43F5E' };
       const qMark = { done: '●', current: '★', planned: '○' };
+      const fmtShort = v => new Date(v).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'UTC' });
+      const fmtFull = v => new Date(v).toLocaleDateString('ru-RU', { timeZone: 'UTC' });
+      const fmtDate = v => new Date(v).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit', timeZone: 'UTC' });
 
-      // Кварталы внедрения проекта с датами: t - середина квартала, end - конец квартала
+      // Кварталы внедрения: t - дата отметки (конец квартала)
       function implQuarters(p) {
         const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
         const dep = isDeployedStatus(p);
@@ -463,8 +466,8 @@
           let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
           if (dep) st = 'done';
           const m = String(k).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
-          const item = { key: k, label: qLabel(k), items, st, t: null, end: null };
-          if (m) { const y = +m[1], n = +m[2]; item.t = Date.UTC(y, (n - 1) * 3 + 1, 15); item.end = Date.UTC(y, n * 3, 0); }
+          const item = { key: k, label: qLabel(k), items, st, t: null };
+          if (m) { const y = +m[1], n = +m[2]; item.t = Date.UTC(y, n * 3, 0); }
           list.push(item);
         });
         return list;
@@ -478,7 +481,7 @@
           const quarters = implQuarters(x.p);
           let deployedAt = null;
           if (isDeployedStatus(x.p)) {
-            const ends = quarters.filter(q => q.end).map(q => q.end);
+            const ends = quarters.filter(q => q.t).map(q => q.t);
             deployedAt = ends.length ? Math.max(...ends) : x.e;
           }
           return { ...x, quarters, deployedAt };
@@ -488,7 +491,7 @@
       if (!withDates.length) {
         gWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет проектов с датами начала и окончания</div>';
       } else {
-        gWrap.style.height = Math.max(240, 90 + withDates.length * 44) + 'px';
+        gWrap.style.height = Math.max(260, 110 + withDates.length * 44) + 'px';
         const now = Date.now();
         const allT = withDates.flatMap(x => [x.s, x.e, ...x.quarters.filter(q => q.t).map(q => q.t), ...(x.deployedAt ? [x.deployedAt] : [])]);
         const xMin = Math.min(...allT, now) - 30 * DAY;
@@ -499,44 +502,78 @@
           afterDatasetsDraw(chart) {
             const { ctx, chartArea, scales } = chart;
             const X = scales.x, Y = scales.y;
+            const R = 4.5;            // размер ромбика
+            const H = 7;              // половина стороны квадрата «Внедрено»
+            const axisY = chartArea.bottom;
+            const marks = [];         // {t, x}
             ctx.save();
-            // линия «Сегодня»
+
             if (now >= X.min && now <= X.max) {
               const px = X.getPixelForValue(now);
               ctx.strokeStyle = '#F43F5E'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-              ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, axisY); ctx.stroke();
               ctx.setLineDash([]); ctx.fillStyle = '#F43F5E'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
               ctx.fillText('Сегодня', px, chartArea.top - 6);
             }
-            // отметки внедрения по кварталам и итоговая «Внедрено»
+
+            // 1) тонкие пунктирные линии от отметки вниз, к оси
+            const points = [];
             withDates.forEach((row, i) => {
               const y = Y.getPixelForValue(i);
               row.quarters.forEach(q => {
                 if (q.t == null || q.t < X.min || q.t > X.max) return;
-                const x = X.getPixelForValue(q.t), r = 7;
-                ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath();
-                ctx.lineWidth = 2;
-                if (q.st === 'done') { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#1E3A8A'; ctx.setLineDash([]); }
-                else if (q.st === 'current') { ctx.fillStyle = '#F59E0B'; ctx.strokeStyle = '#FFFFFF'; ctx.setLineDash([]); }
-                else { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#64748B'; ctx.setLineDash([3, 2]); }
-                ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+                points.push({ y, t: q.t, st: q.st, check: false, skip: row.deployedAt === q.t });
               });
               if (row.deployedAt != null && row.deployedAt >= X.min && row.deployedAt <= X.max) {
-                const x = X.getPixelForValue(row.deployedAt), h = 9;
-                ctx.fillStyle = '#10B981'; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
-                ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(x - h, y - h, h * 2, h * 2, 4); else ctx.rect(x - h, y - h, h * 2, h * 2);
-                ctx.fill(); ctx.stroke();
-                ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText('✓', x, y + 1);
+                points.push({ y, t: row.deployedAt, st: 'done', check: true });
               }
+            });
+            ctx.strokeStyle = 'rgba(51,65,85,0.45)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+            points.forEach(pt => {
+              if (pt.skip) return;
+              const x = X.getPixelForValue(pt.t);
+              ctx.beginPath(); ctx.moveTo(x, pt.y + (pt.check ? H : R)); ctx.lineTo(x, axisY); ctx.stroke();
+              marks.push({ t: pt.t, x });
+            });
+            ctx.setLineDash([]);
+
+            // 2) отметки
+            points.forEach(pt => {
+              if (pt.skip) return;
+              const x = X.getPixelForValue(pt.t), y = pt.y;
+              if (pt.check) {
+                ctx.fillStyle = '#10B981'; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(x - H, y - H, H * 2, H * 2, 3); else ctx.rect(x - H, y - H, H * 2, H * 2);
+                ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('✓', x, y + 0.5);
+                return;
+              }
+              ctx.beginPath(); ctx.moveTo(x, y - R); ctx.lineTo(x + R, y); ctx.lineTo(x, y + R); ctx.lineTo(x - R, y); ctx.closePath();
+              ctx.lineWidth = 1.5;
+              if (pt.st === 'done') { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#1E3A8A'; ctx.setLineDash([]); }
+              else if (pt.st === 'current') { ctx.fillStyle = '#F59E0B'; ctx.strokeStyle = '#FFFFFF'; ctx.setLineDash([]); }
+              else { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#64748B'; ctx.setLineDash([2, 2]); }
+              ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+            });
+
+            // 3) на оси X: маленький маркер и дата внедрения (без наложений)
+            const uniq = [...new Map(marks.map(m => [m.t, m])).values()].sort((a, b) => a.x - b.x);
+            ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
+            let lastX = -Infinity;
+            uniq.forEach(m => {
+              ctx.fillStyle = '#1E3A8A';
+              ctx.beginPath(); ctx.moveTo(m.x, axisY + 1); ctx.lineTo(m.x - 3, axisY + 6); ctx.lineTo(m.x + 3, axisY + 6); ctx.closePath(); ctx.fill();
+              if (m.x - lastX < 50) return;
+              ctx.font = 'bold 10px sans-serif';
+              ctx.fillText(fmtShort(m.t), m.x, X.bottom + 14);
+              lastX = m.x;
             });
             ctx.restore();
           }
         };
 
-        const fmtDate = v => new Date(v).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit', timeZone: 'UTC' });
-        const fmtFull = v => new Date(v).toLocaleDateString('ru-RU', { timeZone: 'UTC' });
         charts.gantt = new Chart(document.getElementById('chart-gantt'), {
           type: 'bar',
           data: {
@@ -549,14 +586,14 @@
           },
           options: {
             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-            layout: { padding: { top: 16 } },
+            layout: { padding: { top: 16, bottom: 22 } },
             plugins: {
               legend: { display: false },
               tooltip: { callbacks: {
                 label: ctx => {
                   const x = withDates[ctx.dataIndex];
                   const lines = [`${x.p.start} — ${x.p.end} (${x.p.status})`];
-                  x.quarters.forEach(q => lines.push(`${qMark[q.st]} ${q.label}: ${q.items.join(', ') || '—'}`));
+                  x.quarters.forEach(q => lines.push(`${qMark[q.st]} ${q.label}${q.t ? ' (до ' + fmtFull(q.t) + ')' : ''}: ${q.items.join(', ') || '—'}`));
                   if (x.deployedAt != null) lines.push(`✓ Внедрено: ${fmtFull(x.deployedAt)}`);
                   return lines;
                 }
