@@ -502,14 +502,13 @@
         const xMin = Math.min(...allT, now) - 30 * DAY;
         const xMax = Math.max(...allT, now) + 30 * DAY;
 
-        // ---- Наведение на отметку: показываем только её квартал ----
+        // ---- Подсказка только над отметками (ромбик / галочка) ----
         const canvas = document.getElementById('chart-gantt');
         const old = document.getElementById('marker-tip'); if (old) old.remove();
         const tip = document.createElement('div');
         tip.id = 'marker-tip'; tip.className = 'marker-tip';
         gWrap.appendChild(tip);
         const markers = [];          // заполняется при отрисовке: {x, y, r, html}
-        let hoverMarker = null;
 
         function findMarker(mx, my) {
           let best = null, bestD = Infinity;
@@ -519,13 +518,12 @@
           });
           return best;
         }
-        // слушатель добавляется ДО создания графика, чтобы флаг успевал обновиться раньше подсказки Chart.js
         canvas.addEventListener('mousemove', e => {
           const rect = canvas.getBoundingClientRect();
           const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-          hoverMarker = findMarker(mx, my);
-          if (hoverMarker) {
-            tip.innerHTML = hoverMarker.html;
+          const hit = findMarker(mx, my);
+          if (hit) {
+            tip.innerHTML = hit.html;
             tip.style.display = 'block';
             const w = tip.offsetWidth, h = tip.offsetHeight;
             let left = mx + 14, top = my - h - 10;
@@ -539,7 +537,7 @@
             canvas.style.cursor = '';
           }
         });
-        canvas.addEventListener('mouseleave', () => { hoverMarker = null; tip.style.display = 'none'; canvas.style.cursor = ''; });
+        canvas.addEventListener('mouseleave', () => { tip.style.display = 'none'; canvas.style.cursor = ''; });
 
         const tipHtml = (title, sub, project, items) =>
           `<b>${esc(title)}</b><div class="mt-sub">${esc(sub)}</div><div class="mt-sub">${esc(project)}</div>` +
@@ -584,7 +582,6 @@
               }
             });
 
-            // 1) тонкие пунктирные линии от отметки вниз, к оси
             ctx.strokeStyle = 'rgba(51,65,85,0.45)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
             points.forEach(pt => {
               if (pt.skip) return;
@@ -594,7 +591,6 @@
             });
             ctx.setLineDash([]);
 
-            // 2) отметки + область наведения
             points.forEach(pt => {
               if (pt.skip) return;
               const x = X.getPixelForValue(pt.t), y = pt.y;
@@ -616,7 +612,6 @@
               ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
             });
 
-            // 3) на оси X: маркер и дата внедрения (без наложений)
             const uniq = [...new Map(marks.map(m => [m.t, m])).values()].sort((a, b) => a.x - b.x);
             ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
             let lastX = -Infinity;
@@ -645,19 +640,9 @@
           options: {
             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
             layout: { padding: { top: 16, bottom: 22 } },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                filter: () => !hoverMarker,   // над отметкой стандартная подсказка не нужна
-                callbacks: {
-                  label: ctx => {
-                    const x = withDates[ctx.dataIndex];
-                    return `${x.p.start} — ${x.p.end} (${x.p.status})`;
-                  },
-                  footer: items => withDates[items[0].dataIndex].quarters.length ? 'Наведите на ромбик — детали квартала' : ''
-                }
-              }
-            },
+            // стандартная подсказка Chart.js отключена: информация только над ромбиками
+            events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
             scales: {
               x: {
                 type: 'linear', min: xMin, max: xMax,
