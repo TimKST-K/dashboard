@@ -60,9 +60,9 @@
       "stages": {
         "analysis": { "status": "завершён" },
         "current_state": { "status": "завершён" },
-        "target_state": { "status": "в работе" },
-        "decision": { "status": "ожидает" },
-        "implementation": { "status": "не начат", "quarters": {} }
+        "target_state": { "status": "завершён" },
+        "decision": { "status": "завершён" },
+        "implementation": { "status": "в работе", "quarters": { "Q3": ["пилот"], "Q4": ["запуск"] } }
       }
     },
     {
