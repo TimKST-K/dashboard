@@ -149,19 +149,16 @@
     /* Линия */
     .tl-line {
       position: absolute; top: 50%; left: 0; width: 100%; height: 4px;
-      background: #CBD5E1; transform: translateY(-50%); z-index: 1;
+      background: #60A5FA; transform: translateY(-50%); z-index: 1;
     }
     
     /* Точки */
     .tl-dot {
-      width: 12px; height: 12px; border-radius: 50%; background: #CBD5E1;
+      width: 14px; height: 14px; border-radius: 50%; background: #60A5FA;
       position: relative; z-index: 2; border: 2px solid var(--surface);
-      box-shadow: 0 0 0 1px #CBD5E1;
+      box-shadow: 0 0 0 1px #3B82F6;
     }
-    .tl-dot.done { background: #1E3A8A; box-shadow: 0 0 0 1px #1E3A8A; }
-
-    /* Проект на паузе: звезда приглушена */
-    .tl-star.paused { opacity: 0.45; filter: grayscale(0.6) drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+    .tl-dot.done { background: #1D4ED8; box-shadow: 0 0 0 1px #1D4ED8; }
     
     /* Звезды */
     .tl-star {
@@ -417,7 +414,6 @@
 
       // Состояния 6 колонок: done | current | todo. Источник истины - stages[...].status
       function getStageStates(p) {
-        // Проект со статусом "внедрено": все этапы пройдены, звезда в последней колонке
         if (DEPLOYED_STATUSES.includes(String(p.status || '').trim().toLowerCase()) || p.current_stage === 'deployed') {
           return Array.from({ length: TOTAL }, (_, i) => i < TOTAL - 1 ? 'done' : 'current');
         }
@@ -437,13 +433,12 @@
           if (idx === -1 || states[idx] === 'done') idx = states.indexOf('todo');
           states[idx] = 'current';
         }
-        states.push('todo'); // "Внедрено" ещё не достигнуто
+        states.push('todo');
         return states;
       }
 
       container.innerHTML = data.map(p => {
         const states = getStageStates(p);
-        const paused = p.status === 'на паузе';
 
         let cellsHtml = '';
         for (let i = 0; i < TOTAL; i++) {
@@ -451,7 +446,7 @@
           let marker;
           if (state === 'current') {
             const role = ['owner', 'joint', 'po'].includes(p.stage_role) ? p.stage_role : 'po';
-            marker = `<div class="tl-star ${role}${paused ? ' paused' : ''}">★</div>`;
+            marker = `<div class="tl-star ${role}">★</div>`;
           } else {
             marker = `<div class="tl-dot ${state === 'done' ? 'done' : ''}"></div>`;
           }
