@@ -105,56 +105,99 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== ТАЙМЛАЙН (НОВЫЙ БЛОК) ===== */
-    .timeline-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto; }
+    /* ===== НОВЫЙ ТАЙМЛАЙН (CSS GRID) ===== */
+    .timeline-container {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto; padding-bottom: 10px;
+    }
     
-    /* Шапка таймлайна */
-    .tl-header { display: flex; border-bottom: 1px solid var(--border); background: #F8FAFC; min-width: 1000px; }
-    .tl-header-col { flex: 1; padding: 16px 10px; text-align: center; border-right: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text-main); }
-    .tl-header-col:last-child { border-right: none; }
-    .tl-header-col.title { flex: 0 0 250px; text-align: left; padding-left: 20px; font-size: 14px; }
-    .tl-header-sub { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-top: 4px; line-height: 1.2; }
-    
-    /* Легенда таймлайна */
-    .tl-legend { display: flex; gap: 20px; padding: 12px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; min-width: 1000px; }
-    .tl-legend span { display: flex; align-items: center; gap: 6px; }
-    .star-icon { font-size: 16px; }
+    /* Жесткая сетка: Название(250px) + 4 этапа(1fr) + 4 квартала(0.5fr) */
+    .tl-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr 1fr 1fr 1fr 0.5fr 0.5fr 0.5fr 0.5fr;
+      min-width: 1100px; /* Чтобы не сжималось на мелких экранах */
+    }
 
-    /* Основная таблица */
-    .tl-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-    .tl-table td { padding: 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    /* Шапка */
+    .tl-header-cell {
+      padding: 16px 10px; text-align: center; border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
+      background: #F8FAFC; display: flex; flex-direction: column; justify-content: center;
+    }
+    .tl-header-cell:last-child { border-right: none; }
+    .tl-header-cell.title { text-align: left; padding-left: 20px; font-weight: 600; font-size: 13px; }
+    .tl-header-cell h4 { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .tl-header-cell p { font-size: 10px; color: var(--text-muted); }
     
-    .tl-row { transition: background 0.2s; cursor: pointer; }
-    .tl-row:hover { background: #F8FAFC; }
-    .tl-row.open { background: #F8FAFC; border-bottom: none; }
+    /* Спец. шапка для внедрения (объединяем визуально) */
+    .tl-header-impl {
+      grid-column: span 4; border-bottom: 1px solid var(--border); background: #F8FAFC;
+      padding: 8px; text-align: center; font-weight: 700; font-size: 12px; color: var(--text-main);
+      border-right: 1px solid var(--border);
+    }
+    .tl-header-q {
+      padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted);
+      background: #F8FAFC; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border);
+    }
+    .tl-header-q:last-child { border-right: none; }
+
+    /* Строки проектов */
+    .tl-row-wrapper { display: contents; cursor: pointer; }
+    .tl-row-wrapper:hover .tl-name-cell, 
+    .tl-row-wrapper:hover .tl-track-cell { background: #F8FAFC; }
     
-    .tl-project-name { width: 250px; padding: 20px !important; font-weight: 600; font-size: 14px; color: var(--text-main); border-right: 1px solid var(--border); }
+    .tl-name-cell {
+      padding: 20px; font-weight: 600; font-size: 14px; color: var(--text-main);
+      border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+      display: flex; align-items: center; transition: background 0.2s;
+    }
     
-    /* Ячейки с линиями */
-    .tl-stage-cell { height: 70px; position: relative; border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
-    .tl-stage-cell:last-child { border-right: none; }
+    .tl-track-cell {
+      border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+      position: relative; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s; height: 80px;
+    }
+    .tl-track-cell:last-child { border-right: none; }
+
+    /* Линия */
+    .tl-line {
+      position: absolute; top: 50%; left: 0; width: 100%; height: 3px;
+      background: #CBD5E1; transform: translateY(-50%); z-index: 1;
+    }
     
-    /* Горизонтальная линия */
-    .tl-track { position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: #E2E8F0; transform: translateY(-50%); z-index: 1; }
+    /* Точки */
+    .tl-dot {
+      width: 14px; height: 14px; border-radius: 50%; background: #94A3B8;
+      position: relative; z-index: 2; border: 3px solid var(--surface);
+      box-shadow: 0 0 0 1px #94A3B8;
+    }
+    .tl-dot.done { background: #1E3A8A; box-shadow: 0 0 0 1px #1E3A8A; }
     
-    /* Точки на линии (пройденные этапы) */
-    .tl-dot { width: 12px; height: 12px; border-radius: 50%; background: #94A3B8; position: relative; z-index: 2; }
-    .tl-dot.done { background: #1E3A8A; } /* Темно-синий как на картинке */
+    /* Звезды */
+    .tl-star {
+      position: absolute; z-index: 3; font-size: 36px; line-height: 1;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     
-    /* Звездочки */
-    .tl-star { position: relative; z-index: 3; font-size: 32px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-    .tl-star.owner { color: #EF4444; } /* Красная */
-    .tl-star.joint { color: #F59E0B; } /* Желтая */
-    .tl-star.po { color: #10B981; } /* Зеленая */
-    
-    /* Подписи под кварталами */
-    .tl-q-label { font-size: 10px; color: var(--text-muted); position: absolute; bottom: 10px; left: 10px; white-space: nowrap; }
+    .tl-star.owner { color: #EF4444; }
+    .tl-star.joint { color: #F59E0B; }
+    .tl-star.po { color: #10B981; }
+
+    /* Подписи (План/Сделано) */
+    .tl-q-label {
+      position: absolute; bottom: 4px; left: 0; width: 100%; text-align: center;
+      font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px;
+    }
 
     /* Раскрывашка */
-    .tl-details-row { display: none; background: #FFFFFF; }
-    .tl-row.open + .tl-details-row { display: table-row; }
-    .tl-details-cell { padding: 0 20px 20px 20px !important; border-bottom: 1px solid var(--border); }
+    .tl-details-cell {
+      grid-column: 1 / -1; display: none; background: #FFFFFF;
+      border-bottom: 1px solid var(--border); padding: 0 20px 20px 20px;
+    }
+    .tl-row-wrapper.open .tl-details-cell { display: block; }
     
+    /* Старая карточка деталей */
     .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
     .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
@@ -168,6 +211,10 @@
     .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
     .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
     .q-item strong { color: var(--text-main); font-weight: 600; min-width: 30px; }
+    
+    .tl-legend { display: flex; gap: 20px; padding: 12px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; }
+    .tl-legend span { display: flex; align-items: center; gap: 6px; }
+    .star-icon { font-size: 16px; }
   </style>
 </head>
 <body>
@@ -210,28 +257,32 @@
   <!-- ТАЙМЛАЙН ПРОЕКТОВ -->
   <div class="section-title">Таймлайн проектов</div>
   
-  <div class="timeline-card">
-    <!-- Легенда -->
+  <div class="timeline-container">
     <div class="tl-legend">
       <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
       <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
       <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
     </div>
 
-    <!-- Шапка -->
-    <div class="tl-header">
-      <div class="tl-header-col title">Название проекта</div>
-      <div class="tl-header-col">Анализ<div class="tl-header-sub">ЛНА, интервью, CJM</div></div>
-      <div class="tl-header-col">Текущее состояние<div class="tl-header-sub">Проблематика, первопричины</div></div>
-      <div class="tl-header-col">Целевое состояние<div class="tl-header-sub">Предложения, план</div></div>
-      <div class="tl-header-col">Принятие решения<div class="tl-header-sub">Владельцем</div></div>
-      <div class="tl-header-col" style="flex: 2;">Внедрение изменений<div class="tl-header-sub">По кварталам</div></div>
-    </div>
+    <!-- Жесткая Grid-сетка -->
+    <div class="tl-grid">
+      <!-- Шапка: Строка 1 -->
+      <div class="tl-header-cell title" style="grid-row: span 2;">Название проекта</div>
+      <div class="tl-header-cell"><h4>Анализ</h4><p>ЛНА, интервью, CJM</p></div>
+      <div class="tl-header-cell"><h4>Текущее состояние</h4><p>Проблематика, первопричины</p></div>
+      <div class="tl-header-cell"><h4>Целевое состояние</h4><p>Предложения, план</p></div>
+      <div class="tl-header-cell"><h4>Принятие решения</h4><p>Владельцем</p></div>
+      <div class="tl-header-impl">Внедрение изменений</div>
 
-    <!-- Тело таймлайна -->
-    <table class="tl-table">
-      <tbody id="timeline-tbody"></tbody>
-    </table>
+      <!-- Шапка: Строка 2 (Кварталы) -->
+      <div class="tl-header-q">I квартал</div>
+      <div class="tl-header-q">II квартал</div>
+      <div class="tl-header-q">III квартал</div>
+      <div class="tl-header-q">IV квартал</div>
+
+      <!-- Тело рендерится тут -->
+      <div id="timeline-body" style="display: contents;"></div>
+    </div>
   </div>
 
   <!-- Экспорт -->
@@ -250,12 +301,8 @@
       return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
-    function getFilteredData() {
-      return rawData; // Фильтры временно отключены для чистоты таймлайна
-    }
-
     // ============================================================
-    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ
+    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ (Без изменений)
     // ============================================================
     function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
@@ -345,7 +392,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР ГРАФИКОВ
+    // РЕНДЕР ГРАФИКОВ (Без изменений)
     // ============================================================
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
@@ -381,84 +428,71 @@
     }
 
     // ============================================================
-    // РЕНДЕР ТАЙМЛАЙНА
+    // РЕНДЕР НОВОГО ТАЙМЛАЙНА (На Grid)
     // ============================================================
     function renderTimeline(data) {
-      const tbody = document.getElementById('timeline-tbody');
+      const container = document.getElementById('timeline-body');
       if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#94A3B8;">Нет проектов</td></tr>';
+        container.innerHTML = '<div style="grid-column: 1/-1; padding:40px; text-align:center; color:#94A3B8;">Нет проектов</div>';
         return;
       }
 
       const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
       
-      tbody.innerHTML = data.map(p => {
-        // Определяем индекс текущего этапа (0-4)
+      container.innerHTML = data.map(p => {
         let currentStageIndex = stageKeys.indexOf(p.current_stage);
-        if (currentStageIndex === -1) currentStageIndex = 0; // По умолчанию первый
+        if (currentStageIndex === -1) currentStageIndex = 0;
 
-        // Генерируем ячейки с линиями и точками
         let cellsHtml = '';
-        stageKeys.forEach((stage, index) => {
-          let isPast = index < currentStageIndex;
-          let isCurrent = index === currentStageIndex;
+        
+        // 1. Рендерим обычные 4 этапа
+        for (let i = 0; i < 4; i++) {
+          let isPast = i < currentStageIndex;
+          let isCurrent = i === currentStageIndex;
           
-          // Для этапа "Внедрение" делаем 4 колонки (кварталы)
-          if (stage === 'implementation') {
-            for (let q = 1; q <= 4; q++) {
-              let qPast = isPast || (isCurrent && q < 2); // Допустим, 1 квартал пройден, если мы на внедрении
-              let qCurrent = isCurrent && q === 2; // Допустим, мы во 2 квартале
-              
-              let dotClass = qPast ? 'done' : '';
-              let starHtml = qCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
-              
-              // Если проект на этапе внедрения, берем данные по кварталам
-              let qLabel = '';
-              if (p.stages && p.stages.implementation && p.stages.implementation.quarters && p.stages.implementation.quarters['Q'+q]) {
-                 let qText = p.stages.implementation.quarters['Q'+q].join(', ');
-                 qLabel = `<div class="tl-q-label" title="${esc(qText)}">${qPast ? 'Сделано' : 'План'}: ${esc(qText.substring(0, 15))}...</div>`;
-              }
+          let dotClass = isPast ? 'done' : '';
+          let starHtml = isCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
+          
+          cellsHtml += `
+            <div class="tl-track-cell">
+              <div class="tl-line"></div>
+              ${!isCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
+              ${starHtml}
+            </div>
+          `;
+        }
 
-              cellsHtml += `
-                <div class="tl-stage-cell" style="flex: 1; border-right: 1px solid var(--border);">
-                  <div class="tl-track"></div>
-                  ${!qCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
-                  ${starHtml}
-                  ${qLabel}
-                </div>
-              `;
-            }
-          } else {
-            // Обычные этапы
-            let starHtml = isCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
-            let dotClass = isPast ? 'done' : '';
-            
-            cellsHtml += `
-              <div class="tl-stage-cell">
-                <div class="tl-track"></div>
-                ${!isCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
-                ${starHtml}
-              </div>
-            `;
+        // 2. Рендерим 4 квартала (Внедрение)
+        for (let q = 1; q <= 4; q++) {
+          let qPast = currentStageIndex > 4 || (currentStageIndex === 4 && q < 2); // Допустим, Q1 пройден
+          let qCurrent = currentStageIndex === 4 && q === 2; // Допустим, сейчас Q2
+          
+          let dotClass = qPast ? 'done' : '';
+          let starHtml = qCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
+          
+          let qLabel = '';
+          if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
+             let qText = p.stages.implementation.quarters['Q'+q];
+             if (qText) {
+               qLabel = `<div class="tl-q-label" title="${esc(qText.join(', '))}">${qPast ? 'Сделано' : 'План'}: ${esc(qText.join(', '))}</div>`;
+             }
           }
-        });
 
-        // Основная строка
-        const mainRow = `
-          <tr class="tl-row">
-            <td class="tl-project-name">${esc(p.name)}</td>
-            <td colspan="5" style="padding: 0;">
-              <div style="display: flex; width: 100%;">
-                ${cellsHtml}
-              </div>
-            </td>
-          </tr>
-        `;
+          cellsHtml += `
+            <div class="tl-track-cell" style="border-right: 1px solid var(--border);">
+              <div class="tl-line"></div>
+              ${!qCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
+              ${starHtml}
+              ${qLabel}
+            </div>
+          `;
+        }
 
-        // Скрытая строка с деталями
-        const detailsRow = `
-          <tr class="tl-details-row">
-            <td colspan="6" class="tl-details-cell">
+        return `
+          <div class="tl-row-wrapper" onclick="this.classList.toggle('open')">
+            <div class="tl-name-cell">${esc(p.name)}</div>
+            ${cellsHtml}
+            <div class="tl-details-cell">
               <div class="details-container">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                   <div class="info-list">
@@ -467,7 +501,7 @@
                     <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
                     <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
                     <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
-                    <div class="info-item"><strong>Статус:</strong> ${esc(p.status)} (${esc(p.start)} — ${esc(p.end)})</div>
+                    <div class="info-item"><strong>Статус:</strong> <span class="badge badge-wip">${esc(p.status)}</span> (${esc(p.start)} — ${esc(p.end)})</div>
                   </div>
                   <div>
                     <div style="font-weight:600; margin-bottom:12px; font-size:14px;">Внедрение по кварталам</div>
@@ -477,17 +511,10 @@
                   </div>
                 </div>
               </div>
-            </td>
-          </tr>
+            </div>
+          </div>
         `;
-
-        return mainRow + detailsRow;
       }).join('');
-
-      // Обработчики кликов
-      tbody.querySelectorAll('.tl-row').forEach(row => {
-        row.addEventListener('click', () => row.classList.toggle('open'));
-      });
     }
 
     // ============================================================
