@@ -205,6 +205,7 @@
     .lg-ring { background: #fff; border: 2px solid #3B82F6; }
     .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; font-weight: 700; }
     .chart-card.wide { grid-column: 1 / -1; }
+    .chart-card .chart-note { font-weight: 400; color: var(--text-muted); }
     .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-muted); margin: -6px 0 12px; align-items: center; }
     .chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
     .chart-legend .dm { display: inline-block; width: 7px; height: 7px; transform: rotate(45deg); margin: 0 7px 0 3px; vertical-align: 0; border: 1.5px solid #1E3A8A; background: #fff; }
@@ -250,10 +251,14 @@
   <!-- ГРАФИКИ -->
   <div class="section-title">Аналитика</div>
   <div class="charts-grid">
-    <div class="chart-card"><h3>Статусы проектов</h3><div class="chart-wrap"><canvas id="chart-status"></canvas></div></div>
-    <div class="chart-card"><h3>Направления проектов</h3><div class="chart-wrap"><canvas id="chart-direction"></canvas></div></div>
-    <div class="chart-card"><h3>Этапы (общая готовность)</h3><div class="chart-wrap"><canvas id="chart-stages"></canvas></div></div>
-    <div class="chart-card"><h3>Теги (кампусы)</h3><div class="chart-wrap"><canvas id="chart-tags"></canvas></div></div>
+    <div class="chart-card">
+      <h3>Проекты по этапам и статусам <span class="chart-note">— где находятся проекты и в каком они состоянии</span></h3>
+      <div class="chart-wrap"><canvas id="chart-stage-status"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Динамика внедрения по кварталам <span class="chart-note">— завершённые итоги (столбцы) и накопленный итог (линия)</span></h3>
+      <div class="chart-wrap" id="dynamics-wrap"><canvas id="chart-dynamics"></canvas></div>
+    </div>
     <div class="chart-card wide">
       <h3>Сроки проектов и внедрение изменений (диаграмма Ганта)</h3>
       <div class="chart-legend">
@@ -270,7 +275,7 @@
       <div class="chart-wrap" id="gantt-wrap"><canvas id="chart-gantt"></canvas></div>
     </div>
     <div class="chart-card wide">
-      <h3>Внедрение по кварталам <span style="font-weight:400;color:var(--text-muted)">— число проектов с работами в квартале (детали при наведении)</span></h3>
+      <h3>Внедрение по кварталам <span class="chart-note">— число проектов с работами в квартале (детали при наведении)</span></h3>
       <div class="chart-wrap" id="quarters-wrap"><canvas id="chart-quarters"></canvas></div>
     </div>
   </div>
@@ -318,6 +323,36 @@
     function qLabel(key) {
       const m = String(key).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
       return m ? `Q${m[2]} ’${m[1].slice(2)}` : String(key);
+    }
+
+    // Кварталы внедрения проекта: st = done | current | planned; t - конец квартала (UTC), null если у ключа нет года
+    function implQuarters(p) {
+      const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
+      const dep = isDeployedStatus(p);
+      return Object.keys(q).sort().map(k => {
+        const v = q[k];
+        const items = Array.isArray(v) ? v : ((v && v.items) || []);
+        let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
+        if (dep) st = 'done';
+        const m = String(k).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
+        return { key: k, label: qLabel(k), items, st, t: m ? Date.UTC(+m[1], +m[2] * 3, 0) : null };
+      });
+    }
+
+    // Текущий этап проекта (та же логика, что в таймлайне)
+    const STAGE_KEYS = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
+    function projectStageKey(p) {
+      if (isDeployedStatus(p)) return 'deployed';
+      const st = p.stages || {};
+      const done = k => st[k] && st[k].status === 'завершён';
+      if (STAGE_KEYS.some(k => st[k] && st[k].status)) {
+        const cur = STAGE_KEYS.find(k => st[k] && st[k].status === 'в работе');
+        if (cur) return cur;
+        const todo = STAGE_KEYS.find(k => !done(k));
+        if (!todo) return 'implementation';
+        return (STAGE_KEYS.includes(p.current_stage) && !done(p.current_stage)) ? p.current_stage : todo;
+      }
+      return STAGE_KEYS.includes(p.current_stage) ? p.current_stage : 'analysis';
     }
 
     function esc(s) {
@@ -421,34 +456,92 @@
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
-      const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } } } };
+      const qMark = { done: '●', current: '★', planned: '○' };
 
-      const statusCounts = { 'завершён': 0, 'в работе': 0, 'на паузе': 0, 'внедрено': 0 };
-      data.forEach(p => { if (statusCounts[p.status] !== undefined) statusCounts[p.status]++; });
-      charts.status = new Chart(document.getElementById('chart-status'), {
-        type: 'doughnut', data: { labels: ['Завершён', 'В работе', 'На паузе', 'Внедрено'], datasets: [{ data: [statusCounts['завершён'], statusCounts['в работе'], statusCounts['на паузе'], statusCounts['внедрено']], backgroundColor: ['#10B981', '#3B82F6', '#F43F5E', '#6366F1'], borderWidth: 0 }] }, options: { ...commonOpts, cutout: '70%' }
-      });
-
-      const dirCounts = {};
-      data.forEach(p => { dirCounts[p.direction] = (dirCounts[p.direction] || 0) + 1; });
-      charts.direction = new Chart(document.getElementById('chart-direction'), {
-        type: 'bar', data: { labels: Object.keys(dirCounts), datasets: [{ label: 'Проектов', data: Object.values(dirCounts), backgroundColor: '#6366F1', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-      });
-
-      const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
-      const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
-      const stageData = stages.map(s => data.filter(p => p.current_stage === s).length); // Считаем по current_stage
-      charts.stages = new Chart(document.getElementById('chart-stages'), {
-        type: 'bar', data: { labels: stageNames, datasets: [{ label: 'Проектов на этапе', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-      });
-
-      const tagCounts = {};
+      // ---- 1) Составной график: этапы x статусы проектов ----
+      const STAGES = [['analysis', 'Анализ'], ['current_state', 'Текущее'], ['target_state', 'Целевое'], ['decision', 'Решение'], ['implementation', 'Внедрение'], ['deployed', 'Внедрено']];
+      const STATUSES = [
+        { key: 'в работе', label: 'В работе', color: '#3B82F6' },
+        { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
+        { key: 'завершён', label: 'Завершён', color: '#10B981' },
+        { key: 'внедрено', label: 'Внедрено', color: '#6366F1' }
+      ];
+      const known = STATUSES.map(x => x.key);
+      const usedOther = data.some(p => !known.includes(String(p.status).toLowerCase()));
+      const groups = usedOther ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8' }] : STATUSES;
+      const grid = groups.map(() => STAGES.map(() => []));
       data.forEach(p => {
-        (p.tags || []).forEach(t => { if (t.startsWith('кампус:')) { const val = t.split(':')[1]; tagCounts[val] = (tagCounts[val] || 0) + 1; } });
+        const si = STAGES.findIndex(x => x[0] === projectStageKey(p));
+        let gi = groups.findIndex(g => g.key === String(p.status).toLowerCase());
+        if (gi === -1) gi = groups.length - 1;
+        grid[gi][si].push(p.name);
       });
-      charts.tags = new Chart(document.getElementById('chart-tags'), {
-        type: 'bar', data: { labels: Object.keys(tagCounts), datasets: [{ label: 'Проектов', data: Object.values(tagCounts), backgroundColor: '#F59E0B', borderRadius: 6 }] }, options: { ...commonOpts, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
+      charts.stageStatus = new Chart(document.getElementById('chart-stage-status'), {
+        type: 'bar',
+        data: {
+          labels: STAGES.map(x => x[1]),
+          datasets: groups.map((g, gi) => ({ label: g.label, data: grid[gi].map(a => a.length), backgroundColor: g.color, maxBarThickness: 56 }))
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'nearest', intersect: true },
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
+            tooltip: { callbacks: {
+              label: c => `${c.dataset.label}: ${c.parsed.y}`,
+              afterBody: items => grid[items[0].datasetIndex][items[0].dataIndex].map(n => '• ' + n)
+            } }
+          },
+          scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 }, title: { display: true, text: 'Проектов', font: { size: 11 } } }
+          }
+        }
       });
+
+      // ---- 2) Динамика внедрения: завершённые итоги по кварталам + накопленный итог ----
+      const rows = {};
+      data.forEach(p => implQuarters(p).forEach(q => {
+        if (q.st !== 'done' || q.t == null) return;
+        const r = rows[q.key] = rows[q.key] || { n: 0, det: [] };
+        r.n += Math.max(q.items.length, 1);
+        r.det.push(`${p.name}: ${q.items.join(', ') || '—'}`);
+      }));
+      const dWrap = document.getElementById('dynamics-wrap');
+      const found = Object.keys(rows).sort();
+      if (!found.length) {
+        dWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет завершённых кварталов внедрения с указанным годом</div>';
+      } else {
+        const parse = k => { const m = k.match(/^(\d{4})-Q([1-4])$/i); return +m[1] * 4 + (+m[2] - 1); };
+        const first = parse(found[0]), last = parse(found[found.length - 1]);
+        const keys = [];
+        for (let n = first; n <= last; n++) keys.push(`${Math.floor(n / 4)}-Q${(n % 4) + 1}`);
+        const perQ = keys.map(k => (rows[k] ? rows[k].n : 0));
+        let acc = 0; const cum = perQ.map(v => (acc += v));
+        charts.dynamics = new Chart(document.getElementById('chart-dynamics'), {
+          data: {
+            labels: keys.map(qLabel),
+            datasets: [
+              { type: 'bar', label: 'Завершено итогов в квартале', data: perQ, backgroundColor: '#1D4ED8', maxBarThickness: 40, borderRadius: 6, order: 2 },
+              { type: 'line', label: 'Накопленный итог', data: cum, borderColor: '#10B981', backgroundColor: '#10B981', tension: 0.25, pointRadius: 3, borderWidth: 2, order: 1 }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
+              tooltip: { callbacks: {
+                afterBody: items => (rows[keys[items[0].dataIndex]] ? rows[keys[items[0].dataIndex]].det.map(t => '• ' + t) : [])
+              } }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 0 } },
+              y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Итогов', font: { size: 11 } } }
+            }
+          }
+        });
+      }
     }
 
     function renderExtraCharts(data) {
@@ -459,24 +552,6 @@
       const fmtShort = v => new Date(v).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'UTC' });
       const fmtFull = v => new Date(v).toLocaleDateString('ru-RU', { timeZone: 'UTC' });
       const fmtDate = v => new Date(v).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit', timeZone: 'UTC' });
-
-      // Кварталы внедрения: t - дата отметки (конец квартала)
-      function implQuarters(p) {
-        const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
-        const dep = isDeployedStatus(p);
-        const list = [];
-        Object.keys(q).sort().forEach(k => {
-          const v = q[k];
-          const items = Array.isArray(v) ? v : ((v && v.items) || []);
-          let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
-          if (dep) st = 'done';
-          const m = String(k).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
-          const item = { key: k, label: qLabel(k), items, st, t: null };
-          if (m) { const y = +m[1], n = +m[2]; item.t = Date.UTC(y, n * 3, 0); }
-          list.push(item);
-        });
-        return list;
-      }
 
       const withDates = data
         .map(p => ({ p, s: Date.parse(p.start), e: Date.parse(p.end) }))
@@ -508,7 +583,7 @@
         const tip = document.createElement('div');
         tip.id = 'marker-tip'; tip.className = 'marker-tip';
         gWrap.appendChild(tip);
-        const markers = [];          // заполняется при отрисовке: {x, y, r, html}
+        const markers = [];
 
         function findMarker(mx, my) {
           let best = null, bestD = Infinity;
@@ -548,8 +623,8 @@
           afterDatasetsDraw(chart) {
             const { ctx, chartArea, scales } = chart;
             const X = scales.x, Y = scales.y;
-            const R = 4.5;            // размер ромбика
-            const H = 7;              // половина стороны квадрата «Внедрено»
+            const R = 4.5;
+            const H = 7;
             const axisY = chartArea.bottom;
             const marks = [];
             markers.length = 0;
@@ -640,7 +715,6 @@
           options: {
             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
             layout: { padding: { top: 16, bottom: 22 } },
-            // стандартная подсказка Chart.js отключена: информация только над ромбиками
             events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
             plugins: { legend: { display: false }, tooltip: { enabled: false } },
             scales: {
@@ -665,7 +739,7 @@
         });
       }
 
-      // ---- Внедрение по кварталам ----
+      // ---- Внедрение по кварталам (число проектов по статусам) ----
       const byQ = {};
       data.forEach(p => {
         implQuarters(p).forEach(q => { (byQ[q.key] = byQ[q.key] || []).push({ name: p.name, items: q.items, st: q.st }); });
