@@ -1,12 +1,11 @@
 {
   "version": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-28",
   "kpi": {
     "processes_total": 370,
     "departments_count": 12,
     "campuses_count": 4,
     "people_count": 1250,
-
     "projects_total": 15,
     "projects_support": 4,
     "interviews_count": 45,
@@ -15,7 +14,6 @@
     "tz_digital_count": 6,
     "problems_count": 120,
     "proposals_count": 34,
-    
     "strategy_sessions": 14,
     "strategy_people": 320,
     "digital_services": 8,
@@ -26,106 +24,256 @@
     {
       "id": "p1",
       "name": "Оптимизация закупок",
-      "current_stage": "decision", 
+      "current_stage": "implementation",
       "stage_role": "owner",
       "direction": "обеспечивающий",
       "owner": "Иванов И.И.",
-      "participants": ["Петров П.П.", "Сидорова А.А."],
-      "users": ["сотрудники"],
+      "participants": [
+        "Петров П.П.",
+        "Сидорова А.А."
+      ],
+      "users": [
+        "сотрудники"
+      ],
       "start": "2024-01-15",
       "end": "2024-06-30",
-      "status": "завершён",
-      "tags": ["процесс:закупки", "кампус:Москва", "роль:сотрудник"],
+      "status": "внедрено",
+      "tags": [
+        "процесс:закупки",
+        "кампус:Москва",
+        "роль:сотрудник"
+      ],
       "stages": {
-        "analysis": { "status": "завершён" },
-        "current_state": { "status": "завершён" },
-        "target_state": { "status": "завершён" },
-        "decision": { "status": "завершён" },
-        "implementation": { "status": "завершён", "quarters": { "Q1": ["проведён аудит"], "Q2": ["пилот"] } }
+        "analysis": {
+          "status": "завершён"
+        },
+        "current_state": {
+          "status": "завершён"
+        },
+        "target_state": {
+          "status": "завершён"
+        },
+        "decision": {
+          "status": "завершён"
+        },
+        "implementation": {
+          "status": "завершён",
+          "quarters": {
+            "2024-Q1": {
+              "status": "завершён",
+              "items": [
+                "проведён аудит"
+              ]
+            },
+            "2024-Q2": {
+              "status": "завершён",
+              "items": [
+                "пилот"
+              ]
+            }
+          }
+        }
       }
     },
     {
       "id": "p2",
       "name": "Приёмная кампания 2025",
       "direction": "основной",
-      "current_stage": "implementation", 
+      "current_stage": "implementation",
       "stage_role": "joint",
       "owner": "Смирнов А.В.",
-      "participants": ["Кузнецов Д.С."],
-      "users": ["студенты", "абитуриенты"],
+      "participants": [
+        "Кузнецов Д.С."
+      ],
+      "users": [
+        "студенты",
+        "абитуриенты"
+      ],
       "start": "2024-03-01",
-      "end": "2025-08-31",
+      "end": "2027-03-31",
       "status": "в работе",
-      "tags": ["процесс:приём", "кампус:Питер", "роль:студент"],
+      "tags": [
+        "процесс:приём",
+        "кампус:Питер",
+        "роль:студент"
+      ],
       "stages": {
-        "analysis": { "status": "завершён" },
-        "current_state": { "status": "завершён" },
-        "target_state": { "status": "завершён" },
-        "decision": { "status": "завершён" },
-        "implementation": { "status": "в работе", "quarters": { "Q3": ["пилот"], "Q4": ["запуск"] } }
+        "analysis": {
+          "status": "завершён"
+        },
+        "current_state": {
+          "status": "завершён"
+        },
+        "target_state": {
+          "status": "завершён"
+        },
+        "decision": {
+          "status": "завершён"
+        },
+        "implementation": {
+          "status": "в работе",
+          "quarters": {
+            "2026-Q3": {
+              "status": "завершён",
+              "items": [
+                "пилот"
+              ]
+            },
+            "2026-Q4": {
+              "status": "в работе",
+              "items": [
+                "запуск"
+              ]
+            },
+            "2027-Q1": {
+              "status": "запланирован",
+              "items": [
+                "масштабирование"
+              ]
+            }
+          }
+        }
       }
     },
     {
       "id": "p3",
       "name": "Онбординг сотрудников",
       "direction": "обеспечивающий",
-      "current_stage": "target_state", 
+      "current_stage": "current_state",
       "stage_role": "po",
       "owner": "Волкова Е.Н.",
-      "participants": ["Морозов И.И.", "Лебедева О.А."],
-      "users": ["сотрудники"],
+      "participants": [
+        "Морозов И.И.",
+        "Лебедева О.А."
+      ],
+      "users": [
+        "сотрудники"
+      ],
       "start": "2024-05-10",
       "end": "2024-12-15",
       "status": "на паузе",
-      "tags": ["процесс:HR", "кампус:Новосибирск", "роль:сотрудник"],
+      "tags": [
+        "процесс:HR",
+        "кампус:Новосибирск",
+        "роль:сотрудник"
+      ],
       "stages": {
-        "analysis": { "status": "завершён" },
-        "current_state": { "status": "в работе" },
-        "target_state": { "status": "ожидает" },
-        "decision": { "status": "ожидает" },
-        "implementation": { "status": "не начат", "quarters": {} }
+        "analysis": {
+          "status": "завершён"
+        },
+        "current_state": {
+          "status": "в работе"
+        },
+        "target_state": {
+          "status": "ожидает"
+        },
+        "decision": {
+          "status": "ожидает"
+        },
+        "implementation": {
+          "status": "не начат",
+          "quarters": {}
+        }
       }
     },
     {
       "id": "p4",
       "name": "Цифровизация документооборота",
-      "current_stage": "analysis", 
+      "current_stage": "decision",
       "stage_role": "po",
       "direction": "основной",
       "owner": "Соколов П.Р.",
-      "participants": ["Никитин В.В."],
-      "users": ["сотрудники", "студенты"],
+      "participants": [
+        "Никитин В.В."
+      ],
+      "users": [
+        "сотрудники",
+        "студенты"
+      ],
       "start": "2024-02-01",
       "end": "2024-11-30",
       "status": "в работе",
-      "tags": ["процесс:документооборот", "кампус:Москва", "роль:сотрудник"],
+      "tags": [
+        "процесс:документооборот",
+        "кампус:Москва",
+        "роль:сотрудник"
+      ],
       "stages": {
-        "analysis": { "status": "завершён" },
-        "current_state": { "status": "завершён" },
-        "target_state": { "status": "завершён" },
-        "decision": { "status": "в работе" },
-        "implementation": { "status": "не начат", "quarters": {} }
+        "analysis": {
+          "status": "завершён"
+        },
+        "current_state": {
+          "status": "завершён"
+        },
+        "target_state": {
+          "status": "завершён"
+        },
+        "decision": {
+          "status": "в работе"
+        },
+        "implementation": {
+          "status": "не начат",
+          "quarters": {}
+        }
       }
     },
     {
       "id": "p5",
       "name": "Внедрение CRM в продажах",
-      "current_stage": "current_state", 
+      "current_stage": "implementation",
       "stage_role": "owner",
       "direction": "основной",
       "owner": "Фёдорова М.С.",
-      "participants": ["Егоров С.С."],
-      "users": ["сотрудники"],
+      "participants": [
+        "Егоров С.С."
+      ],
+      "users": [
+        "сотрудники"
+      ],
       "start": "2024-01-10",
       "end": "2024-09-30",
-      "status": "завершён",
-      "tags": ["процесс:продажи", "кампус:Питер", "роль:сотрудник"],
+      "status": "внедрено",
+      "tags": [
+        "процесс:продажи",
+        "кампус:Питер",
+        "роль:сотрудник"
+      ],
       "stages": {
-        "analysis": { "status": "завершён" },
-        "current_state": { "status": "завершён" },
-        "target_state": { "status": "завершён" },
-        "decision": { "status": "завершён" },
-        "implementation": { "status": "завершён", "quarters": { "Q1": ["старт"], "Q2": ["миграция данных"], "Q3": ["обучение"] } }
+        "analysis": {
+          "status": "завершён"
+        },
+        "current_state": {
+          "status": "завершён"
+        },
+        "target_state": {
+          "status": "завершён"
+        },
+        "decision": {
+          "status": "завершён"
+        },
+        "implementation": {
+          "status": "завершён",
+          "quarters": {
+            "2024-Q1": {
+              "status": "завершён",
+              "items": [
+                "старт"
+              ]
+            },
+            "2024-Q2": {
+              "status": "завершён",
+              "items": [
+                "миграция данных"
+              ]
+            },
+            "2024-Q3": {
+              "status": "завершён",
+              "items": [
+                "обучение"
+              ]
+            }
+          }
+        }
       }
     }
   ]
