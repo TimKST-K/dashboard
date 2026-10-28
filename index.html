@@ -105,17 +105,17 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== НОВЫЙ ТАЙМЛАЙН (ТОЛЬКО 4 ЭТАПА) ===== */
+    /* ===== ТАЙМЛАЙН (6 ЭТАПОВ) ===== */
     .timeline-container {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
       box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto;
     }
     
-    /* Сетка: Название (250px) + 4 этапа (по 1fr) */
+    /* Сетка: Название (250px) + 6 этапов (по 1fr) */
     .tl-grid {
       display: grid;
-      grid-template-columns: 250px repeat(4, 1fr);
-      min-width: 900px;
+      grid-template-columns: 250px repeat(6, 1fr);
+      min-width: 1150px;
     }
 
     /* Шапка */
@@ -144,7 +144,7 @@
       position: relative; display: flex; align-items: center; justify-content: center;
       transition: background 0.2s; height: 80px;
     }
-    .tl-track-cell:last-child { border-right: none; }
+    .tl-track-cell.last { border-right: none; }
 
     /* Линия */
     .tl-line {
@@ -159,6 +159,9 @@
       box-shadow: 0 0 0 1px #CBD5E1;
     }
     .tl-dot.done { background: #1E3A8A; box-shadow: 0 0 0 1px #1E3A8A; }
+
+    /* Проект на паузе: звезда приглушена */
+    .tl-star.paused { opacity: 0.45; filter: grayscale(0.6) drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
     
     /* Звезды */
     .tl-star {
@@ -248,6 +251,8 @@
       <div class="tl-header-cell"><h4>Текущее состояние</h4><p>Проблематика, первопричины</p></div>
       <div class="tl-header-cell"><h4>Целевое состояние</h4><p>Предложения, план</p></div>
       <div class="tl-header-cell"><h4>Принятие решения</h4><p>Владельцем</p></div>
+      <div class="tl-header-cell"><h4>Внедрение</h4><p>Пилот, запуск, поддержка</p></div>
+      <div class="tl-header-cell"><h4>Внедрено</h4><p>Результат в эксплуатации</p></div>
 
       <!-- Тело -->
       <div id="timeline-body" style="display: contents;"></div>
@@ -406,29 +411,54 @@
         return;
       }
 
-      const stageKeys = ['analysis', 'current_state', 'target_state', 'decision'];
-      
-      container.innerHTML = data.map(p => {
-        let currentStageIndex = stageKeys.indexOf(p.current_stage);
-        if (currentStageIndex === -1) {
-           // Если этап "implementation" или неизвестен, ставим на последний доступный
-           currentStageIndex = p.current_stage === 'implementation' ? 3 : 0; 
+      const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
+      const TOTAL = stageKeys.length + 1; // + финальный этап "Внедрено"
+      const DEPLOYED_STATUSES = ['внедрено', 'внедрён', 'внедрен'];
+
+      // Состояния 6 колонок: done | current | todo. Источник истины - stages[...].status
+      function getStageStates(p) {
+        // Проект со статусом "внедрено": все этапы пройдены, звезда в последней колонке
+        if (DEPLOYED_STATUSES.includes(String(p.status || '').trim().toLowerCase()) || p.current_stage === 'deployed') {
+          return Array.from({ length: TOTAL }, (_, i) => i < TOTAL - 1 ? 'done' : 'current');
         }
+        const st = p.stages || {};
+        const states = stageKeys.map(k => {
+          const s = st[k] && st[k].status;
+          if (s === 'завершён') return 'done';
+          if (s === 'в работе') return 'current';
+          return 'todo';
+        });
+        const hasStages = stageKeys.some(k => st[k] && st[k].status);
+        if (!hasStages) {
+          const idx = stageKeys.indexOf(p.current_stage);
+          states.forEach((_, i) => { states[i] = idx === -1 ? 'todo' : (i < idx ? 'done' : (i === idx ? 'current' : 'todo')); });
+        } else if (!states.includes('current') && states.includes('todo')) {
+          let idx = stageKeys.indexOf(p.current_stage);
+          if (idx === -1 || states[idx] === 'done') idx = states.indexOf('todo');
+          states[idx] = 'current';
+        }
+        states.push('todo'); // "Внедрено" ещё не достигнуто
+        return states;
+      }
+
+      container.innerHTML = data.map(p => {
+        const states = getStageStates(p);
+        const paused = p.status === 'на паузе';
 
         let cellsHtml = '';
-        
-        for (let i = 0; i < 4; i++) {
-          let isPast = i < currentStageIndex;
-          let isCurrent = i === currentStageIndex;
-          
-          let dotClass = isPast ? 'done' : '';
-          let starHtml = isCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
-          
+        for (let i = 0; i < TOTAL; i++) {
+          const state = states[i];
+          let marker;
+          if (state === 'current') {
+            const role = ['owner', 'joint', 'po'].includes(p.stage_role) ? p.stage_role : 'po';
+            marker = `<div class="tl-star ${role}${paused ? ' paused' : ''}">★</div>`;
+          } else {
+            marker = `<div class="tl-dot ${state === 'done' ? 'done' : ''}"></div>`;
+          }
           cellsHtml += `
-            <div class="tl-track-cell">
+            <div class="tl-track-cell${i === TOTAL - 1 ? ' last' : ''}">
               <div class="tl-line"></div>
-              ${!isCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
-              ${starHtml}
+              ${marker}
             </div>
           `;
         }
