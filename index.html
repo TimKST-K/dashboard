@@ -105,42 +105,30 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== НОВЫЙ ТАЙМЛАЙН (CSS GRID) ===== */
+    /* ===== НОВЫЙ ТАЙМЛАЙН (ТОЛЬКО 4 ЭТАПА) ===== */
     .timeline-container {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto; padding-bottom: 10px;
+      box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow-x: auto;
     }
     
-    /* Жесткая сетка: Название(250px) + 4 этапа(1fr) + 4 квартала(0.5fr) */
+    /* Сетка: Название (250px) + 4 этапа (по 1fr) */
     .tl-grid {
       display: grid;
-      grid-template-columns: 250px 1fr 1fr 1fr 1fr 0.5fr 0.5fr 0.5fr 0.5fr;
-      min-width: 1100px; /* Чтобы не сжималось на мелких экранах */
+      grid-template-columns: 250px repeat(4, 1fr);
+      min-width: 900px;
     }
 
     /* Шапка */
     .tl-header-cell {
-      padding: 16px 10px; text-align: center; border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
+      padding: 20px 16px; text-align: center; border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
       background: #F8FAFC; display: flex; flex-direction: column; justify-content: center;
     }
     .tl-header-cell:last-child { border-right: none; }
-    .tl-header-cell.title { text-align: left; padding-left: 20px; font-weight: 600; font-size: 13px; }
-    .tl-header-cell h4 { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
-    .tl-header-cell p { font-size: 10px; color: var(--text-muted); }
-    
-    /* Спец. шапка для внедрения (объединяем визуально) */
-    .tl-header-impl {
-      grid-column: span 4; border-bottom: 1px solid var(--border); background: #F8FAFC;
-      padding: 8px; text-align: center; font-weight: 700; font-size: 12px; color: var(--text-main);
-      border-right: 1px solid var(--border);
-    }
-    .tl-header-q {
-      padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted);
-      background: #F8FAFC; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border);
-    }
-    .tl-header-q:last-child { border-right: none; }
+    .tl-header-cell.title { text-align: left; padding-left: 20px; font-weight: 600; font-size: 14px; }
+    .tl-header-cell h4 { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .tl-header-cell p { font-size: 11px; color: var(--text-muted); }
 
-    /* Строки проектов */
+    /* Строки */
     .tl-row-wrapper { display: contents; cursor: pointer; }
     .tl-row-wrapper:hover .tl-name-cell, 
     .tl-row-wrapper:hover .tl-track-cell { background: #F8FAFC; }
@@ -160,21 +148,21 @@
 
     /* Линия */
     .tl-line {
-      position: absolute; top: 50%; left: 0; width: 100%; height: 3px;
+      position: absolute; top: 50%; left: 0; width: 100%; height: 4px;
       background: #CBD5E1; transform: translateY(-50%); z-index: 1;
     }
     
     /* Точки */
     .tl-dot {
-      width: 14px; height: 14px; border-radius: 50%; background: #94A3B8;
-      position: relative; z-index: 2; border: 3px solid var(--surface);
-      box-shadow: 0 0 0 1px #94A3B8;
+      width: 12px; height: 12px; border-radius: 50%; background: #CBD5E1;
+      position: relative; z-index: 2; border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px #CBD5E1;
     }
     .tl-dot.done { background: #1E3A8A; box-shadow: 0 0 0 1px #1E3A8A; }
     
     /* Звезды */
     .tl-star {
-      position: absolute; z-index: 3; font-size: 36px; line-height: 1;
+      position: absolute; z-index: 3; font-size: 40px; line-height: 1;
       filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
       animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
@@ -184,12 +172,6 @@
     .tl-star.joint { color: #F59E0B; }
     .tl-star.po { color: #10B981; }
 
-    /* Подписи (План/Сделано) */
-    .tl-q-label {
-      position: absolute; bottom: 4px; left: 0; width: 100%; text-align: center;
-      font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px;
-    }
-
     /* Раскрывашка */
     .tl-details-cell {
       grid-column: 1 / -1; display: none; background: #FFFFFF;
@@ -197,7 +179,6 @@
     }
     .tl-row-wrapper.open .tl-details-cell { display: block; }
     
-    /* Старая карточка деталей */
     .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
     .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
@@ -206,11 +187,6 @@
     .info-list { display: flex; flex-direction: column; gap: 10px; }
     .info-item { font-size: 13px; color: var(--text-muted); }
     .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
-    
-    .quarters-block { margin-top: 16px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
-    .quarters-block h4 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
-    .q-item { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px;}
-    .q-item strong { color: var(--text-main); font-weight: 600; min-width: 30px; }
     
     .tl-legend { display: flex; gap: 20px; padding: 12px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; }
     .tl-legend span { display: flex; align-items: center; gap: 6px; }
@@ -255,7 +231,7 @@
   </div>
 
   <!-- ТАЙМЛАЙН ПРОЕКТОВ -->
-  <div class="section-title">Таймлайн проектов</div>
+  <div class="section-title">Таймлайн проектов <span>по этапам</span></div>
   
   <div class="timeline-container">
     <div class="tl-legend">
@@ -264,23 +240,16 @@
       <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
     </div>
 
-    <!-- Жесткая Grid-сетка -->
+    <!-- Сетка -->
     <div class="tl-grid">
-      <!-- Шапка: Строка 1 -->
-      <div class="tl-header-cell title" style="grid-row: span 2;">Название проекта</div>
+      <!-- Шапка -->
+      <div class="tl-header-cell title">Название проекта</div>
       <div class="tl-header-cell"><h4>Анализ</h4><p>ЛНА, интервью, CJM</p></div>
       <div class="tl-header-cell"><h4>Текущее состояние</h4><p>Проблематика, первопричины</p></div>
       <div class="tl-header-cell"><h4>Целевое состояние</h4><p>Предложения, план</p></div>
       <div class="tl-header-cell"><h4>Принятие решения</h4><p>Владельцем</p></div>
-      <div class="tl-header-impl">Внедрение изменений</div>
 
-      <!-- Шапка: Строка 2 (Кварталы) -->
-      <div class="tl-header-q">I квартал</div>
-      <div class="tl-header-q">II квартал</div>
-      <div class="tl-header-q">III квартал</div>
-      <div class="tl-header-q">IV квартал</div>
-
-      <!-- Тело рендерится тут -->
+      <!-- Тело -->
       <div id="timeline-body" style="display: contents;"></div>
     </div>
   </div>
@@ -302,7 +271,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ (Без изменений)
+    // РЕНДЕР ГЛОБАЛЬНЫХ KPI И НАПРАВЛЕНИЙ
     // ============================================================
     function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
@@ -392,7 +361,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР ГРАФИКОВ (Без изменений)
+    // РЕНДЕР ГРАФИКОВ
     // ============================================================
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
@@ -413,9 +382,9 @@
 
       const stages = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
       const stageNames = ['Анализ', 'Текущее', 'Целевое', 'Решение', 'Внедрение'];
-      const stageData = stages.map(s => data.filter(p => p.stages && p.stages[s] && p.stages[s].status === 'завершён').length);
+      const stageData = stages.map(s => data.filter(p => p.current_stage === s).length); // Считаем по current_stage
       charts.stages = new Chart(document.getElementById('chart-stages'), {
-        type: 'bar', data: { labels: stageNames, datasets: [{ label: 'Завершено', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        type: 'bar', data: { labels: stageNames, datasets: [{ label: 'Проектов на этапе', data: stageData, backgroundColor: '#10B981', borderRadius: 6 }] }, options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
       const tagCounts = {};
@@ -428,7 +397,7 @@
     }
 
     // ============================================================
-    // РЕНДЕР НОВОГО ТАЙМЛАЙНА (На Grid)
+    // РЕНДЕР ТАЙМЛАЙНА (ТОЛЬКО ЭТАПЫ)
     // ============================================================
     function renderTimeline(data) {
       const container = document.getElementById('timeline-body');
@@ -437,15 +406,17 @@
         return;
       }
 
-      const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
+      const stageKeys = ['analysis', 'current_state', 'target_state', 'decision'];
       
       container.innerHTML = data.map(p => {
         let currentStageIndex = stageKeys.indexOf(p.current_stage);
-        if (currentStageIndex === -1) currentStageIndex = 0;
+        if (currentStageIndex === -1) {
+           // Если этап "implementation" или неизвестен, ставим на последний доступный
+           currentStageIndex = p.current_stage === 'implementation' ? 3 : 0; 
+        }
 
         let cellsHtml = '';
         
-        // 1. Рендерим обычные 4 этапа
         for (let i = 0; i < 4; i++) {
           let isPast = i < currentStageIndex;
           let isCurrent = i === currentStageIndex;
@@ -458,32 +429,6 @@
               <div class="tl-line"></div>
               ${!isCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
               ${starHtml}
-            </div>
-          `;
-        }
-
-        // 2. Рендерим 4 квартала (Внедрение)
-        for (let q = 1; q <= 4; q++) {
-          let qPast = currentStageIndex > 4 || (currentStageIndex === 4 && q < 2); // Допустим, Q1 пройден
-          let qCurrent = currentStageIndex === 4 && q === 2; // Допустим, сейчас Q2
-          
-          let dotClass = qPast ? 'done' : '';
-          let starHtml = qCurrent ? `<div class="tl-star ${p.stage_role || 'po'}">★</div>` : '';
-          
-          let qLabel = '';
-          if (p.stages && p.stages.implementation && p.stages.implementation.quarters) {
-             let qText = p.stages.implementation.quarters['Q'+q];
-             if (qText) {
-               qLabel = `<div class="tl-q-label" title="${esc(qText.join(', '))}">${qPast ? 'Сделано' : 'План'}: ${esc(qText.join(', '))}</div>`;
-             }
-          }
-
-          cellsHtml += `
-            <div class="tl-track-cell" style="border-right: 1px solid var(--border);">
-              <div class="tl-line"></div>
-              ${!qCurrent ? `<div class="tl-dot ${dotClass}"></div>` : ''}
-              ${starHtml}
-              ${qLabel}
             </div>
           `;
         }
