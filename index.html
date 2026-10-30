@@ -228,9 +228,10 @@
     /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ ===== */
     .dir-sections { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
     .dir-block { grid-column: span 2; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .dir-block.s3 { grid-column: span 3; }
     .dir-block.s4 { grid-column: span 4; }
     .dir-block.wide { grid-column: 1 / -1; }
-    @media (max-width: 1100px) { .dir-sections { grid-template-columns: repeat(2, 1fr); } .dir-block, .dir-block.s4 { grid-column: auto; } .dir-block.wide { grid-column: 1 / -1; } }
+    @media (max-width: 1100px) { .dir-sections { grid-template-columns: repeat(2, 1fr); } .dir-block, .dir-block.s3, .dir-block.s4 { grid-column: auto; } .dir-block.wide { grid-column: 1 / -1; } }
     @media (max-width: 700px) { .dir-sections { grid-template-columns: 1fr; } .dir-block.wide { grid-column: auto; } }
     .dir-head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
     .dir-head .dir-icon { width: 36px; height: 36px; font-size: 18px; }
@@ -466,6 +467,20 @@
           <div class="dir-cards-grid">
             ${stat('rose', '🎓', 'Обучено сотрудников', kpi.trained_employees, '&nbsp;')}
             ${stat('rose', '🏅', 'Обучено сотрудников в рамках ДПО', kpi.trained_dpo, 'по программам ДПО')}
+          </div>
+        </section>
+
+        <section class="dir-block s3">
+          ${head('indigo', '📜', 'Зарегистрированные РИД', 'Результаты интеллектуальной деятельности')}
+          <div class="dir-cards-grid">
+            ${stat('', '📜', 'Количество зарегистрированных РИД', kpi.rid_registered, 'результатов интеллектуальной деятельности')}
+          </div>
+        </section>
+
+        <section class="dir-block s3">
+          ${head('green', '📘', 'Методологии', 'Разработка методических подходов')}
+          <div class="dir-cards-grid">
+            ${stat('green', '📘', 'Количество созданных методологий', kpi.methodologies_created, 'методологий создано')}
           </div>
         </section>
       `;
