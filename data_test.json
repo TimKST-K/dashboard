@@ -1,10 +1,23 @@
 {
   "version": 1,
-  "updated": "2026-10-28",
+  "updated": "2026-10-30",
   "kpi": {
     "processes_total": 370,
     "departments_count": 12,
-    "campuses_count": 4,
+    "campuses": [
+      "Москва",
+      "Санкт-Петербург",
+      "Пермь",
+      "Нижний Новгород"
+    ],
+    "directions_list": [
+      "АХО",
+      "Управление персоналом",
+      "Закупки",
+      "Приём",
+      "Документооборот",
+      "Продажи"
+    ],
     "people_count": 1250,
     "projects_total": 15,
     "projects_support": 4,
@@ -17,8 +30,10 @@
     "strategy_sessions": 14,
     "strategy_people": 320,
     "digital_services": 8,
+    "elk_services_changed": 55,
     "lnas_verified": 45,
-    "trained_employees": 180
+    "trained_employees": 180,
+    "regulatory_docs": 62
   },
   "projects": [
     {
