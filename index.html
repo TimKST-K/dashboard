@@ -447,23 +447,26 @@
       const names = list => list.map(n => '• ' + n);
 
       // ---- Круговая диаграмма: статусы проектов (проценты показаны на секторах постоянно) ----
+      // Статус «внедрено» отдельным сектором не выводится: такие проекты учитываются как «Завершён»
       const STATUSES = [
         { key: 'в работе', label: 'В работе', color: '#3B82F6' },
         { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
-        { key: 'завершён', label: 'Завершён', color: '#10B981' },
-        { key: 'внедрено', label: 'Внедрено', color: '#6366F1' }
+        { key: 'завершён', label: 'Завершён', color: '#10B981' }
       ];
       const known = STATUSES.map(x => x.key);
-      const groups = data.some(p => !known.includes(String(p.status).toLowerCase()))
+      const norm = p => {
+        const st = String(p.status || '').trim().toLowerCase();
+        return DEPLOYED_STATUSES.includes(st) ? 'завершён' : st;
+      };
+      const groups = data.some(p => !known.includes(norm(p)))
         ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8' }] : STATUSES;
       const byStatus = groups.map(() => []);
       data.forEach(p => {
-        let gi = groups.findIndex(g => g.key === String(p.status).toLowerCase());
+        let gi = groups.findIndex(g => g.key === norm(p));
         if (gi === -1) gi = groups.length - 1;
         byStatus[gi].push(p.name);
       });
 
-      // Плагин: подписывает проценты прямо на секторах (без наведения)
       const percentLabels = {
         id: 'percentLabels',
         afterDatasetsDraw(chart) {
