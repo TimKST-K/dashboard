@@ -46,7 +46,15 @@
     .section-title span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 
     /* ===== ГЛОБАЛЬНЫЕ KPI ===== */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kpi-grid > .kpi-card { grid-column: span 4; }
+    .kpi-grid > .kpi-card.k5 { grid-column: span 5; }
+    .kpi-grid > .kpi-card.k7 { grid-column: span 7; }
+    @media (max-width: 900px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 6; } }
+    @media (max-width: 560px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 12; } }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { background: #F1F5F9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
+    .kpi-card .chips { margin-top: 2px; }
     .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); opacity: 0.8; }
@@ -217,20 +225,22 @@
     .marker-tip .mt-sub { color: #CBD5E1; }
     .marker-tip .mt-items { margin-top: 4px; }
 
-    /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ (без раскрывающихся списков) ===== */
-    .dir-sections { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 1100px) { .dir-sections { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 700px) { .dir-sections { grid-template-columns: 1fr; } }
-    .dir-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ ===== */
+    .dir-sections { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
+    .dir-block { grid-column: span 2; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .dir-block.s4 { grid-column: span 4; }
     .dir-block.wide { grid-column: 1 / -1; }
+    @media (max-width: 1100px) { .dir-sections { grid-template-columns: repeat(2, 1fr); } .dir-block, .dir-block.s4 { grid-column: auto; } .dir-block.wide { grid-column: 1 / -1; } }
+    @media (max-width: 700px) { .dir-sections { grid-template-columns: 1fr; } .dir-block.wide { grid-column: auto; } }
     .dir-head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
     .dir-head .dir-icon { width: 36px; height: 36px; font-size: 18px; }
     .dir-head.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
     .dir-head.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
     .dir-head.indigo .dir-icon { background: #EEF2FF; color: var(--accent-blue); }
+    .dir-head.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
     .dir-head h3 { font-size: 15px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
     .dir-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .dir-block .dir-cards-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .dir-block .dir-cards-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
     .dir-block .dir-card, .dir-block .opt-total-card, .dir-block .artifact-card { background: #F8FAFC; box-shadow: none; }
     .dir-block .optimization-layout { grid-template-columns: minmax(240px, 1fr) 3fr; gap: 16px 24px; align-items: start; }
     @media (max-width: 900px) { .dir-block .optimization-layout { grid-template-columns: 1fr; } }
@@ -381,11 +391,16 @@
     // ============================================================
     function renderGlobalKpis(kpi) {
       const grid = document.getElementById('kpi-grid');
+      const num = x => (x == null ? '—' : esc(x));
+      const chips = arr => (Array.isArray(arr) && arr.length)
+        ? `<div class="chips">${arr.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>`
+        : `<div class="value">—</div>`;
       grid.innerHTML = `
-        <div class="kpi-card blue"><div class="label">Процессы в реестре</div><div class="value">${kpi.processes_total || '—'}</div><div class="sub">охват процессов</div></div>
-        <div class="kpi-card"><div class="label">Подразделения</div><div class="value">${kpi.departments_count || '—'}</div><div class="sub">вовлечено в работу</div></div>
-        <div class="kpi-card green"><div class="label">Кампусы</div><div class="value">${kpi.campuses_count || '—'}</div><div class="sub">география проектов</div></div>
-        <div class="kpi-card orange"><div class="label">Участники</div><div class="value">${kpi.people_count || '—'}</div><div class="sub">человек задействовано</div></div>
+        <div class="kpi-card blue"><div class="label">Процессы в реестре</div><div class="value">${num(kpi.processes_total)}</div><div class="sub">охват процессов</div></div>
+        <div class="kpi-card"><div class="label">Подразделения</div><div class="value">${num(kpi.departments_count)}</div><div class="sub">вовлечено в работу</div></div>
+        <div class="kpi-card orange"><div class="label">Участники</div><div class="value">${num(kpi.people_count)}</div><div class="sub">человек задействовано</div></div>
+        <div class="kpi-card green k5"><div class="label">Кампусы</div>${chips(kpi.campuses)}<div class="sub">география проектов</div></div>
+        <div class="kpi-card blue k7"><div class="label">Перечень направлений</div>${chips(kpi.directions_list)}<div class="sub">направления, в которых мы работали</div></div>
       `;
     }
 
@@ -430,18 +445,26 @@
           </div>
         </section>
 
-        <section class="dir-block">
-          ${head('green', '💻', 'Цифровые сервисы', 'Разработка и внедрение IT-решений и сервисов с нуля')}
+        <section class="dir-block s4">
+          ${head('green', '💻', 'Цифровые сервисы', 'Разработка и внедрение IT-решений и сервисов')}
           <div class="dir-cards-grid">
             ${stat('green', '💻', 'Разработано сервисов', kpi.digital_services, 'с нуля')}
+            ${stat('green', '🔧', 'Внесение изменений в сервисы ЕЛК', kpi.elk_services_changed, 'количество изменённых сервисов')}
+          </div>
+        </section>
+
+        <section class="dir-block s4">
+          ${head('orange', '📄', 'Работа с ЛНА', 'Локальные нормативные акты и регламентирующие документы')}
+          <div class="dir-cards-grid">
+            ${stat('orange', '📑', 'Регламентирующие документы', kpi.regulatory_docs, 'разработано, актуализировано и верифицировано')}
+            ${stat('orange', '📄', 'ЛНА, прошедшие верификацию', kpi.lnas_verified, 'на человекоцентричность')}
           </div>
         </section>
 
         <section class="dir-block">
-          ${head('orange', '📄', 'ЛНА и обучение', 'Нормативные документы и развитие персонала')}
+          ${head('rose', '🎓', 'Проведённое обучение, в том числе ДПО', 'Развитие персонала')}
           <div class="dir-cards-grid">
-            ${stat('orange', '📄', 'Верифицировано ЛНА', kpi.lnas_verified, 'на человекоцентричность')}
-            ${stat('rose', '🎓', 'Обучено сотрудников', kpi.trained_employees, 'по программам ДПО')}
+            ${stat('rose', '🎓', 'Обучено сотрудников', kpi.trained_employees, 'в том числе по программам ДПО')}
           </div>
         </section>
       `;
