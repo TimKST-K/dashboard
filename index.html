@@ -212,18 +212,6 @@
     .lg-dot, .lg-ring { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #1D4ED8; }
     .lg-ring { background: #fff; border: 2px solid #3B82F6; }
     .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; font-weight: 700; }
-    .chart-card.wide { grid-column: 1 / -1; }
-    .chart-card .chart-note { font-weight: 400; color: var(--text-muted); }
-    .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-muted); margin: -6px 0 12px; align-items: center; }
-    .chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
-    .chart-legend .dm { display: inline-block; width: 7px; height: 7px; transform: rotate(45deg); margin: 0 7px 0 3px; vertical-align: 0; border: 1.5px solid #1E3A8A; background: #fff; }
-    .chart-legend .dm.cur { background: #F59E0B; border-color: #F59E0B; }
-    .chart-legend .dm.plan { border: 1.5px dashed #64748B; }
-    .chart-legend .ok { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: #10B981; color: #fff; font-size: 10px; line-height: 14px; text-align: center; font-weight: 700; margin-right: 6px; }
-    .marker-tip { position: absolute; z-index: 5; pointer-events: none; display: none; max-width: 260px; background: #1E293B; color: #fff; border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-    .marker-tip b { display: block; font-size: 13px; margin-bottom: 2px; }
-    .marker-tip .mt-sub { color: #CBD5E1; }
-    .marker-tip .mt-items { margin-top: 4px; }
 
     /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ ===== */
     .dir-sections { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -280,33 +268,8 @@
   <!-- ГРАФИКИ -->
   <div class="section-title">Аналитика</div>
   <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Проекты по этапам и статусам <span class="chart-note">— где находятся проекты и в каком они состоянии</span></h3>
-      <div class="chart-wrap"><canvas id="chart-stage-status"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Динамика внедрения по кварталам <span class="chart-note">— завершённые итоги (столбцы) и накопленный итог (линия)</span></h3>
-      <div class="chart-wrap" id="dynamics-wrap"><canvas id="chart-dynamics"></canvas></div>
-    </div>
-    <div class="chart-card wide">
-      <h3>Сроки проектов и внедрение изменений (диаграмма Ганта)</h3>
-      <div class="chart-legend">
-        <span><i style="background:#3B82F6"></i>В работе</span>
-        <span><i style="background:#10B981"></i>Завершён</span>
-        <span><i style="background:#6366F1"></i>Внедрено</span>
-        <span><i style="background:#F43F5E"></i>На паузе</span>
-        <span><span class="dm"></span>Квартал внедрения (завершён)</span>
-        <span><span class="dm cur"></span>Идёт сейчас</span>
-        <span><span class="dm plan"></span>Запланирован</span>
-        <span><span class="ok">✓</span>Изменение внедрено</span>
-        <span style="color:#F43F5E">┆ линия «Сегодня»</span>
-      </div>
-      <div class="chart-wrap" id="gantt-wrap"><canvas id="chart-gantt"></canvas></div>
-    </div>
-    <div class="chart-card wide">
-      <h3>Внедрение по кварталам <span class="chart-note">— число проектов с работами в квартале (детали при наведении)</span></h3>
-      <div class="chart-wrap" id="quarters-wrap"><canvas id="chart-quarters"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Статусы проектов</h3><div class="chart-wrap"><canvas id="chart-status"></canvas></div></div>
+    <div class="chart-card"><h3>Этапы реализации проектов</h3><div class="chart-wrap"><canvas id="chart-stages"></canvas></div></div>
   </div>
 
   <!-- ТАЙМЛАЙН ПРОЕКТОВ -->
@@ -354,19 +317,7 @@
       return m ? `Q${m[2]} ’${m[1].slice(2)}` : String(key);
     }
 
-    function implQuarters(p) {
-      const q = (p.stages && p.stages.implementation && p.stages.implementation.quarters) || {};
-      const dep = isDeployedStatus(p);
-      return Object.keys(q).sort().map(k => {
-        const v = q[k];
-        const items = Array.isArray(v) ? v : ((v && v.items) || []);
-        let st = Array.isArray(v) ? 'done' : (v && v.status === 'в работе' ? 'current' : (v && v.status === 'запланирован' ? 'planned' : 'done'));
-        if (dep) st = 'done';
-        const m = String(k).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
-        return { key: k, label: qLabel(k), items, st, t: m ? Date.UTC(+m[1], +m[2] * 3, 0) : null };
-      });
-    }
-
+    // Текущий этап проекта (та же логика, что и в таймлайне)
     const STAGE_KEYS = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
     function projectStageKey(p) {
       if (isDeployedStatus(p)) return 'deployed';
@@ -492,8 +443,10 @@
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
+      const commonLegend = { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } };
+      const names = list => list.map(n => '• ' + n);
 
-      const STAGES = [['analysis', 'Анализ'], ['current_state', 'Текущее'], ['target_state', 'Целевое'], ['decision', 'Решение'], ['implementation', 'Внедрение'], ['deployed', 'Внедрено']];
+      // ---- Круговая диаграмма: статусы проектов ----
       const STATUSES = [
         { key: 'в работе', label: 'В работе', color: '#3B82F6' },
         { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
@@ -501,311 +454,42 @@
         { key: 'внедрено', label: 'Внедрено', color: '#6366F1' }
       ];
       const known = STATUSES.map(x => x.key);
-      const usedOther = data.some(p => !known.includes(String(p.status).toLowerCase()));
-      const groups = usedOther ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8' }] : STATUSES;
-      const grid = groups.map(() => STAGES.map(() => []));
+      const groups = data.some(p => !known.includes(String(p.status).toLowerCase()))
+        ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8' }] : STATUSES;
+      const byStatus = groups.map(() => []);
       data.forEach(p => {
-        const si = STAGES.findIndex(x => x[0] === projectStageKey(p));
         let gi = groups.findIndex(g => g.key === String(p.status).toLowerCase());
         if (gi === -1) gi = groups.length - 1;
-        grid[gi][si].push(p.name);
+        byStatus[gi].push(p.name);
       });
-      charts.stageStatus = new Chart(document.getElementById('chart-stage-status'), {
+      charts.status = new Chart(document.getElementById('chart-status'), {
+        type: 'doughnut',
+        data: { labels: groups.map(g => g.label), datasets: [{ data: byStatus.map(a => a.length), backgroundColor: groups.map(g => g.color), borderWidth: 0 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '70%',
+          plugins: {
+            legend: commonLegend,
+            tooltip: { callbacks: { afterBody: items => names(byStatus[items[0].dataIndex]) } }
+          }
+        }
+      });
+
+      // ---- Гистограмма: этапы реализации проектов ----
+      const STAGES = [['analysis', 'Анализ'], ['current_state', 'Текущее'], ['target_state', 'Целевое'], ['decision', 'Решение'], ['implementation', 'Внедрение'], ['deployed', 'Внедрено']];
+      const byStage = STAGES.map(() => []);
+      data.forEach(p => { byStage[STAGES.findIndex(x => x[0] === projectStageKey(p))].push(p.name); });
+      charts.stages = new Chart(document.getElementById('chart-stages'), {
         type: 'bar',
-        data: {
-          labels: STAGES.map(x => x[1]),
-          datasets: groups.map((g, gi) => ({ label: g.label, data: grid[gi].map(a => a.length), backgroundColor: g.color, maxBarThickness: 56 }))
-        },
+        data: { labels: STAGES.map(x => x[1]), datasets: [{ label: 'Проектов на этапе', data: byStage.map(a => a.length), backgroundColor: '#10B981', borderRadius: 6, maxBarThickness: 56 }] },
         options: {
           responsive: true, maintainAspectRatio: false,
-          interaction: { mode: 'nearest', intersect: true },
           plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
-            tooltip: { callbacks: {
-              label: c => `${c.dataset.label}: ${c.parsed.y}`,
-              afterBody: items => grid[items[0].datasetIndex][items[0].dataIndex].map(n => '• ' + n)
-            } }
+            legend: { display: false },
+            tooltip: { callbacks: { afterBody: items => names(byStage[items[0].dataIndex]) } }
           },
-          scales: {
-            x: { stacked: true, grid: { display: false } },
-            y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 }, title: { display: true, text: 'Проектов', font: { size: 11 } } }
-          }
+          scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } }
         }
       });
-
-      const rows = {};
-      data.forEach(p => implQuarters(p).forEach(q => {
-        if (q.st !== 'done' || q.t == null) return;
-        const r = rows[q.key] = rows[q.key] || { n: 0, det: [] };
-        r.n += Math.max(q.items.length, 1);
-        r.det.push(`${p.name}: ${q.items.join(', ') || '—'}`);
-      }));
-      const dWrap = document.getElementById('dynamics-wrap');
-      const found = Object.keys(rows).sort();
-      if (!found.length) {
-        dWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет завершённых кварталов внедрения с указанным годом</div>';
-      } else {
-        const parse = k => { const m = k.match(/^(\d{4})-Q([1-4])$/i); return +m[1] * 4 + (+m[2] - 1); };
-        const first = parse(found[0]), last = parse(found[found.length - 1]);
-        const keys = [];
-        for (let n = first; n <= last; n++) keys.push(`${Math.floor(n / 4)}-Q${(n % 4) + 1}`);
-        const perQ = keys.map(k => (rows[k] ? rows[k].n : 0));
-        let acc = 0; const cum = perQ.map(v => (acc += v));
-        charts.dynamics = new Chart(document.getElementById('chart-dynamics'), {
-          data: {
-            labels: keys.map(qLabel),
-            datasets: [
-              { type: 'bar', label: 'Завершено итогов в квартале', data: perQ, backgroundColor: '#1D4ED8', maxBarThickness: 40, borderRadius: 6, order: 2 },
-              { type: 'line', label: 'Накопленный итог', data: cum, borderColor: '#10B981', backgroundColor: '#10B981', tension: 0.25, pointRadius: 3, borderWidth: 2, order: 1 }
-            ]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
-              tooltip: { callbacks: {
-                afterBody: items => (rows[keys[items[0].dataIndex]] ? rows[keys[items[0].dataIndex]].det.map(t => '• ' + t) : [])
-              } }
-            },
-            scales: {
-              x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 0 } },
-              y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Итогов', font: { size: 11 } } }
-            }
-          }
-        });
-      }
-    }
-
-    function renderExtraCharts(data) {
-      const DAY = 86400000;
-      const statusColor = { 'в работе': '#3B82F6', 'завершён': '#10B981', 'внедрено': '#6366F1', 'на паузе': '#F43F5E' };
-      const qMark = { done: '●', current: '★', planned: '○' };
-      const qStatusText = { done: 'Завершён', current: 'В работе', planned: 'Запланирован' };
-      const fmtShort = v => new Date(v).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'UTC' });
-      const fmtFull = v => new Date(v).toLocaleDateString('ru-RU', { timeZone: 'UTC' });
-      const fmtDate = v => new Date(v).toLocaleDateString('ru-RU', { month: 'short', year: '2-digit', timeZone: 'UTC' });
-
-      const withDates = data
-        .map(p => ({ p, s: Date.parse(p.start), e: Date.parse(p.end) }))
-        .filter(x => !isNaN(x.s) && !isNaN(x.e) && x.e >= x.s)
-        .sort((a, b) => a.s - b.s)
-        .map(x => {
-          const quarters = implQuarters(x.p);
-          let deployedAt = null;
-          if (isDeployedStatus(x.p)) {
-            const ends = quarters.filter(q => q.t).map(q => q.t);
-            deployedAt = ends.length ? Math.max(...ends) : x.e;
-          }
-          return { ...x, quarters, deployedAt };
-        });
-
-      const gWrap = document.getElementById('gantt-wrap');
-      if (!withDates.length) {
-        gWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет проектов с датами начала и окончания</div>';
-      } else {
-        gWrap.style.height = Math.max(260, 110 + withDates.length * 44) + 'px';
-        const now = Date.now();
-        const allT = withDates.flatMap(x => [x.s, x.e, ...x.quarters.filter(q => q.t).map(q => q.t), ...(x.deployedAt ? [x.deployedAt] : [])]);
-        const xMin = Math.min(...allT, now) - 30 * DAY;
-        const xMax = Math.max(...allT, now) + 30 * DAY;
-
-        const canvas = document.getElementById('chart-gantt');
-        const old = document.getElementById('marker-tip'); if (old) old.remove();
-        const tip = document.createElement('div');
-        tip.id = 'marker-tip'; tip.className = 'marker-tip';
-        gWrap.appendChild(tip);
-        const markers = [];
-
-        function findMarker(mx, my) {
-          let best = null, bestD = Infinity;
-          markers.forEach(m => {
-            const d = Math.hypot(mx - m.x, my - m.y);
-            if (d <= m.r && d < bestD) { best = m; bestD = d; }
-          });
-          return best;
-        }
-        canvas.addEventListener('mousemove', e => {
-          const rect = canvas.getBoundingClientRect();
-          const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-          const hit = findMarker(mx, my);
-          if (hit) {
-            tip.innerHTML = hit.html;
-            tip.style.display = 'block';
-            const w = tip.offsetWidth, h = tip.offsetHeight;
-            let left = mx + 14, top = my - h - 10;
-            if (left + w > rect.width) left = mx - w - 14;
-            if (left < 0) left = 0;
-            if (top < 0) top = my + 16;
-            tip.style.left = left + 'px'; tip.style.top = top + 'px';
-            canvas.style.cursor = 'pointer';
-          } else {
-            tip.style.display = 'none';
-            canvas.style.cursor = '';
-          }
-        });
-        canvas.addEventListener('mouseleave', () => { tip.style.display = 'none'; canvas.style.cursor = ''; });
-
-        const tipHtml = (title, sub, project, items) =>
-          `<b>${esc(title)}</b><div class="mt-sub">${esc(sub)}</div><div class="mt-sub">${esc(project)}</div>` +
-          (items && items.length ? `<div class="mt-items">${items.map(i => '• ' + esc(i)).join('<br>')}</div>` : '');
-
-        const overlay = {
-          id: 'ganttOverlay',
-          afterDatasetsDraw(chart) {
-            const { ctx, chartArea, scales } = chart;
-            const X = scales.x, Y = scales.y;
-            const R = 4.5;
-            const H = 7;
-            const axisY = chartArea.bottom;
-            const marks = [];
-            markers.length = 0;
-            ctx.save();
-
-            if (now >= X.min && now <= X.max) {
-              const px = X.getPixelForValue(now);
-              ctx.strokeStyle = '#F43F5E'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-              ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, axisY); ctx.stroke();
-              ctx.setLineDash([]); ctx.fillStyle = '#F43F5E'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
-              ctx.fillText('Сегодня', px, chartArea.top - 6);
-            }
-
-            const points = [];
-            withDates.forEach((row, i) => {
-              const y = Y.getPixelForValue(i);
-              row.quarters.forEach(q => {
-                if (q.t == null || q.t < X.min || q.t > X.max) return;
-                points.push({
-                  y, t: q.t, st: q.st, check: false, skip: row.deployedAt === q.t,
-                  html: tipHtml(`${q.label} · до ${fmtFull(q.t)}`, qStatusText[q.st], row.p.name, q.items)
-                });
-              });
-              if (row.deployedAt != null && row.deployedAt >= X.min && row.deployedAt <= X.max) {
-                const last = row.quarters.find(q => q.t === row.deployedAt);
-                points.push({
-                  y, t: row.deployedAt, st: 'done', check: true,
-                  html: tipHtml(`Внедрено · ${fmtFull(row.deployedAt)}`, last ? `Последний этап: ${last.label}` : 'Изменение внедрено', row.p.name, last ? last.items : [])
-                });
-              }
-            });
-
-            ctx.strokeStyle = 'rgba(51,65,85,0.45)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
-            points.forEach(pt => {
-              if (pt.skip) return;
-              const x = X.getPixelForValue(pt.t);
-              ctx.beginPath(); ctx.moveTo(x, pt.y + (pt.check ? H : R)); ctx.lineTo(x, axisY); ctx.stroke();
-              marks.push({ t: pt.t, x });
-            });
-            ctx.setLineDash([]);
-
-            points.forEach(pt => {
-              if (pt.skip) return;
-              const x = X.getPixelForValue(pt.t), y = pt.y;
-              markers.push({ x, y, r: (pt.check ? H : R) + 4, html: pt.html });
-              if (pt.check) {
-                ctx.fillStyle = '#10B981'; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(x - H, y - H, H * 2, H * 2, 3); else ctx.rect(x - H, y - H, H * 2, H * 2);
-                ctx.fill(); ctx.stroke();
-                ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText('✓', x, y + 0.5);
-                return;
-              }
-              ctx.beginPath(); ctx.moveTo(x, y - R); ctx.lineTo(x + R, y); ctx.lineTo(x, y + R); ctx.lineTo(x - R, y); ctx.closePath();
-              ctx.lineWidth = 1.5;
-              if (pt.st === 'done') { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#1E3A8A'; ctx.setLineDash([]); }
-              else if (pt.st === 'current') { ctx.fillStyle = '#F59E0B'; ctx.strokeStyle = '#FFFFFF'; ctx.setLineDash([]); }
-              else { ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#64748B'; ctx.setLineDash([2, 2]); }
-              ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
-            });
-
-            const uniq = [...new Map(marks.map(m => [m.t, m])).values()].sort((a, b) => a.x - b.x);
-            ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
-            let lastX = -Infinity;
-            uniq.forEach(m => {
-              ctx.fillStyle = '#1E3A8A';
-              ctx.beginPath(); ctx.moveTo(m.x, axisY + 1); ctx.lineTo(m.x - 3, axisY + 6); ctx.lineTo(m.x + 3, axisY + 6); ctx.closePath(); ctx.fill();
-              if (m.x - lastX < 50) return;
-              ctx.font = 'bold 10px sans-serif';
-              ctx.fillText(fmtShort(m.t), m.x, X.bottom + 14);
-              lastX = m.x;
-            });
-            ctx.restore();
-          }
-        };
-
-        charts.gantt = new Chart(canvas, {
-          type: 'bar',
-          data: {
-            labels: withDates.map(x => x.p.name),
-            datasets: [{
-              data: withDates.map(x => [x.s, x.e]),
-              backgroundColor: withDates.map(x => statusColor[String(x.p.status).toLowerCase()] || '#94A3B8'),
-              borderRadius: 6, borderSkipped: false, barPercentage: 0.6
-            }]
-          },
-          options: {
-            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-            layout: { padding: { top: 16, bottom: 22 } },
-            events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
-            plugins: { legend: { display: false }, tooltip: { enabled: false } },
-            scales: {
-              x: {
-                type: 'linear', min: xMin, max: xMax,
-                afterBuildTicks(scale) {
-                  const out = [];
-                  const d = new Date(scale.min); d.setUTCDate(1); d.setUTCMonth(Math.floor(d.getUTCMonth() / 6) * 6);
-                  while (d.getTime() <= scale.max) {
-                    if (d.getTime() >= scale.min) out.push({ value: d.getTime() });
-                    d.setUTCMonth(d.getUTCMonth() + 6);
-                  }
-                  scale.ticks = out;
-                },
-                ticks: { callback: v => fmtDate(v), maxRotation: 0, font: { size: 11 } },
-                grid: { color: '#EEF2F7' }
-              },
-              y: { grid: { display: false }, ticks: { callback: function (v) { const t = this.getLabelForValue(v); return t.length > 30 ? t.slice(0, 29) + '…' : t; } } }
-            }
-          },
-          plugins: [overlay]
-        });
-      }
-
-      const byQ = {};
-      data.forEach(p => {
-        implQuarters(p).forEach(q => { (byQ[q.key] = byQ[q.key] || []).push({ name: p.name, items: q.items, st: q.st }); });
-      });
-      const qKeys = Object.keys(byQ).sort();
-      const qWrap = document.getElementById('quarters-wrap');
-      if (!qKeys.length) {
-        qWrap.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">Нет данных по кварталам внедрения</div>';
-      } else {
-        const countBy = st => qKeys.map(k => byQ[k].filter(e => e.st === st).length);
-        charts.quarters = new Chart(document.getElementById('chart-quarters'), {
-          type: 'bar',
-          data: {
-            labels: qKeys.map(qLabel),
-            datasets: [
-              { label: 'Завершено', data: countBy('done'), backgroundColor: '#1D4ED8', maxBarThickness: 56 },
-              { label: 'В работе', data: countBy('current'), backgroundColor: '#F59E0B', maxBarThickness: 56 },
-              { label: 'Запланировано', data: countBy('planned'), backgroundColor: '#93C5FD', maxBarThickness: 56, borderRadius: 6 }
-            ]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-              legend: { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } },
-              tooltip: { callbacks: {
-                afterBody: items => byQ[qKeys[items[0].dataIndex]].map(e => `${qMark[e.st]} ${e.name}: ${e.items.join(', ') || '—'}`)
-              } }
-            },
-            scales: {
-              x: { stacked: true, grid: { display: false } },
-              y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 }, title: { display: true, text: 'Проектов', font: { size: 11 } } }
-            }
-          }
-        });
-      }
     }
 
     // ============================================================
@@ -946,7 +630,6 @@
         renderGlobalKpis(globalKpi);
         renderDirections(globalKpi);
         renderCharts(rawData);
-        renderExtraCharts(rawData);
         renderTimeline(rawData);
       })
       .catch(err => {
