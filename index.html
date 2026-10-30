@@ -47,10 +47,10 @@
 
     /* ===== ГЛОБАЛЬНЫЕ KPI ===== */
     .kpi-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px; }
-    .kpi-grid > .kpi-card { grid-column: span 4; }
+    .kpi-grid > .kpi-card { grid-column: span 3; }
     .kpi-grid > .kpi-card.k5 { grid-column: span 5; }
     .kpi-grid > .kpi-card.k7 { grid-column: span 7; }
-    @media (max-width: 900px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 6; } }
+    @media (max-width: 1000px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 6; } }
     @media (max-width: 560px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 12; } }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { background: #F1F5F9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
@@ -231,10 +231,11 @@
     .dir-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .dir-block .dir-cards-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
     .dir-block .dir-card, .dir-block .opt-total-card, .dir-block .artifact-card { background: #F8FAFC; box-shadow: none; }
-    .dir-block .optimization-layout { grid-template-columns: minmax(240px, 1fr) 3fr; gap: 16px 24px; align-items: start; }
+    .dir-block .optimization-layout { grid-template-columns: minmax(240px, 1fr) 3fr; gap: 16px 24px; align-items: stretch; }
     @media (max-width: 900px) { .dir-block .optimization-layout { grid-template-columns: 1fr; } }
-    .dir-block .opt-totals { gap: 12px; }
-    .dir-block .opt-total-card { padding: 14px 16px; flex: none; }
+    .dir-block .opt-left { display: flex; flex-direction: column; }
+    .dir-block .opt-totals { gap: 12px; flex: 1; }
+    .dir-block .opt-total-card { padding: 14px 16px; flex: 1; }
     .dir-block .opt-total-card .dir-icon { width: 40px; height: 40px; font-size: 20px; }
     .dir-block .opt-total-card .dir-content .val { font-size: 26px; margin-bottom: 2px; }
     .dir-block .artifacts-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -317,7 +318,6 @@
       return m ? `Q${m[2]} ’${m[1].slice(2)}` : String(key);
     }
 
-    // Текущий этап проекта (та же логика, что и в таймлайне)
     const STAGE_KEYS = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
     function projectStageKey(p) {
       if (isDeployedStatus(p)) return 'deployed';
@@ -351,6 +351,7 @@
         <div class="kpi-card blue"><div class="label">Процессы в реестре</div><div class="value">${num(kpi.processes_total)}</div><div class="sub">охват процессов</div></div>
         <div class="kpi-card"><div class="label">Подразделения</div><div class="value">${num(kpi.departments_count)}</div><div class="sub">вовлечено в работу</div></div>
         <div class="kpi-card orange"><div class="label">Участники</div><div class="value">${num(kpi.people_count)}</div><div class="sub">человек задействовано</div></div>
+        <div class="kpi-card green"><div class="label">Количество проектов</div><div class="value">${num(kpi.projects_total)}</div><div class="sub">в работе и завершено</div></div>
         <div class="kpi-card green k5"><div class="label">Кампусы</div>${chips(kpi.campuses)}<div class="sub">география проектов</div></div>
         <div class="kpi-card blue k7"><div class="label">Перечень направлений</div>${chips(kpi.directions_list)}<div class="sub">направления, в которых мы работали</div></div>
       `;
@@ -368,11 +369,10 @@
         <section class="dir-block wide">
           ${head('', '📊', 'Проекты по оптимизации процессов', 'Комплексная работа по улучшению процессов (включая обеспечивающие)')}
           <div class="optimization-layout">
-            <div>
+            <div class="opt-left">
               <div class="dir-sub-title">Портфель проектов</div>
               <div class="opt-totals">
                 <div class="opt-total-card"><div class="dir-icon">📊</div><div class="dir-content"><h4>Всего проектов</h4><div class="val">${esc(n(kpi.projects_total))}</div><p>в работе и завершено</p></div></div>
-                <div class="opt-total-card"><div class="dir-icon">⚙️</div><div class="dir-content"><h4>Обеспечивающие</h4><div class="val">${esc(n(kpi.projects_support))}</div><p>из общего числа проектов</p></div></div>
               </div>
             </div>
             <div class="opt-artifacts">
@@ -446,7 +446,7 @@
       const commonLegend = { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } };
       const names = list => list.map(n => '• ' + n);
 
-      // ---- Круговая диаграмма: статусы проектов ----
+      // ---- Круговая диаграмма: статусы проектов (проценты показаны на секторах постоянно) ----
       const STATUSES = [
         { key: 'в работе', label: 'В работе', color: '#3B82F6' },
         { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
@@ -462,16 +462,42 @@
         if (gi === -1) gi = groups.length - 1;
         byStatus[gi].push(p.name);
       });
+
+      // Плагин: подписывает проценты прямо на секторах (без наведения)
+      const percentLabels = {
+        id: 'percentLabels',
+        afterDatasetsDraw(chart) {
+          const ds = chart.data.datasets[0].data;
+          const total = ds.reduce((a, b) => a + b, 0);
+          if (!total) return;
+          const { ctx } = chart;
+          const arcs = chart.getDatasetMeta(0).data;
+          ctx.save();
+          ctx.font = 'bold 12px sans-serif';
+          ctx.fillStyle = '#FFFFFF';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          arcs.forEach((arc, i) => {
+            if (!ds[i]) return;
+            const pct = Math.round(ds[i] / total * 100);
+            const pos = arc.getCenterPoint();
+            ctx.fillText(pct + '%', pos.x, pos.y);
+          });
+          ctx.restore();
+        }
+      };
+
       charts.status = new Chart(document.getElementById('chart-status'), {
         type: 'doughnut',
         data: { labels: groups.map(g => g.label), datasets: [{ data: byStatus.map(a => a.length), backgroundColor: groups.map(g => g.color), borderWidth: 0 }] },
         options: {
-          responsive: true, maintainAspectRatio: false, cutout: '70%',
+          responsive: true, maintainAspectRatio: false, cutout: '62%',
           plugins: {
             legend: commonLegend,
             tooltip: { callbacks: { afterBody: items => names(byStatus[items[0].dataIndex]) } }
           }
-        }
+        },
+        plugins: [percentLabels]
       });
 
       // ---- Гистограмма: этапы реализации проектов ----
