@@ -223,7 +223,7 @@
     .info-item { font-size: 13px; color: var(--text-muted); }
     .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
     
-    .tl-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 14px 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); background: #fff; position: relative; }
+    .tl-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 14px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; position: relative; }
     .lg-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #1D4ED8; }
     .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; font-weight: 700; }
 
@@ -291,6 +291,15 @@
   <div class="section-title">Таймлайн проектов <span>по этапам</span></div>
   
   <div class="timeline-container">
+    <!-- Легенда над таблицей -->
+    <div class="tl-legend">
+      <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
+      <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
+      <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
+      <span><span class="lg-dot"></span> Этап / квартал завершён</span>
+      <span><span class="lg-check">✓</span> Внедрено</span>
+    </div>
+
     <div class="tl-scroll">
       <div class="tl-grid" id="tl-grid">
         <div class="tl-header-cell title">Название проекта</div>
@@ -304,13 +313,6 @@
 
         <div id="timeline-body" style="display: contents;"></div>
       </div>
-    </div>
-    <div class="tl-legend">
-      <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
-      <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
-      <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
-      <span><span class="lg-dot"></span> Этап / квартал завершён</span>
-      <span><span class="lg-check">✓</span> Внедрено</span>
     </div>
   </div>
 
