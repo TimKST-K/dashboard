@@ -8,8 +8,7 @@
   <style>
     /* ===== ФИРМЕННЫЙ ШРИФТ Brand (Regular / Italic / Black) =====
        Основной путь: fonts/Brand-Regular.otf, fonts/Brand-Italic.otf, fonts/Brand-Black.otf.
-       Запасные пути - на случай, если файлы загружены с именами вида «fonts:Brand-*.otf».
-       Браузер пробует адреса по очереди. */
+       Запасные пути - на случай, если файлы загружены с именами вида «fonts:Brand-*.otf». */
     @font-face { font-family: 'Brand'; font-style: normal; font-weight: 400; font-display: swap;
       src: url('fonts/Brand-Regular.otf') format('opentype'),
            url('fonts/fonts%3ABrand-Regular.otf') format('opentype'),
@@ -25,17 +24,17 @@
 
     /* ===== БАЗА И ПЕРЕМЕННЫЕ ===== */
     :root {
-      --bg: #F4F6F9;
+      --bg: #F2F2F2;
       --surface: #FFFFFF;
-      --text-main: #1E293B;
-      --text-muted: #64748B;
-      --border: #E2E8F0;
-      --primary: #3B82F6;
-      --primary-hover: #2563EB;
-      --accent-green: #10B981;
-      --accent-rose: #F43F5E;
-      --accent-blue: #6366F1;
-      --accent-orange: #F59E0B;
+      --text-main: #1A1A1A;
+      --text-muted: #666666;
+      --border: #E6E6E6;
+      --primary: #234B9B;
+      --primary-hover: #0F2D69;
+      --accent-green: #009B64;
+      --accent-rose: #E61E3C;
+      --accent-blue: #0F2D69;
+      --accent-orange: #EB691E;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
       --radius: 12px;
@@ -70,7 +69,7 @@
     @media (max-width: 1000px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 6; } }
     @media (max-width: 560px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 12; } }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { background: #F1F5F9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; color: var(--text-main); line-height: 1.4; }
+    .chip { background: #EDEDED; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; color: var(--text-main); line-height: 1.4; }
     .kpi-card .chips { margin-top: 2px; }
     .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
@@ -85,26 +84,26 @@
     /* ===== АККОРДЕОН (Направления) ===== */
     .accordion-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden; }
     .accordion-table { width: 100%; border-collapse: collapse; }
-    .accordion-table th { text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); background: #F8FAFC; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
+    .accordion-table th { text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); background: #F6F6F6; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
     .accordion-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     .acc-row { transition: background 0.2s; cursor: pointer; }
-    .acc-row:hover { background: #F8FAFC; }
-    .acc-row.open { background: #F8FAFC; border-bottom: none; }
+    .acc-row:hover { background: #F6F6F6; }
+    .acc-row.open { background: #F6F6F6; border-bottom: none; }
     .acc-title { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-    .acc-title .arrow { font-size: 10px; color: #94A3B8; transition: transform 0.3s; }
+    .acc-title .arrow { font-size: 10px; color: #929292; transition: transform 0.3s; }
     .acc-row.open .arrow { transform: rotate(90deg); }
     .details-row { display: none; background: #FFFFFF; }
     .acc-row.open + .details-row { display: table-row; }
     .details-cell { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border); }
-    .details-container { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 20px; animation: slideDown 0.3s ease-out; }
+    .details-container { background: #F6F6F6; border: 1px solid var(--border); border-radius: 8px; padding: 20px; animation: slideDown 0.3s ease-out; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
     .dir-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .dir-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-    .dir-icon { width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .dir-card.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
-    .dir-card.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
-    .dir-card.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
+    .dir-icon { width: 40px; height: 40px; border-radius: 10px; background: #E6ECF7; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .dir-card.green .dir-icon { background: #DDF2EA; color: var(--accent-green); }
+    .dir-card.orange .dir-icon { background: #FCE9DD; color: var(--accent-orange); }
+    .dir-card.rose .dir-icon { background: #FCDDE2; color: var(--accent-rose); }
     .dir-content h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text-muted); }
     .dir-content .val { font-size: 22px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
     .dir-content p { font-size: 11px; color: var(--text-muted); }
@@ -148,7 +147,7 @@
     /* Шапка */
     .tl-header-cell {
       padding: 20px 16px; text-align: center; border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
-      background: #F8FAFC; display: flex; flex-direction: column; justify-content: center;
+      background: #F6F6F6; display: flex; flex-direction: column; justify-content: center;
     }
     .tl-header-cell:last-child { border-right: none; }
     .tl-header-cell.title { text-align: left; padding-left: 20px; font-weight: 600; font-size: 14px; }
@@ -158,7 +157,7 @@
     /* Строки */
     .tl-row-wrapper { display: contents; cursor: pointer; }
     .tl-row-wrapper:hover .tl-name-cell, 
-    .tl-row-wrapper:hover .tl-track-cell { background: #F8FAFC; }
+    .tl-row-wrapper:hover .tl-track-cell { background: #F6F6F6; }
     
     .tl-name-cell {
       padding: 20px; font-weight: 600; font-size: 14px; color: var(--text-main);
@@ -176,17 +175,17 @@
     /* Линия */
     .tl-line {
       position: absolute; top: 50%; left: 0; width: 100%; height: 4px;
-      background: #60A5FA; transform: translateY(-50%); z-index: 1;
+      background: #0FA0D7; transform: translateY(-50%); z-index: 1;
     }
     
     /* Точки */
     .tl-dot {
-      width: 14px; height: 14px; border-radius: 50%; background: #60A5FA;
+      width: 14px; height: 14px; border-radius: 50%; background: #0FA0D7;
       position: relative; z-index: 2; border: 2px solid var(--surface);
-      box-shadow: 0 0 0 1px #3B82F6;
+      box-shadow: 0 0 0 1px #234B9B;
     }
-    .tl-dot.done { background: #1D4ED8; box-shadow: 0 0 0 1px #1D4ED8; }
-    .tl-dot.planned { background: #fff; border: 2px solid #3B82F6; box-shadow: none; }
+    .tl-dot.done { background: #0F2D69; box-shadow: 0 0 0 1px #0F2D69; }
+    .tl-dot.planned { background: #fff; border: 2px solid #234B9B; box-shadow: none; }
 
     .tl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
     .tl-name-wrap .badge { white-space: nowrap; }
@@ -199,14 +198,14 @@
 
     .tl-desc-cell { padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.45; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; transition: background 0.2s; }
     .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .tl-row-wrapper:hover .tl-desc-cell { background: #F8FAFC; }
+    .tl-row-wrapper:hover .tl-desc-cell { background: #F6F6F6; }
 
     .tl-header-cell.impl-head { padding: 12px 0 0; justify-content: flex-start; align-items: stretch; }
     .impl-head h4 { padding: 0 8px; text-align: center; }
     .impl-years { display: grid; grid-template-columns: repeat(var(--yrs), 1fr); margin-top: 8px; border-top: 1px solid var(--border); flex: 1; }
     .impl-yr { text-align: center; border-left: 1px solid var(--border); }
     .impl-yr:first-child { border-left: none; }
-    .impl-yr b { display: block; font-size: 12px; padding: 4px 0; color: var(--text-main); background: #EFF6FF; }
+    .impl-yr b { display: block; font-size: 12px; padding: 4px 0; color: var(--text-main); background: #E6ECF7; }
     .impl-qs { display: grid; grid-template-columns: repeat(4, 1fr); }
     .impl-qs span { font-size: 10px; color: var(--text-muted); padding: 3px 0; border-left: 1px dashed var(--border); }
     .impl-qs span:first-child { border-left: none; }
@@ -218,7 +217,7 @@
     .tl-q-label { position: absolute; top: calc(50% + 22px); left: 1px; right: 1px; text-align: center; font-size: 10px; line-height: 1.2; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
     .tl-check {
       position: relative; z-index: 3; width: 26px; height: 26px; border-radius: 6px;
-      background: #10B981; color: #fff; font-size: 16px; line-height: 26px; text-align: center;
+      background: #009B64; color: #fff; font-size: 16px; line-height: 26px; text-align: center;
       box-shadow: 0 2px 6px rgba(16,185,129,0.4);
     }
 
@@ -251,9 +250,9 @@
     }
     @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     
-    .tl-star.owner { color: #EF4444; }
-    .tl-star.joint { color: #F59E0B; }
-    .tl-star.po { color: #10B981; }
+    .tl-star.owner { color: #E61E3C; }
+    .tl-star.joint { color: #EB691E; }
+    .tl-star.po { color: #009B64; }
 
     /* Раскрывашка */
     .tl-details-cell {
@@ -263,18 +262,18 @@
     .tl-row-wrapper.open .tl-details-cell { display: block; }
     
     .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-    .badge-done { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
-    .badge-wip { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
-    .badge-pause { background: #FEF9C3; color: #854D0E; border: 1px solid #FDE047; }
-    .badge-other { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+    .badge-done { background: #DDF2EA; color: #006B45; border: 1px solid #A6DBC8; }
+    .badge-wip { background: #E6ECF7; color: #0F2D69; border: 1px solid #B9C8E6; }
+    .badge-pause { background: #FFF1C2; color: #7A5600; border: 1px solid #F7D774; }
+    .badge-other { background: #EDEDED; color: #4D4D4D; border: 1px solid #E6E6E6; }
 
     .info-list { display: flex; flex-direction: column; gap: 10px; }
     .info-item { font-size: 13px; color: var(--text-muted); }
     .info-item strong { color: var(--text-main); font-weight: 600; display: inline-block; min-width: 110px; }
     
     .tl-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 14px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; position: relative; }
-    .lg-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #1D4ED8; }
-    .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; }
+    .lg-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #0F2D69; }
+    .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #009B64; color: #fff; font-size: 11px; line-height: 16px; text-align: center; }
 
     /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ ===== */
     .dir-sections { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -286,14 +285,14 @@
     @media (max-width: 700px) { .dir-sections { grid-template-columns: 1fr; } .dir-block.wide { grid-column: auto; } }
     .dir-head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
     .dir-head .dir-icon { width: 36px; height: 36px; font-size: 18px; }
-    .dir-head.green .dir-icon { background: #ECFDF5; color: var(--accent-green); }
-    .dir-head.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
-    .dir-head.indigo .dir-icon { background: #EEF2FF; color: var(--accent-blue); }
-    .dir-head.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
+    .dir-head.green .dir-icon { background: #DDF2EA; color: var(--accent-green); }
+    .dir-head.orange .dir-icon { background: #FCE9DD; color: var(--accent-orange); }
+    .dir-head.indigo .dir-icon { background: #E6ECF7; color: var(--accent-blue); }
+    .dir-head.rose .dir-icon { background: #FCDDE2; color: var(--accent-rose); }
     .dir-head h3 { font-size: 15px; color: var(--text-main); line-height: 1.3; }
     .dir-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .dir-block .dir-cards-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
-    .dir-block .dir-card, .dir-block .opt-total-card, .dir-block .artifact-card { background: #F8FAFC; box-shadow: none; }
+    .dir-block .dir-card, .dir-block .opt-total-card, .dir-block .artifact-card { background: #F6F6F6; box-shadow: none; }
     .dir-block .optimization-layout { grid-template-columns: minmax(240px, 1fr) 3fr; gap: 16px 24px; align-items: stretch; }
     @media (max-width: 900px) { .dir-block .optimization-layout { grid-template-columns: 1fr; } }
     .dir-block .opt-left { display: flex; flex-direction: column; }
@@ -311,13 +310,21 @@
     .star-icon { font-size: 16px; }
 
     /* ===== НАЧЕРТАНИЯ ШРИФТА =====
-       Доступны только Regular (400) и Black (900), поэтому «полужирные» тексты не должны
-       превращаться в Black. Black - только для заголовков и крупных чисел; курсив - для пояснений. */
+       Доступны только Regular (400) и Black (900): Black - только заголовки и крупные числа, курсив - пояснения. */
     * { font-weight: 400 !important; }
     .header h1, .section-title, .kpi-card .value, .dir-block .val, .opt-total-card .val, .artifact-card .val,
     .dir-head h3, .tl-header-cell h4, .impl-yr b { font-weight: 900 !important; }
     .section-title span, .kpi-card .sub, .dir-head p, .dir-content p, .tl-header-cell p { font-style: italic; }
     .tl-name-cell { font-size: 14px; }
+
+    /* ===== ФИРМЕННАЯ ПАЛИТРА =====
+       Основные: тёмно-синий #0F2D69, синий #234B9B; серые #929292 / #C6C6C6 / #E6E6E6.
+       Дополнительные (насыщенные): голубой #0FA0D7, зелёный #009B64, оранжевый #EB691E,
+       жёлтый #FAB900, красный #E61E3C, фиолетовый #7D50B9. Насыщенные цвета не смешиваются с пастельными. */
+    :root { --brand-navy: #0F2D69; --brand-blue: #234B9B; --brand-sky: #0FA0D7; --brand-green: #009B64;
+            --brand-orange: #EB691E; --brand-yellow: #FAB900; --brand-red: #E61E3C; --brand-purple: #7D50B9; }
+    .header h1, .section-title, .dir-head h3, .tl-header-cell h4, .kpi-card .value, .dir-block .val,
+    .opt-total-card .val, .artifact-card .val, .impl-yr b { color: var(--brand-navy); }
   </style>
 </head>
 <body>
@@ -350,9 +357,9 @@
   
   <div class="timeline-container">
     <div class="tl-legend">
-      <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
-      <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
-      <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
+      <span><span class="star-icon" style="color:#E61E3C">★</span> Этап на стороне владельца процесса</span>
+      <span><span class="star-icon" style="color:#EB691E">★</span> Совместная работа ПО и владельца</span>
+      <span><span class="star-icon" style="color:#009B64">★</span> Работа на стороне ПО</span>
       <span><span class="lg-dot"></span> Этап завершён</span>
       <span><span class="lg-check">✓</span> Завершён</span>
     </div>
@@ -533,9 +540,9 @@
       const names = list => list.map(n => '• ' + n);
 
       const STATUSES = [
-        { key: 'в работе', label: 'В работе', color: '#3B82F6', text: '#FFFFFF' },
-        { key: 'на паузе', label: 'На паузе', color: '#FACC15', text: '#1E293B' },
-        { key: 'завершён', label: 'Завершён', color: '#10B981', text: '#FFFFFF' }
+        { key: 'в работе', label: 'В работе', color: '#234B9B', text: '#FFFFFF' },
+        { key: 'на паузе', label: 'На паузе', color: '#FAB900', text: '#0F2D69' },
+        { key: 'завершён', label: 'Завершён', color: '#009B64', text: '#FFFFFF' }
       ];
       const known = STATUSES.map(x => x.key);
       const norm = p => {
@@ -543,7 +550,7 @@
         return DEPLOYED_STATUSES.includes(st) ? 'завершён' : st;
       };
       const groups = data.some(p => !known.includes(norm(p)))
-        ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8', text: '#FFFFFF' }] : STATUSES;
+        ? [...STATUSES, { key: '__other', label: 'Другое', color: '#929292', text: '#FFFFFF' }] : STATUSES;
       const byStatus = groups.map(() => []);
       data.forEach(p => {
         let gi = groups.findIndex(g => g.key === norm(p));
@@ -560,7 +567,7 @@
           const { ctx } = chart;
           const arcs = chart.getDatasetMeta(0).data;
           ctx.save();
-          ctx.font = '900 12px ' + pageFont;
+          ctx.font = '900 13px ' + pageFont;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           arcs.forEach((arc, i) => {
@@ -592,7 +599,7 @@
       data.forEach(p => { byStage[STAGES.findIndex(x => x[0] === projectStageKey(p))].push(p.name); });
       charts.stages = new Chart(document.getElementById('chart-stages'), {
         type: 'bar',
-        data: { labels: STAGES.map(x => x[1]), datasets: [{ label: 'Проектов на этапе', data: byStage.map(a => a.length), backgroundColor: '#10B981', borderRadius: 6, maxBarThickness: 56 }] },
+        data: { labels: STAGES.map(x => x[1]), datasets: [{ label: 'Проектов на этапе', data: byStage.map(a => a.length), backgroundColor: '#234B9B', borderRadius: 6, maxBarThickness: 56 }] },
         options: {
           responsive: true, maintainAspectRatio: false,
           plugins: {
@@ -610,7 +617,7 @@
     function renderTimeline(data) {
       const container = document.getElementById('timeline-body');
       if (!data.length) {
-        container.innerHTML = '<div style="grid-column: 1/-1; padding:40px; text-align:center; color:#94A3B8;">Нет проектов</div>';
+        container.innerHTML = '<div style="grid-column: 1/-1; padding:40px; text-align:center; color:#929292;">Нет проектов</div>';
         return;
       }
 
@@ -783,7 +790,7 @@
       })
       .catch(err => {
         console.error(err);
-        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#BE123C;"><h2>Ошибка загрузки</h2><p>Проверьте data_test.json</p></div>`;
+        document.body.innerHTML = `<div style="padding:40px; text-align:center; color:#E61E3C;"><h2>Ошибка загрузки</h2><p>Проверьте data_test.json</p></div>`;
       });
 
     // Экспорт
