@@ -171,15 +171,12 @@
     .tl-dot.done { background: #1D4ED8; box-shadow: 0 0 0 1px #1D4ED8; }
     .tl-dot.planned { background: #fff; border: 2px solid #3B82F6; box-shadow: none; }
 
-    /* Название + статус в одной ячейке */
     .tl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
     .tl-name-wrap .badge { white-space: nowrap; }
 
-    /* Закреплённая первая колонка (остаётся на месте при горизонтальной прокрутке) */
     .tl-name-cell, .tl-header-cell.title { position: sticky; left: 0; z-index: 5; box-shadow: 2px 0 4px -2px rgba(15,23,42,0.12); }
     .tl-name-cell { background: var(--surface); }
 
-    /* Полное описание внутри раскрывающегося списка */
     .desc-full { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.55; color: var(--text-main); }
     .desc-full strong { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
 
@@ -207,10 +204,8 @@
       box-shadow: 0 2px 6px rgba(16,185,129,0.4);
     }
 
-    /* Раскрытая часть строки не уезжает за экран при горизонтальной прокрутке */
     .tl-details-cell .details-container { position: sticky; left: 20px; width: calc(var(--tl-vw, 100%) - 40px); max-width: 100%; }
 
-    /* ===== Компактный вид для ноутбуков (до 1440 px) ===== */
     @media (max-width: 1440px) {
       .tl-grid {
         grid-template-columns: 150px minmax(130px, 1fr) repeat(4, minmax(72px, 1fr)) minmax(calc(var(--yrs) * 150px), 5fr) minmax(72px, 1fr);
@@ -226,7 +221,7 @@
       .tl-name-cell { padding: 12px; font-size: 13px; }
       .tl-desc-cell { padding: 10px 10px; font-size: 11px; }
       .tl-track-cell { height: 92px; }
-      .tl-q-label { display: none; }   /* подписи кварталов - в подсказке при наведении */
+      .tl-q-label { display: none; }
       .tl-star { font-size: 34px; }
     }
     
@@ -362,7 +357,8 @@
     let globalKpi = {};
     let charts = {};
 
-    const DEPLOYED_STATUSES = ['Завершён', 'внедрён', 'внедрен'];
+    // Статус «внедрено» больше не используется: проект считается завершённым (оставлен для старых данных)
+    const DEPLOYED_STATUSES = ['завершён', 'завершен', 'внедрено', 'внедрён', 'внедрен'];
     const isDeployedStatus = p => DEPLOYED_STATUSES.includes(String(p.status || '').trim().toLowerCase()) || p.current_stage === 'deployed';
     function qLabel(key) {
       const m = String(key).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
@@ -469,7 +465,7 @@
         </section>
 
         <section class="dir-block">
-          ${head('rose', '🎓', 'Проведённое обучение, в том числе ДПО', 'Развитие персонала')}
+          ${head('rose', '🎓', 'Проведённое обучение', 'Развитие персонала')}
           <div class="dir-cards-grid">
             ${stat('rose', '🎓', 'Обучено сотрудников', kpi.trained_employees, '&nbsp;')}
             ${stat('rose', '🏅', 'Обучено сотрудников в рамках ДПО', kpi.trained_dpo, 'по программам ДПО')}
@@ -501,10 +497,11 @@
       const commonLegend = { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } };
       const names = list => list.map(n => '• ' + n);
 
+      // Круговая диаграмма: статусы проектов (проценты показаны на секторах постоянно)
       const STATUSES = [
-        { key: 'в работе', label: 'В работе', color: '#3B82F6' },
-        { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
-        { key: 'завершён', label: 'Завершён', color: '#10B981' }
+        { key: 'в работе', label: 'В работе', color: '#3B82F6', text: '#FFFFFF' },
+        { key: 'на паузе', label: 'На паузе', color: '#FACC15', text: '#1E293B' },
+        { key: 'завершён', label: 'Завершён', color: '#10B981', text: '#FFFFFF' }
       ];
       const known = STATUSES.map(x => x.key);
       const norm = p => {
@@ -512,7 +509,7 @@
         return DEPLOYED_STATUSES.includes(st) ? 'завершён' : st;
       };
       const groups = data.some(p => !known.includes(norm(p)))
-        ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8' }] : STATUSES;
+        ? [...STATUSES, { key: '__other', label: 'Другое', color: '#94A3B8', text: '#FFFFFF' }] : STATUSES;
       const byStatus = groups.map(() => []);
       data.forEach(p => {
         let gi = groups.findIndex(g => g.key === norm(p));
@@ -530,13 +527,13 @@
           const arcs = chart.getDatasetMeta(0).data;
           ctx.save();
           ctx.font = 'bold 12px sans-serif';
-          ctx.fillStyle = '#FFFFFF';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           arcs.forEach((arc, i) => {
             if (!ds[i]) return;
             const pct = Math.round(ds[i] / total * 100);
             const pos = arc.getCenterPoint();
+            ctx.fillStyle = groups[i].text;
             ctx.fillText(pct + '%', pos.x, pos.y);
           });
           ctx.restore();
@@ -584,7 +581,7 @@
       }
 
       const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
-      const COLS = stageKeys.length + 1; // + "Завершён"
+      const COLS = stageKeys.length + 1; // + финальный столбец «Завершён»
       const isDeployed = p => isDeployedStatus(p);
 
       const dataYears = data.flatMap(p => Object.keys((p.stages && p.stages.implementation && p.stages.implementation.quarters) || {})
@@ -603,10 +600,8 @@
       document.getElementById('impl-years').innerHTML = YEARS.map(y =>
         `<div class="impl-yr"><b>${y}</b><div class="impl-qs"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div></div>`).join('');
 
-      // Ширина видимой области таблицы - для раскрытой части строки (чтобы она не уезжала при прокрутке)
       const scrollEl = document.getElementById('tl-scroll');
-      const syncVw = () => gridEl.style.setProperty('--tl-vw', scrollEl.clientWidth + 'px');
-      syncVw();
+      gridEl.style.setProperty('--tl-vw', scrollEl.clientWidth + 'px');
       if (!window.__tlResizeBound) { window.__tlResizeBound = true; window.addEventListener('resize', () => { const g = document.getElementById('tl-grid'), sc = document.getElementById('tl-scroll'); if (g && sc) g.style.setProperty('--tl-vw', sc.clientWidth + 'px'); }); }
 
       function getStageStates(p) {
@@ -659,29 +654,42 @@
         const star = `<div class="tl-star ${role}">★</div>`;
         const dot = c => `<div class="tl-dot ${c}"></div>`;
 
+        // После звёздочки (текущего этапа) точек быть не должно
+        let starSeen = false;
         let cellsHtml = '';
         for (let i = 0; i < COLS; i++) {
           const state = states[i];
-          let inner;
+          let inner = '';
           if (state === 'deployed') {
             inner = `<div class="tl-check" title="Завершён">✓</div>`;
           } else if (i === 4) {
             const qs = getQuarters(p, state);
-            if (qs.length) {
+            if (starSeen) {
+              inner = '';
+            } else if (qs.length) {
               const slots = Array(SLOTS).fill(null);
               qs.forEach(x => { const si = slotOf(x.key); if (si >= 0) slots[si] = x; });
+              let starSlot = -1;
+              slots.forEach((x, si) => { if (x && x.status === 'current') starSlot = si; });
               inner = `<div class="tl-q-wrap">` + slots.map((x, si) => {
                 const cls = 'tl-q' + (si > 0 && si % 4 === 0 ? ' ys' : '');
-                if (!x) return `<div class="${cls}"></div>`;
+                if (!x || (starSlot >= 0 && si > starSlot)) return `<div class="${cls}"></div>`;
                 const mk = x.status === 'current' ? star : dot(x.status === 'done' ? 'done' : 'planned');
                 const note = x.items.join(', ');
                 return `<div class="${cls}" title="${esc(x.label + (note ? ': ' + note : ''))}">${mk}${note ? `<div class="tl-q-label">${esc(note)}</div>` : ''}</div>`;
               }).join('') + `</div>`;
+              if (state === 'current') starSeen = true;
+            } else if (state === 'current') {
+              inner = star; starSeen = true;
             } else {
-              inner = state === 'current' ? star : dot(state === 'done' ? 'done' : '');
+              inner = dot(state === 'done' ? 'done' : '');
             }
+          } else if (starSeen) {
+            inner = '';
+          } else if (state === 'current') {
+            inner = star; starSeen = true;
           } else {
-            inner = state === 'current' ? star : dot(state === 'done' ? 'done' : '');
+            inner = dot(state === 'done' ? 'done' : '');
           }
           cellsHtml += `
             <div class="tl-track-cell${i === COLS - 1 ? ' last' : ''}">
