@@ -171,6 +171,10 @@
     .tl-dot.done { background: #1D4ED8; box-shadow: 0 0 0 1px #1D4ED8; }
     .tl-dot.planned { background: #fff; border: 2px solid #3B82F6; box-shadow: none; }
 
+    /* Название + статус в одной ячейке */
+    .tl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .tl-name-wrap .badge { white-space: nowrap; }
+
     .tl-desc-cell { padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.45; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; transition: background 0.2s; }
     .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
     .tl-row-wrapper:hover .tl-desc-cell { background: #F8FAFC; }
@@ -653,7 +657,7 @@
 
         return `
           <div class="tl-row-wrapper" onclick="this.classList.toggle('open')">
-            <div class="tl-name-cell">${esc(p.name)}</div>
+            <div class="tl-name-cell"><div class="tl-name-wrap"><span>${esc(p.name)}</span><span class="badge badge-wip">${esc(p.status)}</span></div></div>
             <div class="tl-desc-cell"><span title="${esc(p.description || '')}">${p.description ? esc(p.description) : '—'}</span></div>
             ${cellsHtml}
             <div class="tl-details-cell">
@@ -663,7 +667,6 @@
                     <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
                     <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
                     <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
-                    <div class="info-item"><strong>Статус:</strong> <span class="badge badge-wip">${esc(p.status)}</span></div>
                     <div class="info-item"><strong>Дата начала:</strong> ${esc(fmtDMY(p.start))}</div>
                     <div class="info-item"><strong>Дата окончания:</strong> ${esc(fmtDMY(p.end))}</div>
                   </div>
