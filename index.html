@@ -124,8 +124,8 @@
     .tl-grid {
       display: grid;
       --yrs: 3;
-      grid-template-columns: 190px minmax(170px, 1.2fr) repeat(4, minmax(92px, 1fr)) minmax(calc(var(--yrs) * 205px), 5fr) minmax(92px, 1fr);
-      min-width: 1420px;
+      grid-template-columns: 186px minmax(170px, 1.2fr) repeat(4, minmax(90px, 1fr)) minmax(calc(var(--yrs) * 205px), 5fr) minmax(90px, 1fr);
+      min-width: calc(806px + var(--yrs) * 205px);
     }
 
     /* Шапка */
@@ -175,8 +175,16 @@
     .tl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
     .tl-name-wrap .badge { white-space: nowrap; }
 
+    /* Закреплённая первая колонка (остаётся на месте при горизонтальной прокрутке) */
+    .tl-name-cell, .tl-header-cell.title { position: sticky; left: 0; z-index: 5; box-shadow: 2px 0 4px -2px rgba(15,23,42,0.12); }
+    .tl-name-cell { background: var(--surface); }
+
+    /* Полное описание внутри раскрывающегося списка */
+    .desc-full { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.55; color: var(--text-main); }
+    .desc-full strong { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+
     .tl-desc-cell { padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.45; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; transition: background 0.2s; }
-    .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .tl-row-wrapper:hover .tl-desc-cell { background: #F8FAFC; }
 
     .tl-header-cell.impl-head { padding: 12px 0 0; justify-content: flex-start; align-items: stretch; }
@@ -197,6 +205,29 @@
       position: relative; z-index: 3; width: 26px; height: 26px; border-radius: 6px;
       background: #10B981; color: #fff; font-size: 16px; font-weight: 700; line-height: 26px; text-align: center;
       box-shadow: 0 2px 6px rgba(16,185,129,0.4);
+    }
+
+    /* Раскрытая часть строки не уезжает за экран при горизонтальной прокрутке */
+    .tl-details-cell .details-container { position: sticky; left: 20px; width: calc(var(--tl-vw, 100%) - 40px); max-width: 100%; }
+
+    /* ===== Компактный вид для ноутбуков (до 1440 px) ===== */
+    @media (max-width: 1440px) {
+      .tl-grid {
+        grid-template-columns: 150px minmax(130px, 1fr) repeat(4, minmax(72px, 1fr)) minmax(calc(var(--yrs) * 150px), 5fr) minmax(72px, 1fr);
+        min-width: calc(640px + var(--yrs) * 150px);
+      }
+      .tl-header-cell { padding: 12px 6px; }
+      .tl-header-cell h4 { font-size: 12px; }
+      .tl-header-cell p { font-size: 10px; }
+      .tl-header-cell.title { padding-left: 12px; font-size: 13px; }
+      .tl-header-cell.impl-head { padding: 12px 0 0; }
+      .impl-yr b { font-size: 11px; }
+      .impl-qs span { font-size: 9px; }
+      .tl-name-cell { padding: 12px; font-size: 13px; }
+      .tl-desc-cell { padding: 10px 10px; font-size: 11px; }
+      .tl-track-cell { height: 92px; }
+      .tl-q-label { display: none; }   /* подписи кварталов - в подсказке при наведении */
+      .tl-star { font-size: 34px; }
     }
     
     /* Звезды */
@@ -304,7 +335,7 @@
       <span><span class="lg-check">✓</span> Внедрено</span>
     </div>
 
-    <div class="tl-scroll">
+    <div class="tl-scroll" id="tl-scroll">
       <div class="tl-grid" id="tl-grid">
         <div class="tl-header-cell title">Название проекта</div>
         <div class="tl-header-cell"><h4>Краткое описание</h4></div>
@@ -569,9 +600,14 @@
       };
       const gridEl = document.getElementById('tl-grid');
       gridEl.style.setProperty('--yrs', YEARS.length);
-      gridEl.style.minWidth = (805 + YEARS.length * 205) + 'px';
       document.getElementById('impl-years').innerHTML = YEARS.map(y =>
         `<div class="impl-yr"><b>${y}</b><div class="impl-qs"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div></div>`).join('');
+
+      // Ширина видимой области таблицы - для раскрытой части строки (чтобы она не уезжала при прокрутке)
+      const scrollEl = document.getElementById('tl-scroll');
+      const syncVw = () => gridEl.style.setProperty('--tl-vw', scrollEl.clientWidth + 'px');
+      syncVw();
+      if (!window.__tlResizeBound) { window.__tlResizeBound = true; window.addEventListener('resize', () => { const g = document.getElementById('tl-grid'), sc = document.getElementById('tl-scroll'); if (g && sc) g.style.setProperty('--tl-vw', sc.clientWidth + 'px'); }); }
 
       function getStageStates(p) {
         if (isDeployed(p)) return [...stageKeys.map(() => 'done'), 'deployed'];
@@ -662,6 +698,7 @@
             ${cellsHtml}
             <div class="tl-details-cell">
               <div class="details-container">
+                ${p.description ? `<div class="desc-full"><strong>Описание</strong>${esc(p.description)}</div>` : ''}
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                   <div class="info-list">
                     <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
