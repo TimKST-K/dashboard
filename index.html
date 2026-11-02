@@ -6,6 +6,23 @@
   <title>Центр трансформации процессов университета</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* ===== ФИРМЕННЫЙ ШРИФТ Brand (Regular / Italic / Black) =====
+       Основной путь: fonts/Brand-Regular.otf, fonts/Brand-Italic.otf, fonts/Brand-Black.otf.
+       Запасные пути - на случай, если файлы загружены с именами вида «fonts:Brand-*.otf».
+       Браузер пробует адреса по очереди. */
+    @font-face { font-family: 'Brand'; font-style: normal; font-weight: 400; font-display: swap;
+      src: url('fonts/Brand-Regular.otf') format('opentype'),
+           url('fonts/fonts%3ABrand-Regular.otf') format('opentype'),
+           url('fonts%3ABrand-Regular.otf') format('opentype'); }
+    @font-face { font-family: 'Brand'; font-style: italic; font-weight: 400; font-display: swap;
+      src: url('fonts/Brand-Italic.otf') format('opentype'),
+           url('fonts/fonts%3ABrand-Italic.otf') format('opentype'),
+           url('fonts%3ABrand-Italic.otf') format('opentype'); }
+    @font-face { font-family: 'Brand'; font-style: normal; font-weight: 900; font-display: swap;
+      src: url('fonts/Brand-Black.otf') format('opentype'),
+           url('fonts/fonts%3ABrand-Black.otf') format('opentype'),
+           url('fonts%3ABrand-Black.otf') format('opentype'); }
+
     /* ===== БАЗА И ПЕРЕМЕННЫЕ ===== */
     :root {
       --bg: #F4F6F9;
@@ -26,7 +43,7 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Brand', 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
       font-size: 13px;
       line-height: 1.5;
       background: var(--bg);
@@ -53,7 +70,7 @@
     @media (max-width: 1000px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 6; } }
     @media (max-width: 560px) { .kpi-grid > .kpi-card, .kpi-grid > .kpi-card.k5, .kpi-grid > .kpi-card.k7 { grid-column: span 12; } }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { background: #F1F5F9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.4; }
+    .chip { background: #F1F5F9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 13px; color: var(--text-main); line-height: 1.4; }
     .kpi-card .chips { margin-top: 2px; }
     .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
@@ -178,7 +195,7 @@
     .tl-name-cell { background: var(--surface); }
 
     .desc-full { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.55; color: var(--text-main); }
-    .desc-full strong { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+    .desc-full strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
 
     .tl-desc-cell { padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.45; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; transition: background 0.2s; }
     .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -196,12 +213,12 @@
 
     .tl-q-wrap { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(calc(var(--yrs) * 4), 1fr); width: 100%; align-self: stretch; }
     .tl-q { position: relative; min-width: 0; display: flex; align-items: center; justify-content: center; }
-    .tl-q + .tl-q { border-left: 1px dashed var(--border); }   /* границы кварталов совпадают с шапкой */
-    .tl-q.ys { border-left: 1px solid var(--border); }          /* граница года */
+    .tl-q + .tl-q { border-left: 1px dashed var(--border); }
+    .tl-q.ys { border-left: 1px solid var(--border); }
     .tl-q-label { position: absolute; top: calc(50% + 22px); left: 1px; right: 1px; text-align: center; font-size: 10px; line-height: 1.2; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
     .tl-check {
       position: relative; z-index: 3; width: 26px; height: 26px; border-radius: 6px;
-      background: #10B981; color: #fff; font-size: 16px; font-weight: 700; line-height: 26px; text-align: center;
+      background: #10B981; color: #fff; font-size: 16px; line-height: 26px; text-align: center;
       box-shadow: 0 2px 6px rgba(16,185,129,0.4);
     }
 
@@ -257,7 +274,7 @@
     
     .tl-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 14px 20px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: #fff; position: relative; }
     .lg-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #1D4ED8; }
-    .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; font-weight: 700; }
+    .lg-check { display: inline-block; width: 16px; height: 16px; border-radius: 4px; background: #10B981; color: #fff; font-size: 11px; line-height: 16px; text-align: center; }
 
     /* ===== НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ ===== */
     .dir-sections { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -273,7 +290,7 @@
     .dir-head.orange .dir-icon { background: #FFFBEB; color: var(--accent-orange); }
     .dir-head.indigo .dir-icon { background: #EEF2FF; color: var(--accent-blue); }
     .dir-head.rose .dir-icon { background: #FFF1F2; color: var(--accent-rose); }
-    .dir-head h3 { font-size: 15px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
+    .dir-head h3 { font-size: 15px; color: var(--text-main); line-height: 1.3; }
     .dir-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .dir-block .dir-cards-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
     .dir-block .dir-card, .dir-block .opt-total-card, .dir-block .artifact-card { background: #F8FAFC; box-shadow: none; }
@@ -289,9 +306,18 @@
     .dir-block .artifact-card { padding: 14px 12px; min-height: 111px; }
     .dir-block .artifact-card .val { font-size: 22px; margin-bottom: 2px; }
     .dir-block .artifact-card h4 { font-size: 11px; }
-    .dir-sub-title { font-weight: 600; font-size: 13px; color: var(--text-main); margin-bottom: 12px; }
+    .dir-sub-title { font-size: 13px; color: var(--text-main); margin-bottom: 12px; }
     .tl-legend span { display: flex; align-items: center; gap: 6px; }
     .star-icon { font-size: 16px; }
+
+    /* ===== НАЧЕРТАНИЯ ШРИФТА =====
+       Доступны только Regular (400) и Black (900), поэтому «полужирные» тексты не должны
+       превращаться в Black. Black - только для заголовков и крупных чисел; курсив - для пояснений. */
+    * { font-weight: 400 !important; }
+    .header h1, .section-title, .kpi-card .value, .dir-block .val, .opt-total-card .val, .artifact-card .val,
+    .dir-head h3, .tl-header-cell h4, .impl-yr b { font-weight: 900 !important; }
+    .section-title span, .kpi-card .sub, .dir-head p, .dir-content p, .tl-header-cell p { font-style: italic; }
+    .tl-name-cell { font-size: 14px; }
   </style>
 </head>
 <body>
@@ -323,7 +349,6 @@
   <div class="section-title">Таймлайн проектов <span>по этапам</span></div>
   
   <div class="timeline-container">
-    <!-- Легенда над таблицей -->
     <div class="tl-legend">
       <span><span class="star-icon" style="color:#EF4444">★</span> Этап на стороне владельца процесса</span>
       <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
@@ -361,7 +386,6 @@
 
     const DEPLOYED_STATUSES = ['завершён', 'завершен', 'внедрено', 'внедрён', 'внедрен'];
     const isDeployedStatus = p => DEPLOYED_STATUSES.includes(String(p.status || '').trim().toLowerCase()) || p.current_stage === 'deployed';
-    // Цвет плашки статуса: в работе - синий, на паузе - жёлтый, завершён - зелёный (как на круговой диаграмме)
     function statusBadgeClass(status) {
       const st = String(status || '').trim().toLowerCase();
       if (st === 'в работе') return 'badge-wip';
@@ -503,6 +527,8 @@
     function renderCharts(data) {
       Object.values(charts).forEach(c => c.destroy());
       charts = {};
+      const pageFont = getComputedStyle(document.body).fontFamily;
+      Chart.defaults.font.family = pageFont;
       const commonLegend = { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } };
       const names = list => list.map(n => '• ' + n);
 
@@ -534,7 +560,7 @@
           const { ctx } = chart;
           const arcs = chart.getDatasetMeta(0).data;
           ctx.save();
-          ctx.font = 'bold 12px sans-serif';
+          ctx.font = '900 12px ' + pageFont;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           arcs.forEach((arc, i) => {
@@ -744,6 +770,7 @@
     // ============================================================
     fetch('./data_test.json')
       .then(res => { if (!res.ok) throw new Error('Ошибка загрузки'); return res.json(); })
+      .then(json => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => json))
       .then(json => {
         globalKpi = json.kpi || {};
         rawData = json.projects || [];
