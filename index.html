@@ -171,12 +171,10 @@
     .tl-dot.done { background: #1D4ED8; box-shadow: 0 0 0 1px #1D4ED8; }
     .tl-dot.planned { background: #fff; border: 2px solid #3B82F6; box-shadow: none; }
 
-    /* Описание проекта */
     .tl-desc-cell { padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.45; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; transition: background 0.2s; }
     .tl-desc-cell span { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
     .tl-row-wrapper:hover .tl-desc-cell { background: #F8FAFC; }
 
-    /* Внедрение: заголовок с годами и кварталами */
     .tl-header-cell.impl-head { padding: 12px 0 0; justify-content: flex-start; align-items: stretch; }
     .impl-head h4 { padding: 0 8px; text-align: center; }
     .impl-years { display: grid; grid-template-columns: repeat(var(--yrs), 1fr); margin-top: 8px; border-top: 1px solid var(--border); flex: 1; }
@@ -187,7 +185,6 @@
     .impl-qs span { font-size: 10px; color: var(--text-muted); padding: 3px 0; border-left: 1px dashed var(--border); }
     .impl-qs span:first-child { border-left: none; }
 
-    /* Внедрение: ячейки-кварталы (4 на год) */
     .tl-q-wrap { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(calc(var(--yrs) * 4), 1fr); width: 100%; height: 100%; }
     .tl-q { position: relative; min-width: 0; display: flex; align-items: center; justify-content: center; }
     .tl-q.ys { border-left: 1px solid var(--border); }
@@ -276,7 +273,7 @@
   </div>
 
   <!-- ГЛОБАЛЬНЫЕ KPI -->
-  <div class="section-title">Общая сводка <span>ключевые показатели</span></div>
+  <div class="section-title">Охват <span>ключевые показатели</span></div>
   <div class="kpi-grid" id="kpi-grid"></div>
 
   <!-- НАПРАВЛЕНИЯ ДЕЯТЕЛЬНОСТИ -->
@@ -334,7 +331,6 @@
       const m = String(key).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
       return m ? `Q${m[2]} ’${m[1].slice(2)}` : String(key);
     }
-    // "2024-02-01" -> "01.02.2024"
     function fmtDMY(v) {
       const m = String(v == null ? '' : v).match(/^(\d{4})-(\d{2})-(\d{2})/);
       return m ? `${m[3]}.${m[2]}.${m[1]}` : (v ? String(v) : '—');
@@ -468,7 +464,6 @@
       const commonLegend = { position: 'bottom', labels: { font: { size: 12 }, usePointStyle: true, boxWidth: 8 } };
       const names = list => list.map(n => '• ' + n);
 
-      // Круговая диаграмма: статусы (проценты показаны на секторах). «Внедрено» учитывается как «Завершён»
       const STATUSES = [
         { key: 'в работе', label: 'В работе', color: '#3B82F6' },
         { key: 'на паузе', label: 'На паузе', color: '#F43F5E' },
@@ -555,7 +550,6 @@
       const COLS = stageKeys.length + 1; // + "Внедрено"
       const isDeployed = p => isDeployedStatus(p);
 
-      // Годы колонки «Внедрение»: по умолчанию 2024-2026, расширяются, если в данных есть другие годы
       const dataYears = data.flatMap(p => Object.keys((p.stages && p.stages.implementation && p.stages.implementation.quarters) || {})
         .map(k => { const m = String(k).match(/^(\d{4})/); return m ? +m[1] : null; }).filter(Boolean));
       const minY = Math.min(2024, ...dataYears), maxY = Math.max(2026, ...dataYears);
@@ -665,10 +659,8 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                   <div class="info-list">
                     <div class="info-item"><strong>Владелец:</strong> ${esc(p.owner)}</div>
-                    <div class="info-item"><strong>Направление:</strong> ${esc(p.direction)}</div>
                     <div class="info-item"><strong>Участники:</strong> ${esc((p.participants || []).join(', '))}</div>
                     <div class="info-item"><strong>Пользователи:</strong> ${esc((p.users || []).join(', '))}</div>
-                    <div class="info-item"><strong>Теги:</strong> ${esc((p.tags || []).join(', '))}</div>
                     <div class="info-item"><strong>Статус:</strong> <span class="badge badge-wip">${esc(p.status)}</span></div>
                     <div class="info-item"><strong>Дата начала:</strong> ${esc(fmtDMY(p.start))}</div>
                     <div class="info-item"><strong>Дата окончания:</strong> ${esc(fmtDMY(p.end))}</div>
