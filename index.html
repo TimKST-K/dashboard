@@ -113,14 +113,14 @@
     .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
 
-    /* ===== ТАЙМЛАЙН: описание + 4 этапа + внедрение по годам/кварталам + «Внедрено» ===== */
+    /* ===== ТАЙМЛАЙН: описание + 4 этапа + внедрение по годам/кварталам + «Завершён» ===== */
     .timeline-container {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
       box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden;
     }
     .tl-scroll { overflow-x: auto; }
     
-    /* Сетка: Название + Описание + 4 этапа + Внедрение (по годам и кварталам) + Внедрено */
+    /* Сетка: Название + Описание + 4 этапа + Внедрение (по годам и кварталам) + Завершён */
     .tl-grid {
       display: grid;
       --yrs: 3;
@@ -332,7 +332,7 @@
       <span><span class="star-icon" style="color:#F59E0B">★</span> Совместная работа ПО и владельца</span>
       <span><span class="star-icon" style="color:#10B981">★</span> Работа на стороне ПО</span>
       <span><span class="lg-dot"></span> Этап завершён</span>
-      <span><span class="lg-check">✓</span> Внедрено</span>
+      <span><span class="lg-check">✓</span> Завершён</span>
     </div>
 
     <div class="tl-scroll" id="tl-scroll">
@@ -344,7 +344,7 @@
         <div class="tl-header-cell"><h4>Целевое состояние</h4><p>Предложения, план</p></div>
         <div class="tl-header-cell"><h4>Принятие решения</h4><p>Владельцем</p></div>
         <div class="tl-header-cell impl-head"><h4>Внедрение изменений</h4><div class="impl-years" id="impl-years"></div></div>
-        <div class="tl-header-cell"><h4>Внедрено</h4><p>Результат в эксплуатации</p></div>
+        <div class="tl-header-cell"><h4>Завершён</h4><p>Результат в эксплуатации</p></div>
 
         <div id="timeline-body" style="display: contents;"></div>
       </div>
@@ -362,7 +362,7 @@
     let globalKpi = {};
     let charts = {};
 
-    const DEPLOYED_STATUSES = ['внедрено', 'внедрён', 'внедрен'];
+    const DEPLOYED_STATUSES = ['Завершён', 'внедрён', 'внедрен'];
     const isDeployedStatus = p => DEPLOYED_STATUSES.includes(String(p.status || '').trim().toLowerCase()) || p.current_stage === 'deployed';
     function qLabel(key) {
       const m = String(key).match(/^(\d{4})[-_ ]?Q([1-4])$/i);
@@ -556,7 +556,7 @@
         plugins: [percentLabels]
       });
 
-      const STAGES = [['analysis', 'Анализ'], ['current_state', 'Текущее'], ['target_state', 'Целевое'], ['decision', 'Решение'], ['implementation', 'Внедрение'], ['deployed', 'Внедрено']];
+      const STAGES = [['analysis', 'Анализ'], ['current_state', 'Текущее'], ['target_state', 'Целевое'], ['decision', 'Решение'], ['implementation', 'Внедрение'], ['deployed', 'Завершён']];
       const byStage = STAGES.map(() => []);
       data.forEach(p => { byStage[STAGES.findIndex(x => x[0] === projectStageKey(p))].push(p.name); });
       charts.stages = new Chart(document.getElementById('chart-stages'), {
@@ -584,7 +584,7 @@
       }
 
       const stageKeys = ['analysis', 'current_state', 'target_state', 'decision', 'implementation'];
-      const COLS = stageKeys.length + 1; // + "Внедрено"
+      const COLS = stageKeys.length + 1; // + "Завершён"
       const isDeployed = p => isDeployedStatus(p);
 
       const dataYears = data.flatMap(p => Object.keys((p.stages && p.stages.implementation && p.stages.implementation.quarters) || {})
@@ -664,7 +664,7 @@
           const state = states[i];
           let inner;
           if (state === 'deployed') {
-            inner = `<div class="tl-check" title="Внедрено">✓</div>`;
+            inner = `<div class="tl-check" title="Завершён">✓</div>`;
           } else if (i === 4) {
             const qs = getQuarters(p, state);
             if (qs.length) {
